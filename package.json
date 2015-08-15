@@ -1,5 +1,5 @@
 {
-  "name": "chirarshi",
+  "name": "chirashi",
   "version": "1.0.0",
   "description": "Minimalist DOM and events manager focused on performances",
   "main": "./src/index.js",
