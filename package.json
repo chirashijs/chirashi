@@ -1,6 +1,6 @@
 {
   "name": "chirashi",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Minimalist DOM and events manager focused on performances",
   "main": "./src/index.js",
   "scripts": {
@@ -14,7 +14,9 @@
     "DOM",
     "events"
   ],
-  "author": "Alex Toudic @AlexToudic",
+  "author": {
+    "name": "Alex Toudic @AlexToudic"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/AlexToudic/chirashi/issues"
@@ -24,5 +26,10 @@
       "babelify"
     ]
   },
-  "homepage": "https://github.com/AlexToudic/chirashi#readme"
+  "homepage": "https://github.com/AlexToudic/chirashi#readme",
+  "gitHead": "7588f7309945a6a72f7ba9583e1fae8bb4b0f125",
+  "readme": "ERROR: No README data found!",
+  "_id": "chirashi@1.0.0",
+  "_shasum": "671e4e3384babcab4779d595a57503ef4566630a",
+  "_from": "chirashi@*"
 }

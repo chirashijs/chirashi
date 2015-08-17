@@ -97,7 +97,7 @@ function applyPropertyToMatrix (property, value, matrix) {
 }
 
 export function getStyle (element, property) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
   if (!element) return;
 
   let ret = getComputedStyle(element)[property];
@@ -113,11 +113,11 @@ export function setStyle (elements, values) {
       property = properties[i];
       value = values[property];
 
-      if (typeof value == 'number' && this.unitLessAttributes.indexOf(property) == -1)
+      if (typeof value == 'number' && unitLessAttributes.indexOf(property) == -1)
         values[property] += 'px';
   }
 
-  this.forEach(elements, (element) => {
+  Core.forEach(elements, (element) => {
     if (!element.style) return;
 
     let i = properties.length, property, value;
@@ -130,15 +130,15 @@ export function setStyle (elements, values) {
 
 export function style (elements, option) {
   if (typeof option == 'object') {
-    this.setStyle(elements, option);
+    setStyle(elements, option);
   }
   else if (typeof option == 'string') {
-    return this.getStyle(elements, option);
+    return getStyle(elements, option);
   }
 }
 
 export function hide (elements) {
-  this.forEach(elements, (element) => {
+  Core.forEach(elements, (element) => {
     if (!element.style) return;
 
     element.style.display = 'none';
@@ -146,7 +146,7 @@ export function hide (elements) {
 }
 
 export function show (elements) {
-  this.forEach(elements, (element) => {
+  Core.forEach(elements, (element) => {
     if (!element.style) return;
 
     element.style.display = '';
@@ -154,13 +154,13 @@ export function show (elements) {
 }
 
 export function getHeight (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
 
   return element && parseInt(getComputedStyle(element).height, 10);
 }
 
 export function setHeight (elements, height) {
-  this.forEach(elements, (element) => {
+  Core.forEach(elements, (element) => {
     if (typeof height == 'number') height += 'px';
 
     element.style.height = height;
@@ -169,21 +169,21 @@ export function setHeight (elements, height) {
 
 export function height (elements, height) {
   if (typeof height != 'undefined') {
-    this.setHeight(elements, height);
+    setHeight(elements, height);
   }
   else {
-    return this.getHeight(elements);
+    return getHeight(elements);
   }
 }
 
 export function getWidth (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
 
   return element && parseInt(getComputedStyle(element).width, 10);
 }
 
 export function setWidth (elements, width) {
-  this.forEach(elements, (element) => {
+  Core.forEach(elements, (element) => {
     if (typeof width == 'number') width += 'px';
 
     element.style.width = width;
@@ -192,33 +192,33 @@ export function setWidth (elements, width) {
 
 export function width (elements, width) {
   if (typeof width != 'undefined') {
-    this.setWidth(elements, width);
+    setWidth(elements, width);
   }
   else {
-    return this.getWidth(elements);
+    return getWidth(elements);
   }
 }
 
 export function getSize (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
 
   return element && {
-    width: this.getWidth(element),
-    height: this.getHeight(element)
+    width: getWidth(element),
+    height: getHeight(element)
   };
 }
 
 export function setSize (elements, width, height) {
-  this.setWidth(elements, width);
-  this.setHeight(elements, height);
+  setWidth(elements, width);
+  setHeight(elements, height);
 }
 
 export function size (elements, width, height) {
   if (typeof width != 'undefined' && typeof height != 'undefined') {
-    this.setSize(elements, width, height);
+    setSize(elements, width, height);
   }
   else {
-    return this.getSize(elements);
+    return getSize(elements);
   }
 }
 
@@ -250,7 +250,7 @@ export function transform (elements, options) {
     }
 
     let value = 'matrix3d('+matrix.join(',')+')';
-    this.forEach(elements, (element) => {
+    Core.forEach(elements, (element) => {
         if (!element.style) return;
 
         element.style['-ms-transform'] =
@@ -262,7 +262,7 @@ export function transform (elements, options) {
 }
 
 export function offset (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
   if (!element) return;
 
   let rect = element.getBoundingClientRect()
@@ -274,16 +274,16 @@ export function offset (element) {
 }
 
 export function position (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
 
   return element && {
-    left: element.offsetLeft,
-    top: element.offsetTop
+    top: element.offsetTop,
+    left: element.offsetLeft
   };
 }
 
 export function screenPosition (element) {
-  if (typeof element == 'string') element = this.get(element);
+  if (typeof element == 'string') element = Core.get(element);
   if (!element) return;
 
   let rect = element.getBoundingClientRect()
