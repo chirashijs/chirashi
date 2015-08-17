@@ -27,7 +27,7 @@ export function ready (callback) {
 }
 
 export function load (elements, eachCallback, allCallback) {
-  elements = Core.getAll(elements);
+  if (typeof elements == 'string') elements = Core.getAll(elements);
 
   let n = {
     value: elements.length
