@@ -1,4 +1,4 @@
-import deepClone from './deepClone'
+import { deepClone } from './deepClone'
 
 export function defaultify (options, defaults) {
   let keys = Object.keys(defaults),

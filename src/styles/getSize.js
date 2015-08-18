@@ -1,6 +1,6 @@
-import get from '../core/get';
-import getWidth from './getWidth';
-import getHeight from './getHeight';
+import { get } from '../core';
+import { getWidth } from './getWidth';
+import { getHeight } from './getHeight';
 
 export function getSize (element) {
   if (typeof element == 'string') element = get(element);

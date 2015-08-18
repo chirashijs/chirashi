@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function setData (elements, attributes) {
   let attributesName = Object.keys(attributes);

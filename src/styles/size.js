@@ -1,5 +1,5 @@
-import setSize from './setSize';
-import getSize from './getSize';
+import { setSize } from './setSize';
+import { getSize } from './getSize';
 
 export function size (elements, width, height) {
   if (typeof width != 'undefined' && typeof height != 'undefined') {

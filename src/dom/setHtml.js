@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function setHtml (elements, string) {
   forEach(elements, (element) => {

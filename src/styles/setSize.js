@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function setSize (elements, width, height) {
   if (typeof width == 'number') width += 'px';

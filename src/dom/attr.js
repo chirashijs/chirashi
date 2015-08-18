@@ -1,5 +1,5 @@
-import setAttr from './setAttr';
-import getAttr from './getAttr';
+import { setAttr } from './setAttr';
+import { getAttr } from './getAttr';
 
 export function attr (elements, option) {
   if (typeof option == 'object') {

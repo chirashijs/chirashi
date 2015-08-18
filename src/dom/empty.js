@@ -1,4 +1,4 @@
-import setHtml from './setHtml';
+import { setHtml } from './setHtml';
 
 export function empty (elements) {
   setHtml(elements, '');

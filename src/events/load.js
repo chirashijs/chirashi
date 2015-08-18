@@ -1,6 +1,6 @@
-import forEach from '../core/forEach';
-import on from './on';
-import off from './off';
+import { forEach } from '../core';
+import { on } from './on';
+import { off } from './off';
 
 export function load (elements, eachCallback, allCallback) {
   if (typeof elements == 'string') elements = Core.getAll(elements);

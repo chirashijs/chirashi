@@ -1,4 +1,4 @@
-import getAll from './getAll';
+import { getAll } from './getAll';
 
 export function forEach (elements, callback) {
   if (typeof elements == 'string') elements = getAll(elements);

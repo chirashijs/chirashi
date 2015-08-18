@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function removeAttr (elements, name) {
   forEach(elements, (element) => {

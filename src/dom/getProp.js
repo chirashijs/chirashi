@@ -1,4 +1,4 @@
-import get from '../core/get';
+import { get } from '../core';
 
 export function getProp (element, name) {
   if (typeof element == 'string') element = get(element);

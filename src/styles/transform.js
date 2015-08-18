@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 function applyPropertyToMatrix (property, value, matrix) {
   switch (property) {

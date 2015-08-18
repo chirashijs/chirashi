@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function setProp (elements, props) {
   let propsName = Object.keys(props);

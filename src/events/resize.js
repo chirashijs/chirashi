@@ -1,4 +1,4 @@
-import on from './on';
+import { on } from './on';
 
 export function resize (callback) {
   on(window, 'resize', () => {

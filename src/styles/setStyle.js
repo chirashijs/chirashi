@@ -1,19 +1,17 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
-if (!unitLessAttributes) {
-  var unitLessAttributes = [
-    'z-index',
-    'font-weight',
-    'line-height',
-    'counter-reset',
-    'counter-increment',
-    'volume',
-    'stress',
-    'pitch-range',
-    'richness',
-    'opacity'
-  ];
-}
+var unitLessAttributes = [
+  'z-index',
+  'font-weight',
+  'line-height',
+  'counter-reset',
+  'counter-increment',
+  'volume',
+  'stress',
+  'pitch-range',
+  'richness',
+  'opacity'
+];
 
 export function setStyle (elements, values) {
   let properties = Object.keys(values);

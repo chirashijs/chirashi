@@ -1,4 +1,4 @@
-import forEach from '../core/forEach';
+import { forEach } from '../core';
 
 export function hide (elements) {
   forEach(elements, (element) => {

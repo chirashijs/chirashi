@@ -1,5 +1,5 @@
-import setStyle from './setStyle';
-import getStyle from './getStyle';
+import { setStyle } from './setStyle';
+import { getStyle } from './getStyle';
 
 export function style (elements, option) {
   if (typeof option == 'object') {

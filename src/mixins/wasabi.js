@@ -1,7 +1,8 @@
-import * as Core from './core';
-import { data } from './dom';
-import { position, height, transform } from './styles';
-import { resize, scroll } from './events';
+import { get, forEach } from '../core';
+import { data } from '../dom';
+import { position, height, transform } from '../styles';
+import { resize, scroll } from '../events';
+import { defaultify } from './defaultify';
 
 //Scroll manager
 export class Wasabi {
@@ -38,7 +39,7 @@ export class Wasabi {
 
       if (typeof zoneConfig.zone == 'string') {
         zone.name = zoneConfig.zone;
-        let element = Core.get(zoneConfig.zone);
+        let element = get(zoneConfig.zone);
         top = position(element).top;
         bottom = top + height(element);
       }
@@ -142,7 +143,7 @@ export class Wasabi {
 
       if (zone.entered) {
         if (zone.name) {
-          Core.forEach(zone.name + ' [data-wasabi]', (element) => {
+          forEach(zone.name + ' [data-wasabi]', (element) => {
             let options = eval('('+data(element, 'wasabi')+')');
 
             let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
