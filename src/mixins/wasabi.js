@@ -3,53 +3,6 @@ import { data } from './dom';
 import { position, height, transform } from './styles';
 import { resize, scroll } from './events';
 
-export function clone (object) {
-  if (object == null || typeof object !== 'object') return object;
-
-  let copy = object.constructor();
-  for (var attr in object) {
-    if (object.hasOwnProperty(attr)) copy[attr] = object[attr];
-  }
-
-  return copy;
-}
-
-export function defaultify (options, defaults) {
-  let keys = Object.keys(defaults),
-  newOptions = clone(options);
-
-  for (let i = keys.length-1; i >= 0; --i) {
-    let key = keys[i]
-
-    if(typeof options[key] === 'undefined')
-      newOptions[key] = defaults[key];
-  }
-
-  return newOptions;
-}
-
-export function scroll60fps() {
-    var scrolling = false,
-        body = document.body,
-        timer;
-
-    window.addEventListener('scroll', function() {
-      clearTimeout(timer);
-
-      if(!scrolling) {
-        scrolling = true;
-        body.classList.add('scrolling');
-        body.style['pointer-events'] = 'none';
-      }
-
-      timer = setTimeout(function(){
-        scrolling = false;
-        body.classList.remove('scrolling');
-        body.style['pointer-events'] = '';
-      }, 200);
-    }, false);
-}
-
 //Scroll manager
 export class Wasabi {
   constructor(config) {

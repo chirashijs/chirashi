@@ -1,10 +1,4 @@
-export function get (selector) {
-  return document.querySelector(selector);
-}
-
-export function getAll (selector) {
-  return [].slice.call(document.querySelectorAll(selector));
-}
+import getAll from './getAll';
 
 export function forEach (elements, callback) {
   if (typeof elements == 'string') elements = getAll(elements);
