@@ -39,7 +39,7 @@ export class Wasabi {
 
       if (typeof zoneConfig.zone == 'string') {
         zone.name = zoneConfig.zone;
-        let element = get(zoneConfig.zone);
+        let element = getSelector(zoneConfig.zone);
         top = position(element).top;
         bottom = top + height(element);
       }

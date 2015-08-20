@@ -3,7 +3,7 @@ import { on } from './on';
 import { off } from './off';
 
 export function load (elements, eachCallback, allCallback) {
-  if (typeof elements == 'string') elements = Core.getAll(elements);
+  if (typeof elements == 'string') elements = Core.getSelectorAll(elements);
 
   let n = {
     value: elements.length

@@ -1,7 +1,7 @@
-import { getAll } from './getAll';
+import { getSelectorAll } from './getSelectorAll';
 
 export function forEach (elements, callback) {
-  if (typeof elements == 'string') elements = getAll(elements);
+  if (typeof elements == 'string') elements = getSelectorAll(elements);
 
   if (!elements) return;
 

@@ -1,3 +1,3 @@
-export function getAll (selector) {
+export function getSelectorAll (selector) {
   return [].slice.call(document.querySelectorAll(selector));
 }

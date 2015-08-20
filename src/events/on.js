@@ -6,7 +6,7 @@ export function on (elements, events, callback) {
   forEach(elements, (element) => {
     if (!element.addEventListener) return;
 
-    for (let event of events)
-      element.addEventListener(event, callback);
+    let i = events.length
+    while(i--) element.addEventListener(event, callback);
   });
 }

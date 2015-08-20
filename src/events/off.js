@@ -6,7 +6,7 @@ export function off (elements, events, callback) {
   forEach(elements, (element) => {
     if (!element.removeEventListener) return;
 
-    for (let event of events)
-      element.removeEventListener(event, callback);
+    let i = events.length
+    while(i--) element.removeEventListener(event, callback);
   });
 }

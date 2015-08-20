@@ -1,7 +1,7 @@
-import { get } from '../core';
+import { getSelector } from '../core';
 
 export function hasClass (element, classes) {
-  if (typeof element == 'string') element = get(element);
+  if (typeof element == 'string') element = getSelector(element);
   if (!element || !element.classList) return;
 
   classes = classes.split(' ');
