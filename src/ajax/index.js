@@ -1,5 +1,5 @@
 export * from './ajax';
-export * from './delete';
+export * from './restDelete';
 export * from './get';
 export * from './getJSON';
 export * from './post';
