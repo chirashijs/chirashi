@@ -11,8 +11,9 @@ export function forEach (elements, callback) {
   }
   else {
     let i = elements.length;
-    while(i--)
-      if (isDomElement(element))
-        callback(elements[i]);
+    while(i--) {
+      let element = elements[i];
+      if (isDomElement(element)) callback(element);
+    }
   }
 }
