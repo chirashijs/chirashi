@@ -7,6 +7,6 @@ export function off (elements, events, callback) {
     if (!element.removeEventListener) return;
 
     let i = events.length
-    while(i--) element.removeEventListener(event, callback);
+    while(i--) element.removeEventListener(events[i], callback);
   });
 }
