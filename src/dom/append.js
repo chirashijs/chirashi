@@ -1,4 +1,5 @@
 import { forEach } from '../core';
+import { createElement } from './createElement';
 
 export function append (elements, node) {
   if (typeof node == 'string') node = createElement(node);
