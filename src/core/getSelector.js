@@ -1,3 +1,3 @@
-export function get (selector) {
+export function getSelector (selector) {
   return document.querySelector(selector);
 }

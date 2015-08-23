@@ -1,8 +1,7 @@
 import { forEach } from '../core';
 import { on } from './on';
-import { off } from './off';
 
-export function hover (elements, enter, leave) {
+export function bindHover (elements, enter, leave) {
   forEach(elements, (element) => {
     if (enter) on(element, 'mouseenter', enter);
     if (leave) on(element, 'mouseleave', leave);

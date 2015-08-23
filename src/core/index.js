@@ -1,3 +1,4 @@
 export * from './forEach';
-export * from './get';
+export * from './getSelector';
 export * from './getSelectorAll';
+export * from './isDomElement';

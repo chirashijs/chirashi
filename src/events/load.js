@@ -16,7 +16,7 @@ export function load (elements, eachCallback, allCallback) {
 
     if (eachCallback) eachCallback.apply(element);
 
-    if (!(--n.value)) allCallback();
+    if (!(--n.value) && allCallback) allCallback();
   };
 
   forEach(elements, (element) => {
