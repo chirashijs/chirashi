@@ -1,9 +1,9 @@
-import { forEach } from '../core';
+import { forEach, getSelectorAll } from '../core';
 import { on } from './on';
 import { off } from './off';
 
 export function load (elements, eachCallback, allCallback) {
-  if (typeof elements == 'string') elements = Core.getSelectorAll(elements);
+  if (typeof elements == 'string') elements = getSelectorAll(elements);
 
   let n = {
     value: elements.length
