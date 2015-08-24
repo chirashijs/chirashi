@@ -44,12 +44,6 @@ export class Wasabi {
     this.currentZone = this.zones[0];
 
     resize(this.update.bind(this));
-
-    // let i = this.zones.length,
-    //     images;
-    // while (i--) {
-    //   load(find(this.zones[i].selector, 'img'), this.update.bind(this));
-    // }
   }
 
   update() {
@@ -117,6 +111,11 @@ export class Wasabi {
       if (zoneConfig.tween) {
         zone.tween = zoneConfig.tween;
         if (zone.tween.pause) zone.tween.pause();
+      }
+
+      if (zoneConfig.progressTween) {
+        zone.progressTween = zoneConfig.progressTween;
+        if (zone.progressTween.pause) zone.progressTween.pause();
       }
 
       let handles = {};
@@ -243,9 +242,16 @@ export class Wasabi {
       progress = (this.scrollTop - zone[direction+'Top'])/zone[direction+'Size'];
       entered = progress >= 0 && progress <= 1;
 
-      if (zone.handler) {
-        if (!zone.entered && entered) zone.handler(direction, 'enter', zone.selector);
-        else if (zone.entered && !entered) zone.handler(direction, 'leave', zone.selector);
+      if (!zone.entered && entered) {
+        if (zone.tween) zone.tween.resume();
+        if(zone.handler) zone.handler(direction, 'enter', zone.selector);
+      }
+      else if (zone.entered && !entered) {
+        if (zone.tween) {
+          zone.tween.pause();
+          zone.tween.seek(0);
+        }
+        if(zone.handler) zone.handler(direction, 'leave', zone.selector);
       }
 
       zone.entered = entered;
@@ -271,7 +277,7 @@ export class Wasabi {
         }
 
         if (zone.progress) zone.progress(direction, progress, zone.selector);
-        if (zone.tween && zone.tween.progress) zone.tween.progress(progress);
+        if (zone.progressTween && zone.progressTween.progress) zone.progressTween.progress(progress);
       }
     }
   }
