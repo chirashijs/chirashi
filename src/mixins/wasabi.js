@@ -231,6 +231,10 @@ export class Wasabi {
       transform(this.wrapper, {
         y: -newScrollTop
       });
+
+      transform(this.config.snap.fixed, {
+        y: newScrollTop
+      });
     }
 
     while (i--) {
