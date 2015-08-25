@@ -1,4 +1,4 @@
-export function scroll60fps() {
+(function () {
     var scrolling = false,
         body = document.body,
         timer;
@@ -21,4 +21,4 @@ export function scroll60fps() {
         body.classList.remove('scrolling');
       }, 200);
     }, false);
-}
+})();
