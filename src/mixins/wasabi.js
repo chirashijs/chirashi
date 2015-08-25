@@ -1,9 +1,10 @@
 import { getSelector, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, position, height, transform } from '../styles';
-import { resize, scroll, load } from '../events';
+import { resize, load } from '../events';
 import { defaultify } from './defaultify';
 import { Quad } from '../easings';
+import { VirtualScroll } from './VirtualScroll';
 
 //Scroll manager
 export class Wasabi {
@@ -11,6 +12,7 @@ export class Wasabi {
     let defaults = {
       debug: false,
       offset: 0,
+      ease: 0.2,
       handle: {
         top: 'top',
         bottom: 'bottom'
@@ -24,7 +26,9 @@ export class Wasabi {
       append(document.body, this.debugWrapper);
     }
 
-    this.scrollTop = 0;
+    this.scrollTarget = this.scrollTop = 0;
+    this.disableScroll = false;
+    this.ease = this.config.ease;
 
     if (this.config.snap) {
       this.wrapper = getSelector(this.config.snap.wrapper);
@@ -38,15 +42,17 @@ export class Wasabi {
       })
     }
 
-    scroll(this.scrolling.bind(this));
+    VirtualScroll.on(this.scrolling.bind(this));
 
-    this.update();
+    this.refresh();
     this.currentZone = this.zones[0];
 
-    resize(this.update.bind(this));
+    resize(this.refresh.bind(this));
+
+    this.update();
   }
 
-  update() {
+  refresh() {
     this.zones = [];
 
     this.windowHeight = window.innerHeight;
@@ -183,57 +189,56 @@ export class Wasabi {
     });
   }
 
-  scrolling(scroll, position) {
+  scrolling(event) {
     if (this.disableScroll) return;
 
-    let newScrollTop;
+    this.scrollTarget = this.scrollTop - event.deltaY;
     if (this.config.snap) {
-      newScrollTop = this.scrollTop - scroll.top;
-      this.scrollTop > newScrollTop ? 'forward' : 'backward'
+      this.scrollTop > this.scrollTarget ? 'forward' : 'backward'
 
-      // let currentZone = this.zones[this.currentZone-1];
       let previous = this.zones[this.currentZoneIndex-1],
           next = this.zones[this.currentZoneIndex+1];
-      if (previous && newScrollTop < this.currentZone.top) {
-        newScrollTop < this.currentZone.top
-        this.scrollTo(previous.bottom-this.windowHeight);
+      if (previous && this.scrollTarget < this.currentZone.top) {
+        this.disableScroll = true;
+        this.ease = 0.09;
+        this.scrollTarget = previous.bottom-this.windowHeight-1;
       }
-      else if (newScrollTop < 0) {
-        newScrollTop = 0;
+      else if (this.scrollTarget < 0) {
+        this.scrollTarget = 0;
       }
-      else if (next && newScrollTop > this.currentZone.bottom - this.windowHeight) {
-        newScrollTop = this.currentZone.bottom-this.windowHeight;
-        this.scrollTo(next.top);
+      else if (next && this.scrollTarget > this.currentZone.bottom - this.windowHeight) {
+        this.disableScroll = true;
+        this.ease = 0.09;
+        this.scrollTarget = next.top+1;
       }
-      else if (newScrollTop > this.wrapperHeight - this.windowHeight) {
-        newScrollTop = this.wrapperHeight - this.windowHeight;
+      else if (this.scrollTarget > this.wrapperHeight - this.windowHeight) {
+        this.scrollTarget = this.wrapperHeight - this.windowHeight;
       }
     }
-    else {
-      newScrollTop = position.top;
-    }
-
-    this.scrollUpdate(newScrollTop);
   }
 
-  scrollUpdate(newScrollTop) {
+  update() {
     let i = this.zones.length,
-        direction = this.scrollTop > newScrollTop ? 'forward' : 'backward';
-    this.scrollTop = newScrollTop;
+        direction = this.scrollTop > this.scrollTarget ? 'forward' : 'backward';
+
+    if (this.config.snap) {
+      this.scrollTop += (this.scrollTarget - this.scrollTop) * this.ease;
+
+      transform(this.wrapper, {
+        y: -this.scrollTop
+      });
+
+      transform(this.config.snap.fixed, {
+        y: this.scrollTop
+      });
+    }
+    else {
+      this.scrollTop = this.scrollTarget;
+    }
 
     if (this.config.debug) {
       transform('.wasabi-marker', {
         y: -this.scrollTop
-      });
-    }
-
-    if (this.config.snap) {
-      transform(this.wrapper, {
-        y: -newScrollTop
-      });
-
-      transform(this.config.snap.fixed, {
-        y: newScrollTop
       });
     }
 
@@ -252,7 +257,6 @@ export class Wasabi {
       }
 
       zone.entered = entered;
-
       if (zone.entered) {
         if (i != this.currentZoneIndex) {
           let previous = this.zones[this.currentZoneIndex];
@@ -285,26 +289,12 @@ export class Wasabi {
         if (zone.progressTween && zone.progressTween.progress) zone.progressTween.progress(progress);
       }
     }
-  }
 
-  scrollTo(top, callback) {
-    this.disableScroll = true;
+    if (this.disableScroll && Math.abs(this.scrollTarget - this.scrollTop) < 1) {
+      this.disableScroll = false;
+      this.ease = this.config.ease;
+    }
 
-    let frame = 0;
-    const begin = this.scrollTop,
-      change = top - begin,
-      frameUpdate = () => {
-        this.scrollUpdate(Quad.easeInOut(frame++, begin, change, 50));
-
-        if (frame <= 50)
-          requestAnimationFrame(frameUpdate);
-        else {
-          this.disableScroll = false;
-
-          if (callback) callback();
-        }
-      };
-
-    frameUpdate();
+    requestAnimationFrame(this.update.bind(this));
   }
 }
