@@ -1,5 +1,5 @@
 import { getSelector, forEach } from '../core';
-import { data, find, createElement, append, clone } from '../dom';
+import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, position, height, transform } from '../styles';
 import { resize, scroll, load } from '../events';
 import { defaultify } from './defaultify';
@@ -78,6 +78,7 @@ export class Wasabi {
       zone.bottom = bottom + (offset.bottom || offset);
 
       if (this.config.debug) {
+        remove('#wasabi-debug .wasabi-marker');
         let topDebug = createElement(`<div class="wasabi-marker"></div>`);
         append(this.debugWrapper, topDebug);
         style(topDebug, {
@@ -247,18 +248,22 @@ export class Wasabi {
         if(zone.handler) zone.handler(direction, 'enter', zone.selector);
       }
       else if (zone.entered && !entered) {
-        if (zone.tween) {
-          zone.tween.pause();
-          zone.tween.seek(0);
-        }
         if(zone.handler) zone.handler(direction, 'leave', zone.selector);
       }
 
       zone.entered = entered;
 
       if (zone.entered) {
-        this.currentZone = zone;
-        this.currentZoneIndex = i;
+        if (i != this.currentZoneIndex) {
+          let previous = this.zones[this.currentZoneIndex];
+          if (previous && previous.tween) {
+            previous.tween.pause();
+            previous.tween.seek(0);
+          }
+
+          this.currentZone = zone;
+          this.currentZoneIndex = i;
+        }
 
         if (zone.selector) {
           forEach(zone.selector + ' [data-wasabi]', (element) => {
@@ -282,7 +287,7 @@ export class Wasabi {
     }
   }
 
-  scrollTo(top) {
+  scrollTo(top, callback) {
     this.disableScroll = true;
 
     let frame = 0;
@@ -293,8 +298,11 @@ export class Wasabi {
 
         if (frame <= 50)
           requestAnimationFrame(frameUpdate);
-        else
+        else {
           this.disableScroll = false;
+
+          if (callback) callback();
+        }
       };
 
     frameUpdate();
