@@ -1,7 +1,7 @@
 import { on } from './on';
 
-export function scroll (callback) {
-  on(window, 'mousewheel DOMMouseScroll', (event) => {
+export function scroll (userCallback) {
+  let callback = (event) => {
     let deltaY;
 
     if (typeof event.deltaY !== 'undefined') {
@@ -14,11 +14,15 @@ export function scroll (callback) {
       deltaY = -event.detail;
     }
 
-    callback({
+    userCallback({
       top: deltaY
     }, {
       top: window.pageYOffset || document.documentElement.scrollTop,
       left: window.pageXOffset || document.documentElement.scrollLeft
     });
-  });
+  };
+
+  on(window, 'scroll mousewheel DOMMouseScroll', callback);
+
+  return callback;
 }

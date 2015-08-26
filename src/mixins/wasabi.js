@@ -1,9 +1,8 @@
 import { getSelector, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
-import { style, position, height, transform } from '../styles';
-import { resize, load } from '../events';
+import { style, screenPosition, height, transform } from '../styles';
+import { resize, unresize } from '../events';
 import { defaultify } from './defaultify';
-import { Quad } from '../easings';
 import { VirtualScroll } from './VirtualScroll';
 
 let defaults = {
@@ -42,18 +41,22 @@ export class Wasabi {
       }
 
       this.scrollTarget = this.scrollTop = 0;
-      VirtualScroll.on(this.onVirtualScroll.bind(this));
+      this.virtualScrollCallback = this.onVirtualScroll.bind(this);
+      VirtualScroll.on(this.virtualScrollCallback);
     }
     else {
       this.scroller = this.config.scroller;
-      if (this.config.snap) this.scroller.on(this.onScroller.bind(this));
+      if (this.config.snap) {
+        this.scrollerCallback = this.onScroller.bind(this);
+        this.scroller.on(this.scrollerCallback);
+      }
     }
 
     this.refresh();
     this.currentZone = this.zones[0];
     this.scrollTop = this.previousScrollTop = 0;
 
-    resize(this.refresh.bind(this));
+    this.resizeCallback = resize(this.refresh.bind(this));
 
     this.update();
   }
@@ -76,7 +79,7 @@ export class Wasabi {
       if (typeof zoneConfig.selector == 'string') {
         zone.selector = zoneConfig.selector;
         let element = getSelector(zoneConfig.selector);
-        top = position(element).top;
+        top = screenPosition(element).top;
         bottom = top + height(element);
       }
       else {
@@ -242,12 +245,6 @@ export class Wasabi {
       zone.entered = entered;
       if (zone.entered) {
         if (i != this.currentZoneIndex) {
-          let previous = this.zones[this.currentZoneIndex];
-          if (previous && previous.tween) {
-            previous.tween.pause();
-            previous.tween.seek(0);
-          }
-
           this.currentZone = zone;
           this.currentZoneIndex = i;
         }
@@ -275,6 +272,51 @@ export class Wasabi {
 
     this.previousScrollTop = this.scrollTop;
 
-    requestAnimationFrame(this.update.bind(this));
+    this.updateRequest = requestAnimationFrame(this.update.bind(this));
+  }
+
+  kill() {
+    remove(this.debugWrapper);
+
+    if (this.virtualScrollCallback) {
+      VirtualScroll.off(this.virtualScrollCallback);
+    }
+    else if (this.scrollerCallback) {
+      this.scroller.off(this.scrollerCallback);
+    }
+
+    let i = this.zones.length;
+    while(i--) {
+      let zone = this.zones[i];
+
+      if (zone.tween) {
+        zone.tween.kill();
+        this.clearPropsForTimeline(zone.tween);
+      }
+      if (zone.progressTween) {
+        zone.progressTween.kill();
+        this.clearPropsForTimeline(zone.progressTween);
+      }
+    }
+
+    unresize(this.resizeCallback);
+
+    cancelAnimationFrame(this.updateRequest);
+  }
+
+  clearPropsForTimeline(timeline) {
+    let target = timeline.target;
+
+    if (target) {
+      timeline.timeline.set(target, {
+        clearProps: 'all'
+      });
+    }
+    else {
+      let children = timeline.getChildren(),
+          i = children.length;
+
+      while(i--) this.clearPropsForTimeline(children[i])
+    }
   }
 }
