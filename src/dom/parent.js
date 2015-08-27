@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function parent (element, selector) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
 
   return element && element.parentNode;
 }

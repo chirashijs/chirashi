@@ -1,7 +1,7 @@
 import { getSelector } from '../core';
 import { find } from '../dom';
-import { width } from '../styles';
-import { resize } from '../events';
+import { width, height, style, transform, screenPosition } from '../styles';
+import { resize, load } from '../events';
 import { defaultify } from './defaultify';
 
 let defaults = {
@@ -18,17 +18,21 @@ export class Slider {
     this.refresh();
     this.resize();
     this.onResize = this.resize.bind(this);
-    resize(this.onResize);
+
+    this.slideTo = this.config.infinite ? this.infiniteSlide : this.classicSlide;
+    this.current = 0;
+
+    load(find(this.wrapper, 'img'), null, this.onResize);
   }
 
   refresh() {
     this.container = getSelector(this.config.container);
     this.wrapper = find(this.container, this.config.wrapper);
     this.slides = find(this.container, this.config.slides);
+    this.nbSlide = this.slides.length;
   }
 
   resize() {
-    this.nbSlide = this.slides.length;
     this.containerWidth = width(this.container);
 
     if (this.config.slideWidth.indexOf('%'))
@@ -38,10 +42,48 @@ export class Slider {
 
     width(this.slides, this.slideWidth);
     width(this.wrapper, this.slideWidth * this.nbSlide);
+
+    if (!height(this.wrapper)) height(this.wrapper, height(this.slides));
   }
 
-  slideTo(target) {
-    
+  animationCallback () {
+      this.current = this.target;
+  }
+
+  infiniteSlide(target) {
+        this.target = target % this.nbSlide;
+
+        let middle = ~~(this.nbSlide/2), backward, slidesToMove;
+        this.delta = this.target;
+
+        if (backward = this.target > middle) this.delta -= - this.nbSlide;
+        this.delta *= this.slideWidth;
+
+        if (backward) {
+            let currentX = screenPosition(this.container).right;
+
+            slidesToMove = this.slides.filter((slide) => {
+                return screenPosition(slide).right > currentX;
+            });
+        }
+        else {
+            let currentX = screenPosition(this.container).left;
+
+            slidesToMove = this.slides.filter((slide) => {
+                return screenPosition(slide).left < currentX;
+            });
+        }
+
+        this.config.animationTween(this, !backward, slidesToMove, this.animationCallback.bind(this));
+  }
+
+  classicSlide(target) {
+      if (target < 0 || target >= this.nbSlides) return;
+
+      this.target = target;
+      this.delta = -slider.target * slider.slideWidth;
+
+      this.config.animationTween(this, this.animationCallback.bind(this));
   }
 
   on(callback) {

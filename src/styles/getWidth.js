@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function getWidth (element) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
 
   return element && element.offsetWidth;
 }

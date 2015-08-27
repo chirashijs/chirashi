@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function indexInParent (element) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
   if (!element) return;
 
   let currentElement = element,

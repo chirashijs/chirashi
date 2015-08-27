@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function find (element, selector) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
 
   return element && [].slice.call(element.querySelectorAll(selector));
 }

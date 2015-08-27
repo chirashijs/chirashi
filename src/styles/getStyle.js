@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function getStyle (element, property) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
   if (!element) return;
 
   let ret = getComputedStyle(element)[property];
