@@ -2,7 +2,7 @@ import { getSelector, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, screenPosition, height, transform } from '../styles';
 import { resize, unresize } from '../events';
-import { defaultify } from './defaultify';
+import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
 
 let defaults = {
@@ -20,12 +20,14 @@ export class Wasabi {
   constructor(config) {
     this.config = defaultify(config, defaults);
 
+    this.wrapper = this.scroller ? this.scroller.wrapper : document.body;
+
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
       style(this.debugWrapper, {
         'z-index': 9999,
         width: 25,
-        height: this.wrapper ? height(this.wrapper) : height(document.body),
+        height: height(this.wrapper),
         position: 'absolute',
         top: 0,
         right: 0
@@ -46,9 +48,12 @@ export class Wasabi {
     }
     else {
       this.scroller = this.config.scroller;
+      this.scrollerCallback = this.onScroller.bind(this);
+      this.scroller.on(this.scrollerCallback);
+
       if (this.config.snap) {
-        this.scrollerCallback = this.onScroller.bind(this);
-        this.scroller.on(this.scrollerCallback);
+        this.snapingCallback = this.testSnapping.bind(this);
+        this.scroller.on(this.snapingCallback);
       }
     }
 
@@ -198,7 +203,7 @@ export class Wasabi {
     });
   }
 
-  onScroller(scrollTarget) {
+  testSnapping(scrollTarget) {
     let previous = this.zones[this.currentZoneIndex-1],
         next = this.zones[this.currentZoneIndex+1];
 
@@ -218,8 +223,14 @@ export class Wasabi {
     }
   }
 
+  onScroller(scrollTarget) {
+    this.updateRequest = requestAnimationFrame(this.update.bind(this));
+  }
+
   onVirtualScroll(event) {
-    this.scrollTop += event.deltaY;
+    this.scrollTop = -screenPosition(this.wrapper).top;
+
+    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   update() {
@@ -271,8 +282,6 @@ export class Wasabi {
     }
 
     this.previousScrollTop = this.scrollTop;
-
-    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   kill() {
@@ -283,6 +292,8 @@ export class Wasabi {
     }
     else if (this.scrollerCallback) {
       this.scroller.off(this.scrollerCallback);
+
+      if (this.snapingCallback) this.scroller.off(this.snapingCallback);
     }
 
     let i = this.zones.length;

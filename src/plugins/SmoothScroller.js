@@ -1,8 +1,8 @@
 import { getSelector } from '../core';
 import { style, height, width, transform } from '../styles';
+import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
-import { defaultify } from './defaultify';
-import './scroll60fps';
+import '../utils/scroll60fps';
 
 let defaults = {
   ease: 0.2,
