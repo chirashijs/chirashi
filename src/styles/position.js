@@ -1,4 +1,4 @@
-element = getElement(element);
+import { getElement } from '../core';
 
 export function position (element) {
   element = getElement(element);
