@@ -71,17 +71,9 @@ export class Slider {
   }
 
   slideTo(target) {
+    if (!this.config.infinite && (target < 0 || target >= this.nbSlide)) return;
+
     this.target = target % this.nbSlide;
-
-    this.animating = !this.touchOrig;
-
-    return this.config.animationTween(this, this.animationCallback.bind(this));
-  }
-
-  classicSlide(target) {
-    if (target < 0 || target >= this.nbSlide) return;
-
-    this.target = target;
 
     this.animating = !this.touchOrig;
 
