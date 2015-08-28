@@ -7,5 +7,5 @@ export function closest (element, selector) {
     ? null
     : (element.matches(selector)
       ? element
-      : parent(element.parentNode, selector)));
+      : closest(element.parentNode, selector)));
 }
