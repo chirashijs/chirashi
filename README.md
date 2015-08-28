@@ -4,7 +4,7 @@
 
 ### Prerequisites
 
-To use Chirashi, you need work with Webpack or Browserify and Babel (running on node_modules).
+To use Chirashi, you need to work with Webpack or Browserify and Babel (running on node_modules).
 
 ### Installation
 
