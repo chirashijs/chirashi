@@ -1,4 +1,4 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 import { style, height, width, transform } from '../styles';
 import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
@@ -18,7 +18,7 @@ export class SmoothScroller {
 
     this.config = defaultify(config, defaults);
 
-    this.wrapper = getSelector(this.config.wrapper);
+    this.wrapper = getElement(this.config.wrapper);
     style('html, body', {
       width: '100%',
       height: '100%',

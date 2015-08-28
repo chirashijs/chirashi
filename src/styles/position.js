@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+element = getElement(element);
 
 export function position (element) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
 
   return element && {
     top: element.offsetTop,

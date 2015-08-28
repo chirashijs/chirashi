@@ -1,7 +1,7 @@
-import { getSelector } from '../core';
+import { getElement } from '../core';
 
 export function offset (element) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element);
   if (!element) return;
 
   let rect = element.getBoundingClientRect()

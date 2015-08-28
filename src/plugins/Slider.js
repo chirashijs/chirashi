@@ -1,4 +1,4 @@
-import { forEach, getSelector } from '../core';
+import { forEach, getElement } from '../core';
 import { find } from '../dom';
 import { width, height, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
@@ -34,7 +34,7 @@ export class Slider {
   }
 
   refresh() {
-    this.container = getSelector(this.config.container);
+    this.container = getElement(this.config.container);
     this.wrapper = find(this.container, this.config.wrapper);
     this.slides = find(this.container, this.config.slides);
     this.nbSlide = this.slides.length;
