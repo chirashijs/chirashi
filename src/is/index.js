@@ -9,4 +9,4 @@ export * from './ipod';
 export * from './iphone';
 export * from './ios';
 export * from './android';
-export * from './wider';
+export * from './larger';

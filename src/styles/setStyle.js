@@ -13,16 +13,16 @@ var unitLessAttributes = [
   'opacity'
 ];
 
-export function setStyle (elements, values) {
-  let properties = Object.keys(values);
+export function setStyle (elements, options) {
+  let properties = Object.keys(options);
 
   let i = properties.length, property, value;
   while(i--) {
       property = properties[i];
-      value = values[property];
+      value = options[property];
 
       if (typeof value == 'number' && unitLessAttributes.indexOf(property) == -1)
-        values[property] += 'px';
+        options[property] += 'px';
   }
 
   forEach(elements, (element) => {
@@ -31,7 +31,7 @@ export function setStyle (elements, values) {
     let i = properties.length, property, value;
     while(i--) {
       property = properties[i];
-      element.style[property] = values[property];
+      element.style[property] = options[property];
     }
   });
 }

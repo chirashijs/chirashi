@@ -2,7 +2,7 @@ import { getElement } from '../core';
 import { style, height, width, transform } from '../styles';
 import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
-import '../utils/scroll60fps';
+import './scroll60fps';
 
 let defaults = {
   ease: 0.2,

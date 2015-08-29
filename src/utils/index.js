@@ -1,1 +1,1 @@
-export * from './deepClone';export * from './defaultify';export * from './scroll60fps';
+export * from './deepClone';export * from './defaultify';

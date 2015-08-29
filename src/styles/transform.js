@@ -83,8 +83,8 @@ function applyPropertyToMatrix (property, value, matrix) {
   }
 }
 
-export function transform (elements, options) {
-    let properties = Object.keys(options),
+export function transform (elements, transformation) {
+    let properties = Object.keys(transformation),
         i = properties.length,
         matrix = [
             1, 0, 0, 0,
@@ -94,7 +94,7 @@ export function transform (elements, options) {
         ];
     while(i--) {
         let property = properties[i],
-            value = options[property];
+            value = transformation[property];
 
         if (typeof value == 'object') {
             let subProperties = Object.keys(value),

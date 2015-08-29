@@ -5,6 +5,8 @@ export function setSize (elements, width, height) {
   if (typeof height == 'number') height += 'px';
 
   forEach(elements, (element) => {
+    if (!element.style) return;
+    
     element.style.width = width;
     element.style.height = height;
   });

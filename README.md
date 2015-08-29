@@ -1,4 +1,4 @@
-# Chirashi - WIP
+# Chirashi
 
 ## Getting Started
 
@@ -39,6 +39,8 @@ chirashi.ready(() => {
   chirashi.append(document.body, '<h1>Hello World!</h1>');
 });
 ```
+
+## What's included ?
 
 ### Functions
 
@@ -124,6 +126,8 @@ chirashi.ready(() => {
 
 * `off (elements, events, callback)`: unbind events from `on`.
 
+* `trigger (elements, events)`: trigger all `events` passed as string on each element of `elements`.
+
 * `hover (elements, enter, leave)`: call `enter` when mouse enter an element of `elements` and `leave` when mouse leave.
 
 * `unhover (elements, enter, leave)`: unbind events from `hover`.
@@ -134,4 +138,84 @@ chirashi.ready(() => {
 
 * `unresize (callback)`: unbind resize callback.
 
+* `scroll (callback)`: call `callback` with an argument featuring top and left on scroll. Return the real callback for unbind.
+
+* `unscroll (callback)`: unbind scroll callback.
+
 * `ready (callback)`: call `callback` when DOM is ready.
+
+#### Styles
+
+* `getHeight (element)`: return `element`'s offset height.
+
+* `setHeight (elements, height)`: set `height` for all `elements`.
+
+* `height (elements, height)`: call `setHeight` if argument `height` is defined, else call `getHeight`.
+
+* `getWidth (element)`: return `element`'s offset height.
+
+* `setWidth (elements, width)`: set `width` for all `elements`.
+
+* `width (elements, width)`: call `setWidth` if argument `width` is defined, else call `getWidth`.
+
+* `getSize (element)`: return `element`'s width and height in an object.
+
+* `setSize (elements, width, height)`: set `width` and `height` for all `elements`.
+
+* `size (elements, width, height)`: call `setSize` if arguments `width` and `height` are defined, else call `getSize`.
+
+* `getStyle (element, property)`: return `element`'s value for CSS `property`.
+
+* `setStyle (elements, options)`: set CSS properties from `options` keys as respective values for each element of `elements`.
+
+* `style (elements, option)`: call `setStyle` if argument `option` is an object or `getStyle` if argument `option` is a string.
+
+* `hide (elements)`: set display property as none for each element of `elements`.
+
+* `show (elements)`: unset inline display property for each element of `elements`.
+
+* `offset (element)`: return top and left offsets of `element` as object.
+
+* `position (element)`: return `element`'s position relative to its parent as object.
+
+* `screenPosition (element)`: return `element`'s position relative to the screen as object.
+
+* `transform (elements, transformation)`: apply a 3D matrix on each element of `elements` for `transformation` described as object. Support: x, y, z, rotate (2D rotation in radiant), rotateX, rotateY, rotateZ, scale, scaleX, scaleY, scaleZ, skew, skewX and skewY.
+Each propertyAXIS value can be declared as:
+```js
+property: {
+    x: valueX,
+    y: valueY,
+    z: valueZ
+}
+```
+
+#### Is tests
+
+* `isIE (version)`: return true if the navigator's user agent correspond to Internet Explorer of `version`. Return IE version or false if `version` is not defined.
+
+* `isLarger (width)`: return true if the window is larger than `width`.
+
+* `isAndroid()`, `isChrome()`, `isFirefox()`, `isIOS()`, `isIPad()`, `isIPod()`, `isSafari()`: all based on user agent.
+
+* `isDefined()`
+* `isObject()`
+
+#### Utils
+
+* `deepClone (object)`: return a deep clone of `object`.
+
+* `defaultify (options, defaults)`: return `defaults` applied on `options`.
+
+### Plugins - WIP
+
+#### Scroll60FPS
+
+To use this plugin, just import it. It will disable pointer events while scrolling offering a smoother scroll. It also add the class `scrolling`.
+
+#### VirtualScroll
+
+VirtualScroll is not part of Chirashi but come from [drojdjou/bartekdrozdz.com](https://github.com/drojdjou/bartekdrozdz.com/blob/master/static/src/framework/VirtualScroll.js). Report issues [here](https://github.com/drojdjou/bartekdrozdz.com/issues).
+Still it is integrated in Chirashi to make it CommonJS complient and use it in other Chirashi's plugin. You can find how to use it [here](http://www.everyday3d.com/blog/index.php/2014/08/18/smooth-scrolling-with-virtualscroll/).
+
+<!-- #### SmootScroller -->
