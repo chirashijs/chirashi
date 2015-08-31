@@ -57,8 +57,8 @@ export class SmoothScroller {
     if (this.disableScroll) return;
 
     this.scrollTarget = {
-      x: Math.max(Math.min(this.scroll.x + event.deltaX, 0), -width(this.wrapper) + window.innerWidth),
-      y: Math.max(Math.min(this.scroll.y + event.deltaY, 0), -height(this.wrapper) + window.innerHeight)
+      x: Math.min(Math.max(this.scroll.x - event.deltaX, 0), width(this.wrapper) - window.innerWidth),
+      y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), height(this.wrapper) - window.innerHeight)
     };
 
     let i = this.scrollCallbacks.length;
@@ -88,12 +88,12 @@ export class SmoothScroller {
   }
 
   update() {
-    transform(this.wrapper, this.scroll);
-
-    transform(this.fixed, {
+    transform(this.wrapper, {
       x: -this.scroll.x,
       y: -this.scroll.y
     });
+
+    transform(this.fixed, this.scroll);
 
     requestAnimationFrame(this.update.bind(this));
   }
@@ -110,8 +110,8 @@ export class SmoothScroller {
     this.disableScroll = true;
 
     this.scrollTarget = {
-      x: -Math.min(Math.max(target.x, 0), width(this.wrapper) - window.innerHeight),
-      y: -Math.min(Math.max(target.y, 0), height(this.wrapper) - window.innerWidth)
+        x: Math.min(Math.max(target.x, 0), width(this.wrapper) - window.innerWidth),
+        y: Math.min(Math.max(target.y, 0), height(this.wrapper) - window.innerHeight)
     };
 
     this.autoScroll();

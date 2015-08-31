@@ -22,6 +22,40 @@ export class Wasabi {
 
     this.wrapper = this.scroller ? this.scroller.wrapper : document.body;
 
+    if (!this.config.scroller) {
+      if (this.config.snap) {
+        console.error('snap option needs a SmoothScroller instance');
+
+        return;
+      }
+
+      this.wrapper = document.body;
+      this.scrollTop = this.previousScrollTop = screenPosition(this.wrapper).top;
+
+      this.virtualScrollCallback = this.onVirtualScroll.bind(this);
+      VirtualScroll.on(this.virtualScrollCallback);
+    }
+    else {
+        this.scroller = this.config.scroller;
+
+        this.wrapper = this.scroller.wrapper;
+        this.scrollTop = this.previousScrollTop = this.scroller.scroll.y;
+
+        this.scrollerCallback = this.onScroller.bind(this);
+        this.scroller.on(this.scrollerCallback);
+
+        if (this.config.snap) {
+            this.snapingCallback = this.testSnapping.bind(this);
+            this.scroller.on(this.snapingCallback);
+        }
+    }
+
+    this.resizeCallback = resize(this.refresh.bind(this));
+
+    this.refresh();
+
+    this.currentZone = this.zones[0];
+
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
       style(this.debugWrapper, {
@@ -33,35 +67,9 @@ export class Wasabi {
         right: 0
       });
       append(document.body, this.debugWrapper);
+
+      if (this.scroller) this.scroller.fixed.push(this.debugWrapper);
     }
-
-    if (!this.config.scroller) {
-      if (this.config.snap) {
-        console.error('snap option needs a SmoothScroller instance');
-
-        return;
-      }
-
-      this.scrollTarget = this.scrollTop = 0;
-      this.virtualScrollCallback = this.onVirtualScroll.bind(this);
-      VirtualScroll.on(this.virtualScrollCallback);
-    }
-    else {
-      this.scroller = this.config.scroller;
-      this.scrollerCallback = this.onScroller.bind(this);
-      this.scroller.on(this.scrollerCallback);
-
-      if (this.config.snap) {
-        this.snapingCallback = this.testSnapping.bind(this);
-        this.scroller.on(this.snapingCallback);
-      }
-    }
-
-    this.refresh();
-    this.currentZone = this.zones[0];
-    this.scrollTop = this.previousScrollTop = 0;
-
-    this.resizeCallback = resize(this.refresh.bind(this));
 
     this.update();
   }
@@ -84,7 +92,7 @@ export class Wasabi {
       if (typeof zoneConfig.selector == 'string') {
         zone.selector = zoneConfig.selector;
         let element = getSelector(zoneConfig.selector);
-        top = screenPosition(element).top;
+        top = screenPosition(element).top + this.scrollTop;
         bottom = top + height(element);
       }
       else {
@@ -205,15 +213,15 @@ export class Wasabi {
     let previous = this.zones[this.currentZoneIndex-1],
         next = this.zones[this.currentZoneIndex+1];
 
-    if (previous && -scrollTarget.y < this.currentZone.top) {
-      this.scroller.scrollTarget.y = -this.currentZone.top;
+    if (previous && scrollTarget.y < this.currentZone.top) {
+      this.scroller.scrollTarget.y = this.currentZone.top;
       this.scroller.scrollTo({
         x: 0,
         y: previous.bottom-this.windowHeight-1
       });
     }
-    else if (next && -scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
-      this.scroller.scrollTarget.y = -this.currentZone.bottom + this.windowHeight;
+    else if (next && scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
+      this.scroller.scrollTarget.y = this.currentZone.bottom - this.windowHeight;
       this.scroller.scrollTo({
         x: 0,
         y: next.top+1
@@ -222,17 +230,18 @@ export class Wasabi {
   }
 
   onScroller(scrollTarget) {
+    this.scrollTop = this.scroller.scroll.y;
+
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   onVirtualScroll(event) {
-    this.scrollTop = -screenPosition(this.wrapper).top;
+    this.scrollTop = screenPosition(this.wrapper).top;
 
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   update() {
-    if (this.scroller) this.scrollTop = this.scroller.scroll.y;
 
     let i = this.zones.length,
         direction = this.previousScrollTop > this.scrollTop ? 'forward' : 'backward';
@@ -240,7 +249,7 @@ export class Wasabi {
     while (i--) {
       let zone = this.zones[i], entered, progress;
 
-      progress = (-this.scrollTop - zone[direction+'Top'])/zone[direction+'Size'];
+      progress = (this.scrollTop - zone[direction+'Top'])/zone[direction+'Size'];
       entered = progress >= 0 && progress <= 1;
 
       if (!zone.entered && entered) {
@@ -307,6 +316,9 @@ export class Wasabi {
         this.clearPropsForTimeline(zone.progressTween);
       }
     }
+
+    if (this.scroller && this.debugWrapper)
+        this.scroller.fixed.slice(this.scroller.fixed.indexOf(this.debugWrapper));
 
     unresize(this.resizeCallback);
 
