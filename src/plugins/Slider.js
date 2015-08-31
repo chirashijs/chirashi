@@ -7,12 +7,16 @@ import { defaultify } from '../utils/defaultify';
 let defaults = {
   infinite: false,
   slideWidth: '100%',
-  touchThreshold: 0.1
+  touchThreshold: 0.1,
+  gutter: 0
 };
 
 export class Slider {
   constructor(config) {
     this.config = defaultify(config, defaults);
+
+    this.gutter = this.config.gutter;
+    this.halfGutter = this.gutter/2;
 
     this.callbacks = this.config.callback ? [this.config.callback] : [];
 
@@ -38,6 +42,14 @@ export class Slider {
     this.wrapper = find(this.container, this.config.wrapper);
     this.slides = find(this.container, this.config.slides);
     this.nbSlide = this.slides.length;
+
+    style(this.slides, {
+      margin: `0 ${this.halfGutter}px`
+    });
+
+    style(this.wrapper, {
+      margin: `0 -${this.halfGutter}px`
+    });
   }
 
   resize() {
@@ -49,7 +61,7 @@ export class Slider {
       this.slideWidth = parseInt(this.config.slideWidth, 10);
 
     width(this.slides, this.slideWidth);
-    width(this.wrapper, this.slideWidth * this.nbSlide);
+    width(this.wrapper, (this.slideWidth + this.gutter) * this.nbSlide);
 
     if (!height(this.wrapper)) {
       let maxHeight = 0;
