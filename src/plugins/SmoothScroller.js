@@ -110,8 +110,8 @@ export class SmoothScroller {
     this.disableScroll = true;
 
     this.scrollTarget = {
-      x: Math.max(Math.min(target.x, 0), -width(this.wrapper) + window.innerHeight),
-      y: Math.max(Math.min(target.y, 0), -height(this.wrapper) + window.innerWidth)
+      x: -Math.min(Math.max(target.x, 0), width(this.wrapper) - window.innerHeight),
+      y: -Math.min(Math.max(target.y, 0), height(this.wrapper) - window.innerWidth)
     };
 
     this.autoScroll();

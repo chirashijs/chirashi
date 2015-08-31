@@ -98,8 +98,6 @@ export class Wasabi {
       zone.bottom = bottom + (offset.bottom || offset);
 
       if (this.config.debug) {
-        console.log(zone);
-
         let topDebug = createElement(`<div class="wasabi-marker"></div>`);
         append(this.debugWrapper, topDebug);
         style(topDebug, {
@@ -211,14 +209,14 @@ export class Wasabi {
       this.scroller.scrollTarget.y = -this.currentZone.top;
       this.scroller.scrollTo({
         x: 0,
-        y: -previous.bottom+this.windowHeight+1
+        y: previous.bottom-this.windowHeight-1
       });
     }
     else if (next && -scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
       this.scroller.scrollTarget.y = -this.currentZone.bottom + this.windowHeight;
       this.scroller.scrollTo({
         x: 0,
-        y: -next.top-1
+        y: next.top+1
       });
     }
   }
