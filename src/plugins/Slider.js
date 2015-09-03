@@ -7,12 +7,16 @@ import { defaultify } from '../utils/defaultify';
 let defaults = {
   infinite: false,
   slideWidth: '100%',
-  touchThreshold: 0.1
+  touchThreshold: 15,
+  gutter: 0
 };
 
 export class Slider {
   constructor(config) {
     this.config = defaultify(config, defaults);
+
+    this.gutter = this.config.gutter;
+    this.halfGutter = this.gutter/2;
 
     this.callbacks = this.config.callback ? [this.config.callback] : [];
 
@@ -38,18 +42,34 @@ export class Slider {
     this.wrapper = find(this.container, this.config.wrapper);
     this.slides = find(this.container, this.config.slides);
     this.nbSlide = this.slides.length;
+
+    style(this.slides, {
+      marginLeft: this.halfGutter+'px',
+      marginRight: this.halfGutter+'px'
+    });
+
+    style(this.wrapper, {
+      marginLeft: -this.halfGutter+'px',
+      marginRight: -this.halfGutter+'px'
+    });
   }
 
   resize() {
     this.containerWidth = width(this.container);
 
-    if (this.config.slideWidth.indexOf('%'))
+
+    if (typeof this.config.slideWidth == 'string' && this.config.slideWidth.indexOf('%') != -1)
       this.slideWidth = this.containerWidth * parseInt(this.config.slideWidth, 10) / 100;
     else
       this.slideWidth = parseInt(this.config.slideWidth, 10);
 
+    if (typeof this.config.touchThreshold == 'string' && this.config.touchThreshold.indexOf('%') != -1)
+      this.touchThreshold = this.slideWidth * parseInt(this.config.touchThreshold, 10);
+    else
+      this.touchThreshold = this.config.touchThreshold;
+
     width(this.slides, this.slideWidth);
-    width(this.wrapper, this.slideWidth * this.nbSlide);
+    width(this.wrapper, (this.slideWidth + this.gutter) * this.nbSlide);
 
     if (!height(this.wrapper)) {
       let maxHeight = 0;
@@ -67,7 +87,6 @@ export class Slider {
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
-    this.touchOrig = null;
   }
 
   slideTo(target) {
@@ -89,32 +108,25 @@ export class Slider {
   }
 
   touchmove(event) {
-    if (!this.touchOrig) return;
-
     this.touchLength = event.touches[0].pageX - this.touchOrig;
     let forward = this.touchLength < 0;
 
-    if (this.swipeNext != forward) {
+    if (!this.tween || this.swipeNext != forward) {
       this.swipeNext = forward;
 
       let target = this.current + (this.swipeNext ? 1 : -1);
       this.tween = this.slideTo(target);
 
-      if (!this.tween) return;
-
-      this.tween.pause();
+      if (this.tween) this.tween.pause();
     }
 
     if (!this.tween) return;
 
-    let progress = Math.abs(this.touchLength) / this.slideWidth;
-
-    if (progress >= this.config.touchThreshold) {
-      this.touchOrig = null;
+    if (Math.abs(this.touchLength) >= this.touchThreshold) {
       this.tween.play();
     }
     else {
-      this.tween.progress(progress);
+      this.tween.progress(Math.abs(this.touchLength) / this.slideWidth);
     }
 
     event.stopPropagation();
@@ -124,7 +136,6 @@ export class Slider {
     if (this.target == this.current) return;
 
     this.target = this.current;
-    this.touchOrig = null;
 
     if (this.tween) this.tween.reverse();
 
