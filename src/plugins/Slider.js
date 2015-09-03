@@ -84,6 +84,8 @@ export class Slider {
     this.touchOrig = event.touches[0].pageX;
     this.swipeNext = null;
     this.tween = null;
+
+    event.stopPropagation();
   }
 
   touchmove(event) {
@@ -114,6 +116,8 @@ export class Slider {
     else {
       this.tween.progress(progress);
     }
+
+    event.stopPropagation();
   }
 
   touchend(event) {
@@ -123,6 +127,8 @@ export class Slider {
     this.touchOrig = null;
 
     if (this.tween) this.tween.reverse();
+
+    event.stopPropagation();
   }
 
   on(callback) {
