@@ -210,6 +210,8 @@ export class Wasabi {
   }
 
   testSnapping(scrollTarget) {
+    if (this.scroller.disableScroll) return;
+
     let previous = this.zones[this.currentZoneIndex-1],
         next = this.zones[this.currentZoneIndex+1];
 
@@ -242,7 +244,6 @@ export class Wasabi {
   }
 
   update() {
-
     let i = this.zones.length,
         direction = this.previousScrollTop > this.scrollTop ? 'forward' : 'backward';
 
@@ -307,14 +308,8 @@ export class Wasabi {
     while(i--) {
       let zone = this.zones[i];
 
-      if (zone.tween) {
-        zone.tween.kill();
-        this.clearPropsForTimeline(zone.tween);
-      }
-      if (zone.progressTween) {
-        zone.progressTween.kill();
-        this.clearPropsForTimeline(zone.progressTween);
-      }
+      if (zone.tween) this.killTimeline(zone.tween);
+      if (zone.progressTween) this.killTimeline(zone.progressTween);
     }
 
     if (this.scroller && this.debugWrapper)
@@ -325,19 +320,18 @@ export class Wasabi {
     cancelAnimationFrame(this.updateRequest);
   }
 
-  clearPropsForTimeline(timeline) {
-    let target = timeline.target;
+  killTimeline(timeline) {
+    let tweens = timeline.getChildren();
+    timeline.kill();
 
-    if (target) {
-      timeline.timeline.set(target, {
-        clearProps: 'all'
-      });
-    }
-    else {
-      let children = timeline.getChildren(),
-          i = children.length;
-
-      while(i--) this.clearPropsForTimeline(children[i])
+    let i = tweens.length, tween;
+    while(i--) {
+      tween = tweens[i];
+      if (tween.target) {
+        TweenMax.set(tween.target, {
+          clearProps: Object.keys(tween.vars).join(',')
+        });
+      }
     }
   }
 }
