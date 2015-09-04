@@ -6,7 +6,8 @@ import './scroll60fps';
 
 let defaults = {
   ease: 0.2,
-  autoEase: 0.08
+  autoEase: 0.08,
+  fixed: []
 };
 
 export class SmoothScroller {
@@ -29,7 +30,7 @@ export class SmoothScroller {
       'will-change': 'transform'
     });
 
-    this.fixed = this.config.fixed ? (this.config.fixed instanceof Array ? this.config.fixed : [this.config.fixed]) : [];
+    this.fixed = this.config.fixed instanceof Array ? this.config.fixed : [this.config.fixed];
 
     this.scroll = {
       x: 0,

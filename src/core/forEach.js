@@ -1,4 +1,5 @@
 import { getSelectorAll } from './getSelectorAll';
+import { getElement } from './getElement';
 import { isDomElement } from './isDomElement';
 
 export function forEach (elements, callback) {
@@ -12,7 +13,7 @@ export function forEach (elements, callback) {
   else {
     let i = elements.length;
     while(i--) {
-      let element = elements[i];
+      let element = getElement(elements[i]);
       if (isDomElement(element)) callback(element);
     }
   }
