@@ -66,7 +66,7 @@ export class Wasabi {
         top: 0,
         right: 0
       });
-      append(document.body, this.debugWrapper);
+      append(this.wrapper, this.debugWrapper);
 
       if (this.scroller) this.scroller.fixElement(this.debugWrapper);
     }
@@ -219,7 +219,7 @@ export class Wasabi {
       this.scroller.scrollTarget.y = this.currentZone.top;
       this.scroller.scrollTo({
         x: 0,
-        y: previous.bottom-this.windowHeight-1
+        y: previous.bottom - Math.min(previous.size, this.windowHeight) - 1
       });
     }
     else if (next && scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
