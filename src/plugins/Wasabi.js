@@ -9,6 +9,7 @@ let defaults = {
   debug: false,
   offset: 0,
   ease: 0.2,
+  stepMinSize: 5,
   handle: {
     top: 'top',
     bottom: 'bottom'
@@ -105,6 +106,8 @@ export class Wasabi {
       zone.top = top + (offset.top || offset);
       zone.bottom = bottom + (offset.bottom || offset);
 
+      console.log(zone.top);
+
       if (this.config.debug) {
         let topDebug = createElement(`<div class="wasabi-marker"></div>`);
         append(this.debugWrapper, topDebug);
@@ -177,7 +180,7 @@ export class Wasabi {
         zone.forwardBottom = zone.bottom;
       }
 
-      zone.forwardSize = Math.max(1, zone.forwardBottom - zone.forwardTop);
+      zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardBottom - zone.forwardTop);
 
       if (handles.backward.top == 'middle') {
         zone.backwardTop = zone.top + this.halfHeight;
