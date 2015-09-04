@@ -75,7 +75,7 @@ export class SmoothScroller {
       y: this.scroll.y + (this.scrollTarget.y - this.scroll.y) * this.ease
     };
 
-    this.lastRequest = requestAnimationFrame(this.normalScroll.bind(this));
+    this.normalRequest = requestAnimationFrame(this.normalScroll.bind(this));
   }
 
   autoScroll() {
@@ -87,7 +87,7 @@ export class SmoothScroller {
     this.triggerCallbacks();
 
     this.disableScroll = Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1;
-    if (this.disableScroll) this.lastRequest = requestAnimationFrame(this.autoScroll.bind(this));
+    if (this.disableScroll) this.autoScrollRequest = requestAnimationFrame(this.autoScroll.bind(this));
     else this.normalScroll();
   }
 
@@ -104,7 +104,7 @@ export class SmoothScroller {
 
     transform(this.fixed, this.scroll);
 
-    this.lastRequest = requestAnimationFrame(this.update.bind(this));
+    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   on(callback) {
@@ -135,7 +135,9 @@ export class SmoothScroller {
   }
 
   kill() {
-      cancelAnimationFrame(this.lastRequest);
+      cancelAnimationFrame(this.normalRequest);
+      cancelAnimationFrame(this.autoScrollRequest);
+      cancelAnimationFrame(this.updateRequest);
       VirtualScroll.off(this.localCallback);
 
       style('html, body', {
