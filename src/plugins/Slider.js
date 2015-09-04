@@ -108,6 +108,8 @@ export class Slider {
   }
 
   touchmove(event) {
+    if (!this.touchOrig) return;
+
     this.touchLength = event.touches[0].pageX - this.touchOrig;
     let forward = this.touchLength < 0;
 
@@ -133,11 +135,15 @@ export class Slider {
   }
 
   touchend(event) {
+    if (!this.touchOrig) return;
+
     if (this.target == this.current) return;
 
     this.target = this.current;
 
     if (this.tween) this.tween.reverse();
+
+    this.touchOrig = null;
 
     event.stopPropagation();
   }
