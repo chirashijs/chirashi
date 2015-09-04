@@ -61,8 +61,7 @@ export class SmoothScroller {
       y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), height(this.wrapper) - window.innerHeight)
     };
 
-    let i = this.scrollCallbacks.length;
-    while(i--) this.scrollCallbacks[i](this.scrollTarget);
+    this.triggerCallbacks();
   }
 
   normalScroll() {
@@ -82,9 +81,16 @@ export class SmoothScroller {
       y: this.scroll.y + (this.scrollTarget.y - this.scroll.y) * this.autoEase
     };
 
+    this.triggerCallbacks();
+
     this.disableScroll = Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1;
     if (this.disableScroll) requestAnimationFrame(this.autoScroll.bind(this));
     else this.normalScroll();
+  }
+
+  triggerCallbacks() {
+    let i = this.scrollCallbacks.length;
+    while(i--) this.scrollCallbacks[i](this.scrollTarget);
   }
 
   update() {
@@ -115,5 +121,13 @@ export class SmoothScroller {
     };
 
     this.autoScroll();
+  }
+
+  fixElement(element) {
+      this.fixed.push(element);
+  }
+
+  unfixElement(element) {
+      this.fixed.slice(this.fixed.indexOf(element));
   }
 };
