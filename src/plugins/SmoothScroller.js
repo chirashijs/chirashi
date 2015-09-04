@@ -29,7 +29,7 @@ export class SmoothScroller {
       'will-change': 'transform'
     });
 
-    this.fixed = this.config.fixed ? (this.config.fixed.length ? this.config.fixed : [this.config.fixed]) : [];
+    this.fixed = this.config.fixed ? (this.config.fixed instanceof Array ? this.config.fixed : [this.config.fixed]) : [];
 
     this.scroll = {
       x: 0,
