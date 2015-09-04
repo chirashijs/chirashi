@@ -1,7 +1,7 @@
 import { getSelector, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, screenPosition, height, transform } from '../styles';
-import { resize, unresize } from '../events';
+import { resize, unresize, load } from '../events';
 import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
 
@@ -52,26 +52,26 @@ export class Wasabi {
 
     this.resizeCallback = resize(this.refresh.bind(this));
 
-    this.refresh();
+    load(find(this.wrapper, 'img'), null, () => {
+        if (this.config.debug) {
+          this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
+          style(this.debugWrapper, {
+            'z-index': 9999,
+            width: 25,
+            height: height(this.wrapper),
+            position: 'absolute',
+            top: 0,
+            right: 0
+          });
+          append(this.wrapper, this.debugWrapper);
 
-    this.currentZone = this.zones[0];
+          if (this.scroller) this.scroller.fixElement(this.debugWrapper);
+        }
 
-    if (this.config.debug) {
-      this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
-      style(this.debugWrapper, {
-        'z-index': 9999,
-        width: 25,
-        height: height(this.wrapper),
-        position: 'absolute',
-        top: 0,
-        right: 0
-      });
-      append(this.wrapper, this.debugWrapper);
-
-      if (this.scroller) this.scroller.fixElement(this.debugWrapper);
-    }
-
-    this.update();
+        this.refresh();
+        this.currentZone = this.zones[0];
+        this.update();
+    });
   }
 
   refresh() {
@@ -104,6 +104,8 @@ export class Wasabi {
 
       zone.top = top + (offset.top || offset);
       zone.bottom = bottom + (offset.bottom || offset);
+
+      console.log(zone.top);
 
       if (this.config.debug) {
         let topDebug = createElement(`<div class="wasabi-marker"></div>`);
@@ -219,14 +221,14 @@ export class Wasabi {
       this.scroller.scrollTarget.y = this.currentZone.top;
       this.scroller.scrollTo({
         x: 0,
-        y: previous.bottom - Math.min(previous.size, this.windowHeight) - 1
+        y: previous.bottom - Math.min(previous.size, this.windowHeight)-2
       });
     }
     else if (next && scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
       this.scroller.scrollTarget.y = this.currentZone.bottom - this.windowHeight;
       this.scroller.scrollTo({
         x: 0,
-        y: next.top+1
+        y: next.top+2
       });
     }
   }
