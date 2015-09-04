@@ -49,7 +49,8 @@ export class SmoothScroller {
 
     this.scrollCallbacks = [];
 
-    VirtualScroll.on(this.scrolling.bind(this));
+    this.localCallback = this.scrolling.bind(this);
+    VirtualScroll.on(this.localCallback);
 
     this.normalScroll();
     this.update();
@@ -74,7 +75,7 @@ export class SmoothScroller {
       y: this.scroll.y + (this.scrollTarget.y - this.scroll.y) * this.ease
     };
 
-    requestAnimationFrame(this.normalScroll.bind(this));
+    this.lastRequest = requestAnimationFrame(this.normalScroll.bind(this));
   }
 
   autoScroll() {
@@ -86,7 +87,7 @@ export class SmoothScroller {
     this.triggerCallbacks();
 
     this.disableScroll = Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1;
-    if (this.disableScroll) requestAnimationFrame(this.autoScroll.bind(this));
+    if (this.disableScroll) this.lastRequest = requestAnimationFrame(this.autoScroll.bind(this));
     else this.normalScroll();
   }
 
@@ -103,7 +104,7 @@ export class SmoothScroller {
 
     transform(this.fixed, this.scroll);
 
-    requestAnimationFrame(this.update.bind(this));
+    this.lastRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   on(callback) {
@@ -131,5 +132,22 @@ export class SmoothScroller {
 
   unfixElement(element) {
       this.fixed.slice(this.fixed.indexOf(element));
+  }
+
+  kill() {
+      cancelAnimationFrame(this.lastRequest);
+      VirtualScroll.off(this.localCallback);
+
+      style('html, body', {
+        width: '',
+        height: '',
+        overflow: '',
+        position: ''
+      });
+
+      style(this.wrapper, {
+        'transform': '',
+        'will-change': ''
+      });
   }
 };
