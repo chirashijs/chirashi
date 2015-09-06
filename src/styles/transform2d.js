@@ -85,6 +85,6 @@ export function transform2d (elements, transformation) {
   forEach(elements, (element) => {
     if (!element.style) return;
 
-    element.style[prefix+'transform'] = matrix;
+    element.style[prefix+'transform'] = element.style.transform = matrix;
   });
 }
