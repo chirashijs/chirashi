@@ -234,14 +234,10 @@ export class Wasabi {
 
   onScroller(scrollTarget) {
     this.scrollTop = this.scroller.scroll.y;
-
-    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   onVirtualScroll(event) {
     this.scrollTop = screenPosition(this.wrapper).top;
-
-    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   update() {
@@ -291,6 +287,8 @@ export class Wasabi {
     }
 
     this.previousScrollTop = this.scrollTop;
+
+    this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
   kill() {
