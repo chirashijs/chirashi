@@ -32,6 +32,9 @@ export class SmoothScroller {
     });
 
     this.fixed = this.config.fixed instanceof Array ? this.config.fixed : [this.config.fixed];
+    style(this.fixed, {
+        position: 'absolute'
+    });
 
     this.scroll = {
       x: 0,
