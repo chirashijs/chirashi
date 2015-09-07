@@ -106,8 +106,6 @@ export class Wasabi {
       zone.top = top + (offset.top || offset);
       zone.bottom = bottom + (offset.bottom || offset);
 
-      console.log(zone.top);
-
       if (this.config.debug) {
         let topDebug = createElement(`<div class="wasabi-marker"></div>`);
         append(this.debugWrapper, topDebug);
