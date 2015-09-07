@@ -12,13 +12,15 @@ let defaults = {
 };
 
 export class Slider {
-  constructor(config) {
-    this.config = defaultify(config, defaults);
+  constructor(options) {
+    this.options = defaultify(options, defaults);
 
-    this.gutter = this.config.gutter;
+    this.gutter = this.options.gutter;
     this.halfGutter = this.gutter/2;
+    this.onDrag = this.options.onDrag;
+    this.onDragEnd = this.options.onDragEnd;
 
-    this.callbacks = this.config.callback ? [this.config.callback] : [];
+    this.callbacks = this.options.callback ? [this.options.callback] : [];
 
     this.refresh();
     this.resizeCallback = resize(this.resize.bind(this));
@@ -38,9 +40,9 @@ export class Slider {
   }
 
   refresh() {
-    this.container = getElement(this.config.container);
-    this.wrapper = find(this.container, this.config.wrapper);
-    this.slides = find(this.container, this.config.slides);
+    this.container = getElement(this.options.container);
+    this.wrapper = find(this.container, this.options.wrapper);
+    this.slides = find(this.container, this.options.slides);
     this.nbSlide = this.slides.length;
 
     style(this.slides, {
@@ -58,15 +60,15 @@ export class Slider {
     this.containerWidth = width(this.container);
 
 
-    if (typeof this.config.slideWidth == 'string' && this.config.slideWidth.indexOf('%') != -1)
-      this.slideWidth = this.containerWidth * parseInt(this.config.slideWidth, 10) / 100;
+    if (typeof this.options.slideWidth == 'string' && this.options.slideWidth.indexOf('%') != -1)
+      this.slideWidth = this.containerWidth * parseInt(this.options.slideWidth, 10) / 100;
     else
-      this.slideWidth = parseInt(this.config.slideWidth, 10);
+      this.slideWidth = parseInt(this.options.slideWidth, 10);
 
-    if (typeof this.config.touchThreshold == 'string' && this.config.touchThreshold.indexOf('%') != -1)
-      this.touchThreshold = this.slideWidth * parseInt(this.config.touchThreshold, 10);
+    if (typeof this.options.touchThreshold == 'string' && this.options.touchThreshold.indexOf('%') != -1)
+      this.touchThreshold = this.slideWidth * parseInt(this.options.touchThreshold, 10);
     else
-      this.touchThreshold = this.config.touchThreshold;
+      this.touchThreshold = this.options.touchThreshold;
 
     width(this.slides, this.slideWidth);
     width(this.wrapper, (this.slideWidth + this.gutter) * this.nbSlide);
@@ -90,13 +92,13 @@ export class Slider {
   }
 
   slideTo(target) {
-    if (!this.config.infinite && (target < 0 || target >= this.nbSlide)) return;
+    if (!this.options.infinite && (target < 0 || target >= this.nbSlide)) return;
 
     this.target = target % this.nbSlide;
 
     this.animating = !this.touchOrig;
 
-    return this.config.animationTween(this, this.animationCallback.bind(this));
+    return this.options.animationTween(this, this.animationCallback.bind(this));
   }
 
   touchstart(event) {
@@ -122,12 +124,13 @@ export class Slider {
       if (this.tween) this.tween.pause();
     }
 
-    if (!this.tween) return;
-
     if (Math.abs(this.touchLength) >= this.touchThreshold) {
       this.tween.play();
     }
-    else {
+    else if (this.onDrag) {
+      this.onDrag(this, Math.abs(this.touchLength) / this.slideWidth);
+    }
+    else if (this.tween) {
       this.tween.progress(Math.abs(this.touchLength) / this.slideWidth);
     }
 
@@ -141,7 +144,12 @@ export class Slider {
 
     this.target = this.current;
 
-    if (this.tween) this.tween.reverse();
+    if (this.onDragEnd) {
+      this.onDragEnd(this);
+    }
+    else if (this.tween) {
+      this.tween.reverse();
+    }
 
     this.touchOrig = null;
 
