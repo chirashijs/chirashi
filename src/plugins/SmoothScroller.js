@@ -127,10 +127,17 @@ export class SmoothScroller {
   }
 
   fixElement(element) {
+      style(element, {
+          position: 'absolute'
+      });
       this.fixed.push(element);
   }
 
   unfixElement(element) {
+      style(element, {
+          position: '',
+          transform: ''
+      });
       this.fixed.slice(this.fixed.indexOf(element));
   }
 
