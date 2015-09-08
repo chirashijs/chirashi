@@ -318,6 +318,26 @@ export class Wasabi {
     cancelAnimationFrame(this.updateRequest);
   }
 
+  concatenateVars(object) {
+    if (!object) return;
+
+    let keys = Object.keys(object),
+        i = keys.length,
+        vars = [];
+
+    while(i--) {
+        if (typeof object[keys[i]] == 'object') {
+            vars = vars.concat(this.concatenateVars(object[keys[i]]));
+        }
+        else {
+            let key = keys[i];
+            vars.push(key == 'x' || key == 'y' || key == 'scale' || key == 'rotate' ? 'transform' : key);
+        }
+    }
+
+    return vars;
+  }
+
   killTimeline(timeline) {
     let tweens = timeline.getChildren();
     timeline.kill();
@@ -325,9 +345,10 @@ export class Wasabi {
     let i = tweens.length, tween;
     while(i--) {
       tween = tweens[i];
+
       if (tween.target) {
         TweenMax.set(tween.target, {
-          clearProps: Object.keys(tween.vars).join(',')
+          clearProps: this.concatenateVars(tween.vars).join(',')
         });
       }
     }

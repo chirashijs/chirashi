@@ -62,9 +62,14 @@ export class SmoothScroller {
   scrolling(event) {
     if (this.disableScroll) return;
 
+    const wrapperWidth  = width(this.wrapper),
+          windowWidth   = window.innerWidth,
+          wrapperHeight = height(this.wrapper),
+          windowHeight  = window.innerHeight;
+
     this.scrollTarget = {
-      x: Math.min(Math.max(this.scroll.x - event.deltaX, 0), width(this.wrapper) - window.innerWidth),
-      y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), height(this.wrapper) - window.innerHeight)
+        x: Math.min(Math.max(this.scroll.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+        y: Math.min(Math.max(this.scroll.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
     };
 
     this.triggerCallbacks();
@@ -121,9 +126,14 @@ export class SmoothScroller {
   scrollTo(target) {
     this.disableScroll = true;
 
+    const wrapperWidth  = width(this.wrapper),
+          windowWidth   = window.innerWidth,
+          wrapperHeight = height(this.wrapper),
+          windowHeight  = window.innerHeight;
+
     this.scrollTarget = {
-        x: Math.min(Math.max(target.x, 0), width(this.wrapper) - window.innerWidth),
-        y: Math.min(Math.max(target.y, 0), height(this.wrapper) - window.innerHeight)
+        x: Math.min(Math.max(target.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+        y: Math.min(Math.max(target.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
     };
 
     this.autoScroll();
