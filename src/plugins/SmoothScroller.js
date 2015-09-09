@@ -68,8 +68,8 @@ export class SmoothScroller {
           windowHeight  = window.innerHeight;
 
     this.scrollTarget = {
-        x: Math.min(Math.max(this.scroll.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
-        y: Math.min(Math.max(this.scroll.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
+        x: Math.min(Math.max(this.scroll.x - event.deltaX, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+        y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
     };
 
     this.triggerCallbacks();
