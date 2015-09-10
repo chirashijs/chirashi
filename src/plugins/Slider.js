@@ -7,7 +7,9 @@ import { defaultify } from '../utils/defaultify';
 let defaults = {
   infinite: false,
   slideWidth: '100%',
-  touchThreshold: 15,
+  touchThreshold: '50%',
+  swipeTime: 300,
+  swipeThreshold: 10,
   gutter: 0
 };
 
@@ -19,6 +21,7 @@ export class Slider {
     this.halfGutter = this.gutter/2;
     this.onDrag = this.options.onDrag;
     this.onDragEnd = this.options.onDragEnd;
+    this.swipeTime = this.options.swipeTime;
 
     this.callbacks = this.options.callback ? [this.options.callback] : [];
 
@@ -70,6 +73,11 @@ export class Slider {
     else
       this.touchThreshold = this.options.touchThreshold;
 
+    if (typeof this.options.swipeThreshold == 'string' && this.options.swipeThreshold.indexOf('%') != -1)
+      this.swipeThreshold = this.slideWidth * parseInt(this.options.swipeThreshold, 10);
+    else
+      this.swipeThreshold = this.options.swipeThreshold;
+
     width(this.slides, this.slideWidth);
     width(this.wrapper, (this.slideWidth + this.gutter) * this.nbSlide);
 
@@ -105,6 +113,7 @@ export class Slider {
     this.touchOrig = event.touches[0].pageX;
     this.swipeNext = null;
     this.tween = null;
+    this.time = new Date().getTime();
 
     event.stopPropagation();
   }
@@ -124,11 +133,8 @@ export class Slider {
       if (this.tween) this.tween.pause();
     }
 
-    if (Math.abs(this.touchLength) >= this.touchThreshold) {
-      this.tween.play();
-    }
-    else if (this.onDrag) {
-      this.onDrag(this, Math.abs(this.touchLength) / this.slideWidth);
+    if (this.onDrag) {
+      this.onDrag(this, this.touchLength);
     }
     else if (this.tween) {
       this.tween.progress(Math.abs(this.touchLength) / this.slideWidth);
@@ -140,15 +146,19 @@ export class Slider {
   touchend(event) {
     if (!this.touchOrig) return;
 
-    if (this.target == this.current) return;
-
-    this.target = this.current;
-
-    if (this.onDragEnd) {
-      this.onDragEnd(this);
+    let absLength = Math.abs(this.touchLength);
+    if (this.tween && (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold)) {
+      this.tween.play();
     }
-    else if (this.tween) {
-      this.tween.reverse();
+    else {
+      this.target = this.current;
+
+      if (this.onDragEnd) {
+        this.onDragEnd(this);
+      }
+      else if (this.tween) {
+        this.tween.reverse();
+      }
     }
 
     this.touchOrig = null;

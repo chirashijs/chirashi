@@ -24,12 +24,6 @@ export class Wasabi {
     this.wrapper = this.scroller ? this.scroller.wrapper : document.body;
 
     if (!this.config.scroller) {
-      if (this.config.snap) {
-        console.error('snap option needs a SmoothScroller instance');
-
-        return;
-      }
-
       this.wrapper = document.body;
       this.scrollTop = this.previousScrollTop = screenPosition(this.wrapper).top;
 
@@ -44,11 +38,6 @@ export class Wasabi {
 
         this.scrollerCallback = this.onScroller.bind(this);
         this.scroller.on(this.scrollerCallback);
-
-        if (this.config.snap) {
-            this.snapingCallback = this.testSnapping.bind(this);
-            this.scroller.on(this.snapingCallback);
-        }
     }
 
     this.resizeCallback = resize(this.refresh.bind(this));
@@ -70,13 +59,14 @@ export class Wasabi {
         }
 
         this.refresh();
-        this.currentZone = this.zones[0];
+        this.currentSnap = this.zones[0];
         this.update();
     });
   }
 
   refresh() {
     this.zones = [];
+    this.snaps = [];
 
     this.windowHeight = window.innerHeight;
     this.halfHeight = this.windowHeight/2;
@@ -84,147 +74,175 @@ export class Wasabi {
     if (this.wrapper) this.wrapperHeight = height(this.wrapper);
     if (this.config.debug) remove('#wasabi-debug .wasabi-marker');
 
-    let i = this.config.zones.length;
-    while (i--) {
-      let zoneConfig = this.config.zones[i],
-          zone = {},
-          top, bottom;
+    if (typeof this.config.zones == 'string') {
+      forEach(this.config.zones, (element) => {
+        this.addZone({}, element);
+      });
+    }
+    else {
+      let i = this.config.zones.length;
+      while (i--) {
+        let zoneConfig = this.config.zones[i];
 
-      if (typeof zoneConfig.selector == 'string') {
-        zone.selector = zoneConfig.selector;
-        let element = getSelector(zoneConfig.selector);
-        top = screenPosition(element).top + this.scrollTop;
-        bottom = top + height(element);
+        if (zoneConfig.selector) {
+          forEach(zoneConfig.selector, (element) => {
+            this.addZone(zoneConfig, element);
+          });
+        }
+        else {
+          this.addZone(zoneConfig);
+        }
       }
-      else {
-        top = zoneConfig.top;
-        bottom = zoneConfig.bottom;
-      }
-
-      let offset = (typeof zoneConfig.offset != 'undefined') ? zoneConfig.offset : this.config.offset;
-
-      zone.top = top + (offset.top || offset);
-      zone.bottom = bottom + (offset.bottom || offset);
-
-      if (this.config.debug) {
-        let topDebug = createElement(`<div class="wasabi-marker"></div>`);
-        append(this.debugWrapper, topDebug);
-        style(topDebug, {
-          position: 'absolute',
-          top: zone.top,
-          right: 0,
-          width: 25,
-          height: 2,
-          background: 'green'
-        });
-
-        let bottomDebug = clone(topDebug);
-        append(this.debugWrapper, bottomDebug);
-        style(bottomDebug, {
-          'z-index': 9999,
-          position: 'absolute',
-          top: zone.bottom,
-          right: 0,
-          width: 25,
-          height: 2,
-          background: 'green'
-        });
-      }
-
-      zone.size = zone.bottom - zone.top;
-      zone.handle = zoneConfig.handle || this.config.handle;
-      zone.handler = zoneConfig.handler || this.config.handler;
-      zone.progress = zoneConfig.progress || this.config.progress;
-
-      if (zoneConfig.tween) {
-        zone.tween = zoneConfig.tween;
-        if (zone.tween.pause) zone.tween.pause();
-      }
-
-      if (zoneConfig.progressTween) {
-        zone.progressTween = zoneConfig.progressTween;
-        if (zone.progressTween.pause) zone.progressTween.pause();
-      }
-
-      let handles = {};
-      let handleForward = zone.handle.forward || zone.handle;
-      handles.forward = {
-        top: handleForward.top || handleForward,
-        bottom: handleForward.bottom || handleForward
-      };
-      let handleBackward = zone.handle.forward || zone.handle;
-      handles.backward = {
-        top: handleBackward.top || handleBackward,
-        bottom: handleBackward.bottom || handleBackward
-      };
-
-      if (handles.forward.top == 'middle') {
-        zone.forwardTop = zone.top + this.halfHeight;
-      }
-      else if (handles.forward.top == 'bottom') {
-        zone.forwardTop = zone.top - this.windowHeight;
-      }
-      else {
-        zone.forwardTop = zone.top;
-      }
-
-      if (handles.forward.bottom == 'middle') {
-        zone.forwardBottom = zone.bottom + this.halfHeight;
-      }
-      else if (handles.forward.bottom == 'bottom') {
-        zone.forwardBottom = zone.bottom - this.windowHeight;
-      }
-      else {
-        zone.forwardBottom = zone.bottom;
-      }
-
-      zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardBottom - zone.forwardTop);
-
-      if (handles.backward.top == 'middle') {
-        zone.backwardTop = zone.top + this.halfHeight;
-      }
-      else if (handles.backward.top == 'bottom') {
-        zone.backwardTop = zone.top - this.windowHeight;
-      }
-      else {
-        zone.backwardTop = zone.top;
-      }
-
-      if (handles.backward.bottom == 'middle') {
-        zone.backwardBottom = zone.bottom + this.halfHeight;
-      }
-      else if (handles.backward.bottom == 'bottom') {
-        zone.backwardBottom = zone.bottom - this.windowHeight;
-      }
-      else {
-        zone.backwardBottom = zone.bottom;
-      }
-
-      zone.backwardSize = Math.max(1, zone.backwardBottom - zone.backwardTop);
-
-      this.zones.push(zone);
     }
 
-    this.zones.sort((a, b) => {
-      return a.top - b.top
-    });
+    if (this.snaps.length) {
+      if (!this.scroller) {
+        console.error('snap option needs a SmoothScroller instance');
+      }
+
+      this.snaps.sort((a, b) => {
+        return a.top - b.top
+      });
+    }
+  }
+
+  addZone(zoneConfig, element) {
+    let zone = {},
+        top, bottom;
+
+    if (element) {
+      zone.element = element;
+      zone.selector = zoneConfig.selector;
+      top = screenPosition(element).top + this.scrollTop;
+      bottom = top + height(element);
+    }
+    else {
+      top = zoneConfig.top;
+      bottom = zoneConfig.bottom;
+    }
+
+    let offset = (typeof zoneConfig.offset != 'undefined') ? zoneConfig.offset : this.config.offset;
+
+    zone.top = top + (offset.top || offset);
+    zone.bottom = bottom + (offset.bottom || offset);
+
+    if (this.config.debug) {
+      let topDebug = createElement(`<div class="wasabi-marker"></div>`);
+      append(this.debugWrapper, topDebug);
+      style(topDebug, {
+        position: 'absolute',
+        top: zone.top,
+        right: 0,
+        width: 25,
+        height: 2,
+        background: 'green'
+      });
+
+      let bottomDebug = clone(topDebug);
+      append(this.debugWrapper, bottomDebug);
+      style(bottomDebug, {
+        'z-index': 9999,
+        position: 'absolute',
+        top: zone.bottom,
+        right: 0,
+        width: 25,
+        height: 2,
+        background: 'green'
+      });
+    }
+
+    zone.size = zone.bottom - zone.top;
+    zone.handle = zoneConfig.handle || this.config.handle;
+    zone.handler = zoneConfig.handler || this.config.handler;
+    zone.progress = zoneConfig.progress || this.config.progress;
+    zone.snap = zoneConfig.snap || this.config.snap;
+
+    if (zoneConfig.tween) {
+      zone.tween = zoneConfig.tween;
+      if (zone.tween.pause) zone.tween.pause();
+    }
+
+    if (zoneConfig.progressTween) {
+      zone.progressTween = zoneConfig.progressTween;
+      if (zone.progressTween.pause) zone.progressTween.pause();
+    }
+
+    let handles = {};
+    let handleForward = zone.handle.forward || zone.handle;
+    handles.forward = {
+      top: handleForward.top || handleForward,
+      bottom: handleForward.bottom || handleForward
+    };
+    let handleBackward = zone.handle.forward || zone.handle;
+    handles.backward = {
+      top: handleBackward.top || handleBackward,
+      bottom: handleBackward.bottom || handleBackward
+    };
+
+    if (handles.forward.top == 'middle') {
+      zone.forwardTop = zone.top + this.halfHeight;
+    }
+    else if (handles.forward.top == 'bottom') {
+      zone.forwardTop = zone.top - this.windowHeight;
+    }
+    else {
+      zone.forwardTop = zone.top;
+    }
+
+    if (handles.forward.bottom == 'middle') {
+      zone.forwardBottom = zone.bottom + this.halfHeight;
+    }
+    else if (handles.forward.bottom == 'bottom') {
+      zone.forwardBottom = zone.bottom - this.windowHeight;
+    }
+    else {
+      zone.forwardBottom = zone.bottom;
+    }
+
+    zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardBottom - zone.forwardTop);
+
+    if (handles.backward.top == 'middle') {
+      zone.backwardTop = zone.top + this.halfHeight;
+    }
+    else if (handles.backward.top == 'bottom') {
+      zone.backwardTop = zone.top - this.windowHeight;
+    }
+    else {
+      zone.backwardTop = zone.top;
+    }
+
+    if (handles.backward.bottom == 'middle') {
+      zone.backwardBottom = zone.bottom + this.halfHeight;
+    }
+    else if (handles.backward.bottom == 'bottom') {
+      zone.backwardBottom = zone.bottom - this.windowHeight;
+    }
+    else {
+      zone.backwardBottom = zone.bottom;
+    }
+
+    zone.backwardSize = Math.max(1, zone.backwardBottom - zone.backwardTop);
+
+    this.zones.push(zone);
+
+    if (zone.snap) this.snaps.push(zone);
   }
 
   testSnapping(scrollTarget) {
-    if (this.scroller.disableScroll) return;
+    if (this.scroller.disableScroll || !this.snaps.length) return;
 
-    let previous = this.zones[this.currentZoneIndex-1],
-        next = this.zones[this.currentZoneIndex+1];
+    let previous = this.snaps[this.currentSnapIndex-1],
+        next = this.snaps[this.currentSnapIndex+1];
 
-    if (previous && scrollTarget.y < this.currentZone.top) {
-      this.scroller.scrollTarget.y = this.currentZone.top;
+    if (previous && scrollTarget.y < this.currentSnap.top) {
+      this.scroller.scrollTarget.y = this.currentSnap.top;
       this.scroller.scrollTo({
         x: 0,
         y: previous.bottom - Math.min(previous.size, this.windowHeight)-2
       });
     }
-    else if (next && scrollTarget.y > this.currentZone.bottom - this.windowHeight) {
-      this.scroller.scrollTarget.y = this.currentZone.bottom - this.windowHeight;
+    else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+      this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight;
       this.scroller.scrollTo({
         x: 0,
         y: next.top+2
@@ -234,6 +252,7 @@ export class Wasabi {
 
   onScroller(scrollTarget) {
     this.scrollTop = this.scroller.scroll.y;
+    this.testSnapping(scrollTarget);
   }
 
   onVirtualScroll(event) {
@@ -252,21 +271,22 @@ export class Wasabi {
 
       if (!zone.entered && entered) {
         if (zone.tween) zone.tween.resume();
-        if(zone.handler) zone.handler(direction, 'enter', zone.selector);
+        if(zone.handler) zone.handler(direction, 'enter', zone.selector, zone.element);
       }
       else if (zone.entered && !entered) {
-        if(zone.handler) zone.handler(direction, 'leave', zone.selector);
+        if(zone.handler) zone.handler(direction, 'leave', zone.selector, zone.element);
       }
 
       zone.entered = entered;
       if (zone.entered) {
-        if (i != this.currentZoneIndex) {
-          this.currentZone = zone;
-          this.currentZoneIndex = i;
+        let snapIndex = this.snaps.indexOf(zone);
+        if (snapIndex != -1 && snapIndex != this.currentSnapIndex) {
+          this.currentSnap = zone;
+          this.currentSnapIndex = snapIndex;
         }
 
-        if (zone.selector) {
-          forEach(zone.selector + ' [data-wasabi]', (element) => {
+        if (zone.element) {
+          forEach(find(zone.element, '[data-wasabi]'), (element) => {
             let options = eval('('+data(element, 'wasabi')+')');
 
             let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
@@ -310,6 +330,8 @@ export class Wasabi {
       if (zone.tween) this.killTimeline(zone.tween);
       if (zone.progressTween) this.killTimeline(zone.progressTween);
     }
+
+    this.zones = this.snaps = null;
 
     if (this.scroller && this.debugWrapper) this.scroller.unfixElement(this.debugWrapper);
 
