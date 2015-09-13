@@ -12,7 +12,7 @@ export function forElements (elements, callback) {
     }
     else {
       let i = elements.length;
-      while (i--) callback(elements);
+      while (i--) callback(elements[i]);
     }
   });
 }
