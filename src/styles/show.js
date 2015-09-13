@@ -1,7 +1,7 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function show (elements) {
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.style) return;
 
     element.style.display = '';

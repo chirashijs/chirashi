@@ -1,7 +1,7 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function remove (elements) {
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.parentNode) return;
 
     element.parentNode.removeChild(element);

@@ -1,9 +1,9 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function setWidth (elements, width) {
   if (typeof width == 'number') width += 'px';
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.style) return;
     
     element.style.width = width;

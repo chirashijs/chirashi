@@ -1,7 +1,7 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function removeAttr (elements, name) {
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.removeAttribute) return;
 
     element.removeAttribute(name);

@@ -1,9 +1,9 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function setAttr (elements, attributes) {
   let attributesName = Object.keys(attributes);
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.setAttribute) return;
 
     let i = attributesName.length, attributeName;

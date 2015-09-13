@@ -1,7 +1,7 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function setHtml (elements, string) {
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     element.innerHTML = string;
   });
 }

@@ -2,7 +2,6 @@ import { isDomElement } from './isDomElement';
 import { getSelector } from './getSelector';
 
 export function getElement (element) {
-    if (!element) return null;
 
     if (isDomElement(element)) return element;
 

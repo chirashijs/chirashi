@@ -48,6 +48,8 @@ chirashi.ready(() => {
 
 * `forEach (elements, callback)`: excecute `callback` on each element of `elements` from last to first.
 
+* `forElements (elements, callback)`: same as for but excecuting callback only for DOM elements.
+
 * `getElement (element)`: get a DOM element from `element`. Simply return `element` if it's a DOM element, the first element if it's an Array or NodeList or the first matching if selector.
 
 * `getSelector (selector)`: return the first element matching the `selector`.
@@ -180,7 +182,7 @@ chirashi.ready(() => {
 
 * `screenPosition (element)`: return `element`'s position relative to the screen as object.
 
-* `transform (elements, transformation)`: apply a 3D matrix on each element of `elements` for `transformation` described as object. Support: x, y, z, rotate (2D rotation in radiant), rotateX, rotateY, rotateZ, scale, scaleX, scaleY, scaleZ, skew, skewX and skewY.
+* `transform3d (elements, transformation)`: apply a 3D matrix on each element of `elements` for `transformation` described as object. Support: x, y, z, rotate (2D rotation in radiant), rotateX, rotateY, rotateZ, scale, scaleX, scaleY, scaleZ, skew, skewX and skewY.
 Each propertyAXIS value can be declared as:
 ```js
 property: {
@@ -189,6 +191,17 @@ property: {
     z: valueZ
 }
 ```
+
+* `transform2d (elements, transformation)`: apply a 2d matrix on each element of `elements` for `transformation` described as object. Support: x, y, rotate (2D rotation in radiant), scale, scaleX, scaleY, skew, skewX and skewY.
+Each propertyAXIS value can be declared as:
+```js
+property: {
+    x: valueX,
+    y: valueY
+}
+```
+
+* `transform (elements, transformation)`: execute `transform3d` if 3D matrices are supported, else execute `transform2d`.
 
 #### Is tests
 

@@ -1,4 +1,4 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 function applyPropertyToMatrix (property, value, matrix) {
   switch (property) {
@@ -82,7 +82,7 @@ export function transform2d (elements, transformation) {
     .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
   )[1]+'-';
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.style) return;
 
     element.style[prefix+'transform'] = element.style.transform = matrix;

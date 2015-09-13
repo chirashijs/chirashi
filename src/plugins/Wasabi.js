@@ -1,4 +1,4 @@
-import { getSelector, forEach } from '../core';
+import { getSelector, forElements } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, screenPosition, height, transform } from '../styles';
 import { resize, unresize, load } from '../events';
@@ -75,7 +75,7 @@ export class Wasabi {
     if (this.config.debug) remove('#wasabi-debug .wasabi-marker');
 
     if (typeof this.config.zones == 'string') {
-      forEach(this.config.zones, (element) => {
+      forElements(this.config.zones, (element) => {
         this.addZone({}, element);
       });
     }
@@ -85,7 +85,7 @@ export class Wasabi {
         let zoneConfig = this.config.zones[i];
 
         if (zoneConfig.selector) {
-          forEach(zoneConfig.selector, (element) => {
+          forElements(zoneConfig.selector, (element) => {
             this.addZone(zoneConfig, element);
           });
         }
@@ -286,7 +286,7 @@ export class Wasabi {
         }
 
         if (zone.element) {
-          forEach(find(zone.element, '[data-wasabi]'), (element) => {
+          forElements(find(zone.element, '[data-wasabi]'), (element) => {
             let options = eval('('+data(element, 'wasabi')+')');
 
             let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),

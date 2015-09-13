@@ -5,6 +5,7 @@ import { VirtualScroll } from './VirtualScroll';
 import './scroll60fps';
 
 let defaults = {
+  direction: 'auto',
   ease: 0.2,
   autoEase: 0.08,
   fixed: []
@@ -65,12 +66,32 @@ export class SmoothScroller {
     const wrapperWidth  = width(this.wrapper),
           windowWidth   = window.innerWidth,
           wrapperHeight = height(this.wrapper),
-          windowHeight  = window.innerHeight;
+          windowHeight  = window.innerHeight,
+          highestDelta  = Math.abs(event.deltaX) < Math.abs(event.deltaY) ? event.deltaY : event.deltaX;
 
-    this.scrollTarget = {
-        x: Math.min(Math.max(this.scroll.x - event.deltaX, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
-        y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
-    };
+    switch (this.config.direction) {
+      case 'horizontal':
+        this.scrollTarget = {
+          x: Math.min(Math.max(this.scroll.x - highestDelta, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+          y: 0
+        };
+
+        break;
+
+      case 'vertical':
+        this.scrollTarget = {
+          x: 0,
+          y: Math.min(Math.max(this.scroll.y - highestDelta, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
+        };
+
+        break;
+
+      default:
+        this.scrollTarget = {
+          x: Math.min(Math.max(this.scroll.x - event.deltaX, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+          y: Math.min(Math.max(this.scroll.y - event.deltaY, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
+        };
+    }
 
     this.triggerCallbacks();
   }
@@ -168,6 +189,11 @@ export class SmoothScroller {
       });
 
       style(this.wrapper, {
+        'transform': '',
+        'will-change': ''
+      });
+
+      style(this.fixed, {
         'transform': '',
         'will-change': ''
       });

@@ -1,9 +1,9 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function on (elements, events, callback) {
   events = events.split(' ');
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.addEventListener) return;
 
     let i = events.length

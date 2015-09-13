@@ -1,4 +1,4 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 var unitLessAttributes = [
   'z-index',
@@ -25,7 +25,7 @@ export function setStyle (elements, options) {
         options[property] += 'px';
   }
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.style) return;
 
     let i = properties.length, property, value;

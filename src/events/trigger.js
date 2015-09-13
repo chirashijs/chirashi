@@ -1,4 +1,4 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function trigger (elements, events, data) {
   events = events.split(' ');
@@ -14,7 +14,7 @@ export function trigger (elements, events, data) {
       event.initCustomEvent(event, true, true, data);
     }
 
-    forEach(elements, (element) => {
+    forElements(elements, (element) => {
       if (!element.dispatchEvent) return;
 
       element.dispatchEvent(event);

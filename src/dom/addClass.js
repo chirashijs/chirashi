@@ -1,9 +1,9 @@
-import { forEach } from '../core';
+import { forElements } from '../core';
 
 export function addClass (elements, classes) {
   classes = classes.split(' ');
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (!element.classList) return;
 
     let i = classes.length;

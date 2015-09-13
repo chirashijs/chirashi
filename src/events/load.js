@@ -1,9 +1,15 @@
-import { forEach, getSelectorAll } from '../core';
+import { forElements, getSelectorAll } from '../core';
 import { on } from './on';
 import { off } from './off';
 
 export function load (elements, eachCallback, allCallback) {
   if (typeof elements == 'string') elements = getSelectorAll(elements);
+
+  if (!elements) {
+    allCallback();
+
+    return;
+  }
 
   let n = {
     value: elements.length
@@ -19,7 +25,7 @@ export function load (elements, eachCallback, allCallback) {
     if (!(--n.value) && allCallback) allCallback();
   };
 
-  forEach(elements, (element) => {
+  forElements(elements, (element) => {
     if (element.naturalWidth || element.loadedmetadata) {
       callback(element);
     }
