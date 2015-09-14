@@ -130,6 +130,8 @@ export var VirtualScroll = (function(document) {
 			case 40:
 				event.deltaY = -keyStep;
 				break;
+			default:
+				return;
 		}
 
 		notify(e);
