@@ -329,12 +329,34 @@ export class Slider {
 
   kill() {
     unresize(this.resizeCallback);
-    off(this.container, 'touchstart', this.touchstartCallback);
-    off(this.container, 'touchmove', this.touchmoveCallback);
-    off(this.container, 'touchend', this.touchendCallback);
 
-    width(this.slides, '');
-    width(this.wrapper, '');
-    height(this.wrapper, '');
+    if (this.options.touchEnabled) {
+      off(this.container, 'touchstart', this.touchstartCallback);
+      off(this.container, 'touchmove', this.touchmoveCallback);
+      off(this.container, 'touchend', this.touchendCallback);
+    }
+
+    if (this.options.mouseEnabled) {
+      off(this.container, 'mousedown', this.mousestartCallback);
+      off(this.container, 'mousemove', this.mousemoveCallback);
+      off(this.container, 'mouseup', this.mouseendCallback);
+    }
+
+    size(this.slides, {
+      width: '',
+      height: ''
+    });
+
+    size(this.wrapper, {
+      width: '',
+      height: ''
+    });
+
+    size(this.container, {
+      width: '',
+      height: ''
+    });
+
+    if (this.options.clearAnimation) this.options.clearAnimation();
   }
 }
