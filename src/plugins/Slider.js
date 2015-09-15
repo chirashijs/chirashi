@@ -1,6 +1,6 @@
 import { forEach, getElement } from '../core';
-import { find } from '../dom';
-import { size, style, transform, screenPosition } from '../styles';
+import { find, parent } from '../dom';
+import { size, height, width, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
 import { defaultify } from '../utils/defaultify';
 
@@ -8,6 +8,7 @@ let defaults = {
   infinite: false,
   slideWidth: '100%',
   slideHeight: '100%',
+  size: 'container',
   touchDirection: 'horizontal',
   touchThreshold: '50%',
   swipeTime: 300,
@@ -36,6 +37,13 @@ export class Slider {
     this.resizeCallback = resize(this.resize.bind(this));
 
     this.current = 0;
+
+    if (typeof this.options.size != 'object') {
+      this.options.size = {
+        width: this.options.size,
+        height: this.options.size
+      };
+    }
 
     load(find(this.wrapper, 'img'), null, this.resize.bind(this));
 
@@ -88,16 +96,18 @@ export class Slider {
     }
 
     if (this.options.cover) {
-      style(this.slides, {
+      forEach(find(this.container, '.cover'), (element) => {
+        style(parent(element), {
           position: 'relative',
           overflow: 'hidden'
-      });
+        });
 
-      style(find(this.container, '.cover'), {
+        style(element, {
           position: 'absolute',
           top: '50%',
           left: '50%',
           transform: 'translate(-50%, -50%)'
+        });
       });
     }
 
@@ -112,7 +122,40 @@ export class Slider {
   }
 
   resize() {
-    this.containerSize = size(this.container);
+    this.containerSize = {};
+    size(this.container, {
+      width: '',
+      height: ''
+    });
+
+    if (this.options.size.width == 'container') {
+      this.containerSize.width = width(this.container);
+    }
+    else if (this.options.size.width == 'slide') {
+      this.containerSize.width = 0;
+      forEach(this.slides, (slide) => {
+        this.containerSize.width = Math.max(this.containerSize.width, width(slide));
+      });
+    }
+    else {
+      this.containerSize.width = parseInt(this.options.size.width, 10);
+    }
+
+    if (this.options.size.height == 'container') {
+      this.containerSize.height = height(this.container);
+    }
+    else if (this.options.size.height == 'slide') {
+      this.containerSize.height = 0;
+      forEach(this.slides, (slide) => {
+        this.containerSize.height = Math.max(this.containerSize.height, height(slide));
+      });
+    }
+    else {
+      this.containerSize.height = parseInt(this.options.size.height, 10);
+    }
+
+    size(this.container, this.containerSize);
+
     this.slideSize = {
       width: null,
       height: null
@@ -130,7 +173,7 @@ export class Slider {
 
     size(this.slides, this.slideSize);
 
-    if (this.options.touchEnabled) {
+    if (this.options.touchEnabled || this.options.mouseEnabled) {
       let slideTouchSize = this.slideSize[(this.options.touchDirection == 'horizontal') ? 'width' : 'height'];
 
       if (typeof this.options.touchThreshold == 'string' && this.options.touchThreshold.indexOf('%') != -1)
@@ -173,8 +216,9 @@ export class Slider {
         let ratio,
             imgWidth = coverElement.naturalWidth,
             imgHeight = coverElement.naturalHeight,
-            widthRatio = this.slideSize.width / imgWidth,
-            heightRatio = this.slideSize.height / imgHeight;
+            parentSize = size(parent(coverElement)),
+            widthRatio = parentSize.width / imgWidth,
+            heightRatio = parentSize.height / imgHeight;
 
         switch (this.options.cover) {
           case 'fill':
