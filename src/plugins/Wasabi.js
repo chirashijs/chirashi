@@ -104,7 +104,7 @@ export class Wasabi {
         return a.top - b.top
       });
 
-      this.currentSnap = this.zones[this.currentSnapIndex];
+      this.currentSnap = this.snaps[this.currentSnapIndex];
     }
   }
 
