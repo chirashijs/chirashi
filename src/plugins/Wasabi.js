@@ -58,8 +58,8 @@ export class Wasabi {
           if (this.scroller) this.scroller.fixElement(this.debugWrapper);
         }
 
+        this.currentSnapIndex = 0;
         this.refresh();
-        this.currentSnap = this.zones[0];
         this.update();
     });
   }
@@ -103,6 +103,8 @@ export class Wasabi {
       this.snaps.sort((a, b) => {
         return a.top - b.top
       });
+
+      this.currentSnap = this.zones[this.currentSnapIndex];
     }
   }
 
