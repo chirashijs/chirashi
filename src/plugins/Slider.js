@@ -401,6 +401,6 @@ export class Slider {
       height: ''
     });
 
-    if (this.options.clearAnimation) this.options.clearAnimation();
+    if (this.options.clearAnimation) this.options.clearAnimation(this);
   }
 }
