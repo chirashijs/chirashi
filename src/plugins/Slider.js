@@ -1,5 +1,5 @@
 import { forEach, getElement } from '../core';
-import { find, parent } from '../dom';
+import { remove, append, find, parent, indexInParent, addClass, removeClass } from '../dom';
 import { size, height, width, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
 import { defaultify } from '../utils/defaultify';
@@ -33,9 +33,6 @@ export class Slider {
 
     this.callbacks = this.options.callback ? [this.options.callback] : [];
 
-    this.refresh();
-    this.resizeCallback = resize(this.resize.bind(this));
-
     this.current = 0;
 
     if (typeof this.options.size != 'object') {
@@ -44,8 +41,6 @@ export class Slider {
         height: this.options.size
       };
     }
-
-    load(find(this.wrapper, 'img'), null, this.resize.bind(this));
 
     if (this.options.touchEnabled) {
       this.touchstartCallback = this.touchstart.bind(this);
@@ -64,6 +59,12 @@ export class Slider {
       this.mouseendCallback = this.mouseend.bind(this);
       on(this.container, 'mouseup', this.mouseendCallback);
     }
+
+    if (this.options.bullets) this.bulletClickCallback = this.bulletClick.bind(this);
+
+    this.refresh();
+    load(find(this.wrapper, 'img'), null, this.resize.bind(this));
+    this.resizeCallback = resize(this.resize.bind(this));
   }
 
   refresh() {
@@ -119,6 +120,28 @@ export class Slider {
         });
       }
     }
+
+    if (this.options.bullets) {
+        remove(find(this.container, '.'+this.options.bullets.wrapper));
+
+        append(this.container, '<ul class='+this.options.bullets.wrapper+'></ul>');
+        let bulletsWrapper = find(this.container, '.'+this.options.bullets.wrapper),
+            i = -1;
+
+        while(++i < this.slides.length) {
+            append(bulletsWrapper, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
+        }
+
+        on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
+    }
+  }
+
+  bulletClick(event) {
+      event.preventDefault();
+
+      removeClass('.'+this.options.bullets.wrapper+' > li', 'active');
+      addClass(event.currentTarget, 'active');
+      this.slideTo(indexInParent(event.currentTarget));
   }
 
   resize() {
@@ -385,6 +408,8 @@ export class Slider {
       off(this.container, 'mousemove', this.mousemoveCallback);
       off(this.container, 'mouseup', this.mouseendCallback);
     }
+
+    off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
 
     size(this.slides, {
       width: '',
