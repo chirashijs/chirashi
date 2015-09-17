@@ -132,6 +132,8 @@ export class Slider {
             append(bulletsWrapper, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
         }
 
+        addClass('.'+this.options.bullets.wrapper+' > li:first-child', 'active');
+
         on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
     }
   }
