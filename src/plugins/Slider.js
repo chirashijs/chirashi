@@ -34,6 +34,7 @@ export class Slider {
     this.callbacks = this.options.callback ? [this.options.callback] : [];
 
     this.current = 0;
+    this.animating = false;
 
     if (typeof this.options.size != 'object') {
       this.options.size = {
@@ -274,14 +275,15 @@ export class Slider {
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
+    this.animating = false;
   }
 
-  slideTo(target) {
+  slideTo(target, paused = false) {
     if (!this.options.infinite && (target < 0 || target >= this.nbSlide)) return;
 
     this.target = target % this.nbSlide;
 
-    this.animating = !this.touchOrig;
+    this.animating = !paused;
 
     return this.options.animationTween(this, this.animationCallback.bind(this));
   }
@@ -356,7 +358,7 @@ export class Slider {
       this.swipeNext = forward;
 
       let target = this.current + (this.swipeNext ? 1 : -1);
-      this.tween = this.slideTo(target);
+      this.tween = this.slideTo(target, true);
 
       if (this.tween) this.tween.pause();
     }
@@ -374,6 +376,7 @@ export class Slider {
 
     let absLength = Math.abs(this.touchLength);
     if (this.tween && (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold)) {
+      this.animating = true;
       this.tween.play();
     }
     else {
