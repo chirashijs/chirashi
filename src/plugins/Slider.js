@@ -283,9 +283,10 @@ export class Slider {
 
     this.target = target % this.nbSlide;
 
+    let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     this.animating = !paused;
 
-    return this.options.animationTween(this, this.animationCallback.bind(this));
+    return tween;
   }
 
   touchstart(event) {
