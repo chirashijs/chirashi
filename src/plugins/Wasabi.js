@@ -266,7 +266,7 @@ export class Wasabi {
 
   update() {
     let i = this.zones.length,
-        direction = this.previousScrollTop > this.scrollTop ? 'forward' : 'backward';
+        direction = this.previousScrollTop < this.scrollTop ? 'forward' : 'backward';
 
     while (i--) {
       let zone = this.zones[i], entered, progress;
