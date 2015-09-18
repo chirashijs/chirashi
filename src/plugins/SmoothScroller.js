@@ -43,7 +43,7 @@ export class SmoothScroller {
 
     this.ease = this.config.ease;
     this.autoEase = this.config.autoEase;
-    this.disableScroll = false;
+    this.scrollDisabled = false;
 
     this.fixed = [];
     this.fixElements(this.config.fixed);
@@ -58,7 +58,7 @@ export class SmoothScroller {
   }
 
   scrolling(event) {
-    if (this.disableScroll) return;
+    if (this.scrollDisabled) return;
 
     const wrapperWidth  = width(this.wrapper),
           windowWidth   = window.innerWidth,
@@ -74,7 +74,7 @@ export class SmoothScroller {
   }
 
   normalScroll() {
-    if (this.disableScroll) return;
+    if (this.scrollDisabled) return;
 
     this.scroll = {
       x: this.scroll.x + (this.scrollTarget.x - this.scroll.x) * this.ease,
@@ -92,9 +92,10 @@ export class SmoothScroller {
 
     this.triggerCallbacks();
 
-    this.disableScroll = Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1;
-    if (this.disableScroll) this.autoScrollRequest = requestAnimationFrame(this.autoScroll.bind(this));
-    else this.normalScroll();
+    if (Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1)
+        this.autoScrollRequest = requestAnimationFrame(this.autoScroll.bind(this));
+    else
+        this.enableScroll();
   }
 
   triggerCallbacks() {
@@ -127,7 +128,7 @@ export class SmoothScroller {
   }
 
   scrollTo(target) {
-    this.disableScroll = true;
+    this.disableScroll();
 
     const wrapperWidth  = width(this.wrapper),
           windowWidth   = window.innerWidth,
@@ -140,6 +141,15 @@ export class SmoothScroller {
     };
 
     this.autoScroll();
+  }
+
+  disableScroll() {
+    this.scrollDisabled = true;
+  }
+
+  enableScroll() {
+    this.scrollDisabled = false;
+    this.normalScroll();
   }
 
   fixElements(elements) {
