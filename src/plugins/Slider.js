@@ -136,6 +136,8 @@ export class Slider {
 
         on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
     }
+
+    if (this.options.initialize) this.options.initialize(this);
   }
 
   bulletClick(event) {
