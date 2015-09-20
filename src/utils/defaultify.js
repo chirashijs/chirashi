@@ -1,6 +1,9 @@
 import { deepClone } from './deepClone'
 
 export function defaultify (options, defaults) {
+  if (typeof options == 'undefined' || options == null)
+    return defaults;
+
   let keys = Object.keys(defaults),
   newOptions = deepClone(options);
 

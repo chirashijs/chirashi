@@ -10,6 +10,7 @@ let defaults = {
   offset: 0,
   ease: 0.2,
   stepMinSize: 5,
+  snapOffset: 0,
   handle: {
     top: 'top',
     bottom: 'bottom'
@@ -58,8 +59,8 @@ export class Wasabi {
           if (this.scroller) this.scroller.fixElement(this.debugWrapper);
         }
 
+        this.currentSnapIndex = 0;
         this.refresh();
-        this.currentSnap = this.zones[0];
         this.update();
     });
   }
@@ -103,6 +104,8 @@ export class Wasabi {
       this.snaps.sort((a, b) => {
         return a.top - b.top
       });
+
+      this.currentSnap = this.snaps[this.currentSnapIndex];
     }
   }
 
@@ -123,8 +126,8 @@ export class Wasabi {
 
     let offset = (typeof zoneConfig.offset != 'undefined') ? zoneConfig.offset : this.config.offset;
 
-    zone.top = top + (offset.top || offset);
-    zone.bottom = bottom + (offset.bottom || offset);
+    zone.top = top - (typeof offset.top != 'undefined' ? offset.top : offset);
+    zone.bottom = bottom + (typeof offset.bottom != 'undefined' ? offset.bottom : offset);
 
     if (this.config.debug) {
       let topDebug = createElement(`<div class="wasabi-marker"></div>`);
@@ -223,9 +226,17 @@ export class Wasabi {
 
     zone.backwardSize = Math.max(1, zone.backwardBottom - zone.backwardTop);
 
-    this.zones.push(zone);
+    if (zone.snap) {
+        let snapOffset = (typeof zoneConfig.snapOffset != 'undefined') ? zoneConfig.snapOffset : this.config.snapOffset;
+        zone.snapOffset = {
+            top: (typeof snapOffset.top != 'undefined' ? snapOffset.top : snapOffset),
+            bottom: (typeof snapOffset.top != 'undefined' ? snapOffset.top : snapOffset)
+        };
 
-    if (zone.snap) this.snaps.push(zone);
+        this.snaps.push(zone);
+    }
+
+    this.zones.push(zone);
   }
 
   testSnapping(scrollTarget) {
@@ -234,14 +245,14 @@ export class Wasabi {
     let previous = this.snaps[this.currentSnapIndex-1],
         next = this.snaps[this.currentSnapIndex+1];
 
-    if (previous && scrollTarget.y < this.currentSnap.top) {
+    if (previous && scrollTarget.y < this.currentSnap.top - this.currentSnap.snapOffset.top) {
       this.scroller.scrollTarget.y = this.currentSnap.top;
       this.scroller.scrollTo({
         x: 0,
         y: previous.bottom - Math.min(previous.size, this.windowHeight)-2
       });
     }
-    else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+    else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight + this.currentSnap.snapOffset.bottom) {
       this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight;
       this.scroller.scrollTo({
         x: 0,
