@@ -417,7 +417,8 @@ export class Slider {
       off(this.container, 'mouseup', this.mouseendCallback);
     }
 
-    off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
+    if (this.options.bullets)
+      off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
 
     size(this.slides, {
       width: '',
