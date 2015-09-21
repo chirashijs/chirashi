@@ -345,7 +345,6 @@ export class Slider {
     this.touchOrig = position;
 
     this.swipeNext = null;
-    this.tween = null;
     this.time = new Date().getTime();
   }
 
@@ -355,20 +354,22 @@ export class Slider {
     this.touchLength = this.options.touchDirection == 'horizontal' ? position.x - this.touchOrig.x : position.y - this.touchOrig.y;
     let forward = this.touchLength < 0;
 
-    if (!this.tween || this.swipeNext != forward) {
+    if (this.swipeNext != forward) {
       this.swipeNext = forward;
 
-      let target = this.current + (this.swipeNext ? 1 : -1);
-      this.tween = this.slideTo(target, true);
-
-      if (this.tween) this.tween.pause();
+      this.target = this.current + (this.swipeNext ? 1 : -1);
     }
 
     if (this.onDrag) {
       this.onDrag(this, this.touchLength);
     }
-    else if (this.tween) {
-      this.tween.progress(Math.abs(this.touchLength) / this.slideWidth);
+    else {
+      let tween = this.slideTo(this.target, true);
+
+      if (tween) {
+        tween.pause();
+        tween.progress(Math.abs(this.touchLength) / this.slideWidth);
+      }
     }
   }
 
@@ -376,9 +377,8 @@ export class Slider {
     if (!this.touchOrig) return;
 
     let absLength = Math.abs(this.touchLength);
-    if (this.tween && (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold)) {
-      this.animating = true;
-      this.tween.play();
+    if (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold) {
+      this.slideTo(this.target);
     }
     else {
       this.target = this.current;
@@ -386,8 +386,8 @@ export class Slider {
       if (this.onDragEnd) {
         this.onDragEnd(this);
       }
-      else if (this.tween) {
-        this.tween.reverse();
+      else {
+        this.slideTo(this.current);
       }
     }
 
