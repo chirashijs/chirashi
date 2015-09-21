@@ -240,15 +240,15 @@ export class Wasabi {
     let previous = this.snaps[this.currentSnapIndex-1],
         next = this.snaps[this.currentSnapIndex+1];
 
-    if (previous && scrollTarget.y < this.currentSnap.top - this.currentSnap.snapOffset.top) {
-      this.scroller.scrollTarget.y = this.currentSnap.top;
+    if (previous && scrollTarget.y < this.currentSnap.top) {
+      this.scroller.scrollTarget.y = this.currentSnap.top + this.currentSnap.offset.top;
       this.scroller.scrollTo({
         x: 0,
         y: (previous.bottom - this.currentSnap.offset.bottom) - Math.min(previous.size, this.windowHeight)-1
       });
     }
-    else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight + this.currentSnap.snapOffset.bottom) {
-      this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight;
+    else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+      this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight - this.currentSnap.offset.bottom;
       this.scroller.scrollTo({
         x: 0,
         y: (next.top + this.currentSnap.offset.top)+1
