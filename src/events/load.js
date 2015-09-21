@@ -5,8 +5,8 @@ import { off } from './off';
 export function load (elements, eachCallback, allCallback) {
   if (typeof elements == 'string') elements = getSelectorAll(elements);
 
-  if (!elements) {
-    allCallback();
+  if (!elements || !elements.length) {
+    if (allCallback) allCallback();
 
     return;
   }
