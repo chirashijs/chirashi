@@ -271,11 +271,13 @@ export class Slider {
   }
 
   animationCallback () {
+    this.animating = false;
+    this.touchOrig = null;
+
     let i = this.callbacks.length;
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
-    this.animating = false;
   }
 
   slideTo(target, paused = false) {
@@ -284,6 +286,8 @@ export class Slider {
     this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
+    if (paused) tween.pause();
+
     this.animating = !paused;
 
     return tween;
@@ -343,6 +347,7 @@ export class Slider {
 
   dragStart(position) {
     this.touchOrig = position;
+    this.touchLength = 0;
 
     this.swipeNext = null;
     this.time = new Date().getTime();
@@ -367,7 +372,6 @@ export class Slider {
       let tween = this.slideTo(this.target, true);
 
       if (tween) {
-        tween.pause();
         tween.progress(Math.abs(this.touchLength) / this.slideWidth);
       }
     }
@@ -385,13 +389,12 @@ export class Slider {
 
       if (this.onDragEnd) {
         this.onDragEnd(this);
+        this.touchOrig = null;
       }
       else {
         this.slideTo(this.current);
       }
     }
-
-    this.touchOrig = null;
   }
 
   on(callback) {
