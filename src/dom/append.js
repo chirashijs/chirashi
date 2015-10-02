@@ -9,4 +9,6 @@ export function append (elements, node) {
 
     element.appendChild(node);
   });
+
+  return node;
 }

@@ -43,26 +43,26 @@ export class Wasabi {
 
     this.resizeCallback = resize(this.refresh.bind(this));
 
-    load(find(this.wrapper, 'img'), null, () => {
-        if (this.config.debug) {
-          this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
-          style(this.debugWrapper, {
-            'z-index': 9999,
-            width: 25,
-            height: height(this.wrapper),
-            position: 'absolute',
-            top: 0,
-            right: 0
-          });
-          append(this.wrapper, this.debugWrapper);
+    if (this.config.debug) {
+      this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
+      style(this.debugWrapper, {
+        'z-index': 9999,
+        width: 25,
+        height: height(this.wrapper),
+        position: 'absolute',
+        top: 0,
+        right: 0
+      });
+      append(this.wrapper, this.debugWrapper);
 
-          if (this.scroller) this.scroller.fixElement(this.debugWrapper);
-        }
+      if (this.scroller) this.scroller.fixElement(this.debugWrapper);
+    }
 
-        this.currentSnapIndex = 0;
-        this.refresh();
-        this.update();
-    });
+    this.currentSnapIndex = 0;
+    this.refresh();
+    this.update();
+
+    load(find(this.wrapper, 'img'), this.refresh.bind(this));
   }
 
   refresh() {

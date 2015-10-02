@@ -18,7 +18,7 @@ export function load (elements, eachCallback, allCallback) {
   let callback = (event) => {
     let element = event.currentTarget;
 
-    off(element, 'load loadedmetadata', callback);
+    off(element, 'load loadedmetadata error', callback);
 
     if (eachCallback) eachCallback.apply(element);
 
@@ -30,7 +30,7 @@ export function load (elements, eachCallback, allCallback) {
       callback(element);
     }
     else {
-      on(element, 'load loadedmetadata', callback.bind(element));
+      on(element, 'load loadedmetadata error', callback.bind(element));
     }
   });
 }
