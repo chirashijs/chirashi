@@ -271,7 +271,7 @@ export class Slider {
     }
   }
 
-  animationCallback () {
+  animationCallback() {
     this.animating = false;
     this.touchOrig = null;
 
@@ -279,11 +279,20 @@ export class Slider {
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
+    this.updateActiveBullet();
 
     if (this.options.auto) {
         clearTimeout(this.nextTimeout);
         this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
     }
+  }
+
+  updateActiveBullet() {
+    if (!this.options.bullets) return;
+
+    let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > li');
+    removeClass(bullets, 'active');
+    addClass(bullets[this.current], 'active');
   }
 
   slideDown() {
@@ -301,6 +310,7 @@ export class Slider {
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
+    else this.updateActiveBullet();
 
     this.animating = !paused;
 
