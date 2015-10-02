@@ -139,6 +139,7 @@ export class Slider {
     }
 
     if (this.options.initialize) this.options.initialize(this);
+    if (this.options.auto) setTimeout(this.slideUp.bind(this), this.options.auto);
   }
 
   bulletClick(event) {
@@ -278,6 +279,16 @@ export class Slider {
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
+
+    if (this.options.auto) setTimeout(this.slideUp.bind(this), this.options.auto);
+  }
+
+  slideDown() {
+    this.slideTo(this.current-1);
+  }
+
+  slideUp() {
+    this.slideTo(this.current+1);
   }
 
   slideTo(target, paused = false) {
