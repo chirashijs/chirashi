@@ -1,4 +1,4 @@
-import { forEach, getElement } from '../core';
+import { forEach, getElement, getSelectorAll } from '../core';
 import { remove, append, find, parent, indexInParent, addClass, removeClass } from '../dom';
 import { size, height, width, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
@@ -283,20 +283,12 @@ export class Slider {
     while(i--) this.callbacks[i](this.target, this.current);
 
     this.current = this.target;
-    this.updateActiveBullet();
+    this.updateActiveBullet(this.current);
 
     if (this.options.auto) {
         clearTimeout(this.nextTimeout);
         this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
     }
-  }
-
-  updateActiveBullet() {
-    if (!this.options.bullets) return;
-
-    let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > li');
-    removeClass(bullets, 'active');
-    addClass(bullets[this.current], 'active');
   }
 
   slideDown() {
@@ -308,13 +300,11 @@ export class Slider {
   }
 
   slideTo(target, paused = false) {
-    if (!this.options.infinite && (target < 0 || target >= this.nbSlide)) return;
-
     this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
-    else if (this.options.bullets) this.updateActiveBullet(target);
+    else this.updateActiveBullet(this.target);
 
     this.animating = !paused;
 
