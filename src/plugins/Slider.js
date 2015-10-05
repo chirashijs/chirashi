@@ -302,6 +302,8 @@ export class Slider {
   }
 
   slideTo(target, paused = false) {
+    if (this.animating) return;
+
     this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
