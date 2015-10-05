@@ -145,9 +145,13 @@ export class Slider {
   bulletClick(event) {
       event.preventDefault();
 
-      removeClass('.'+this.options.bullets.wrapper+' > li', 'active');
-      addClass(event.currentTarget, 'active');
       this.slideTo(indexInParent(event.currentTarget));
+  }
+
+  updateActiveBullet(index) {
+      let bullets = getSelectorAll('.'+this.options.bullets.wrapper+' > li');
+      removeClass(bullets, 'active');
+      addClass(bullets[index], 'active');
   }
 
   resize() {
@@ -301,6 +305,9 @@ export class Slider {
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
+    else if (this.options.bullets) this.updateActiveBullet(target);
+
+    console.log(this.options.bullets);
 
     this.animating = !paused;
 
@@ -453,5 +460,6 @@ export class Slider {
     });
 
     if (this.options.clearAnimation) this.options.clearAnimation(this);
+    if (this.nextTimeout) clearTimeout(this.nextTimeout);
   }
 }
