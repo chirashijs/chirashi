@@ -314,13 +314,7 @@ export class Slider {
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
-<<<<<<< HEAD
     else if (this.options.bullets) this.updateActiveBullet(target);
-
-    console.log(this.options.bullets);
-=======
-    else this.updateActiveBullet();
->>>>>>> 33fb5571ef2275ade431575bee382241d1b48769
 
     this.animating = !paused;
 
