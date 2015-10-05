@@ -149,6 +149,8 @@ export class Slider {
   }
 
   updateActiveBullet(index) {
+      if (!this.options.bullets) return;
+
       let bullets = getSelectorAll('.'+this.options.bullets.wrapper+' > li');
       removeClass(bullets, 'active');
       addClass(bullets[index], 'active');
@@ -438,8 +440,10 @@ export class Slider {
       off(this.container, 'mouseup', this.mouseendCallback);
     }
 
-    if (this.options.bullets)
+    if (this.options.bullets) {
       off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
+      remove('.'+this.options.bullets.wrapper);
+    }
 
     size(this.slides, {
       width: '',
