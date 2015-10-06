@@ -15,22 +15,28 @@ export function load (elements, eachCallback, allCallback) {
     value: elements.length
   };
 
-  let callback = (event) => {
-    let element = event.currentTarget;
+  let callback = function (event, element, error) {
+    if (event) {
+        element = event.target;
+        if (event.type == 'error') error = event;
+    }
 
     off(element, 'load loadedmetadata error', callback);
 
-    if (eachCallback) eachCallback.apply(element);
+    if (eachCallback) eachCallback(element, error);
 
     if (!(--n.value) && allCallback) allCallback();
   };
 
   forElements(elements, (element) => {
-    if (element.naturalWidth || element.loadedmetadata) {
-      callback(element);
+    if (!element.src) {
+        callback(null, element, 'no src');
+    }
+    else if (element.naturalWidth || element.loadedmetadata) {
+      callback(null, element, null);
     }
     else {
-      on(element, 'load loadedmetadata error', callback.bind(element));
+      on(element, 'load loadedmetadata error', callback);
     }
   });
 }
