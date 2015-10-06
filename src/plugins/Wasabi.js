@@ -1,6 +1,6 @@
 import { getSelector, forElements } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
-import { style, screenPosition, height, transform } from '../styles';
+import { style, screenPosition, height, transform, size } from '../styles';
 import { resize, unresize, load } from '../events';
 import { defaultify } from '../utils/defaultify';
 import { VirtualScroll } from './VirtualScroll';
@@ -298,7 +298,21 @@ export class Wasabi {
             let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
                 toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
                 fromX = (options.from && options.from.x) || 0,
-                fromY = (options.from && options.from.y) || 0;
+                fromY = (options.from && options.from.y) || 0,
+                parentSize = size(element.parentNode);
+
+            if (typeof toX == 'string' && toX.indexOf('%') != -1)
+                toX = parseInt(toX, 10) * parentSize.width;
+
+            if (typeof toY == 'string' && toY.indexOf('%') != -1)
+                toY = parseInt(toY, 10) * parentSize.height;
+
+            if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
+                fromX = parseInt(fromX, 10) * parentSize.width
+
+            if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
+                fromY = parseInt(fromY, 10) * parentSize.height;
+
 
             transform(element, {
               x: fromX + (toX - fromX) * progress,
