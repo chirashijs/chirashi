@@ -168,8 +168,8 @@ export class Parallax {
       let inertia = value.inertia(this.frame);
 
       let transformation = {
-        x: (value.translation.x + inertia.x) * value.depth * this.params.xRatio,
-        y: (value.translation.y + inertia.y) * value.depth * this.params.yRatio,
+        x: value.translation.x * value.depth * this.params.xRatio + inertia.x * value.depth,
+        y: value.translation.y * value.depth * this.params.yRatio + inertia.y * value.depth,
         rotate: {
           x: value.rotation.x * this.params.yRatio,
           y: value.rotation.y * this.params.xRatio
