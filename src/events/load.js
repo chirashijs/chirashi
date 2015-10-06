@@ -29,8 +29,8 @@ export function load (elements, eachCallback, allCallback) {
   };
 
   forElements(elements, (element) => {
-    if (!element.src) {
-        callback(null, element, 'no src');
+    if (element.tagName == 'IMG' && !element.src) {
+        callback(null, element, 'image without src');
     }
     else if (element.naturalWidth || element.loadedmetadata) {
       callback(null, element, null);
