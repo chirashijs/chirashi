@@ -46,7 +46,6 @@ export class Slider {
     if (this.options.bullets) this.bulletClickCallback = this.bulletClick.bind(this);
 
     this.refresh();
-    load(find(this.wrapper, 'img'), null, this.resize.bind(this));
     this.resizeCallback = resize(this.resize.bind(this));
 
     if (this.options.touchEnabled) {
@@ -66,6 +65,8 @@ export class Slider {
       this.mouseendCallback = this.mouseend.bind(this);
       on(this.container, 'mouseup', this.mouseendCallback);
     }
+
+    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
   }
 
   refresh() {
@@ -138,8 +139,7 @@ export class Slider {
         on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
     }
 
-    if (this.options.initialize) this.options.initialize(this);
-    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+    load(find(this.wrapper, 'img'), null, this.resize.bind(this));
   }
 
   bulletClick(event) {
@@ -275,6 +275,8 @@ export class Slider {
         });
       });
     }
+
+    if (this.options.initialize) this.options.initialize(this);
   }
 
   animationCallback() {
