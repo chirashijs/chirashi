@@ -5,7 +5,7 @@ import { isDomElement } from './isDomElement';
 export function forEach (elements, callback) {
   if (!elements) return;
 
-  if (typeof elements == 'string' || !elements.length) {
+  if (!(elements instanceof Array || elements instanceof NodeList)) {
     callback(elements);
   }
   else {
