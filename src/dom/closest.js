@@ -1,7 +1,7 @@
 import { getElement } from '../core';
 
 export function closest (element, selector, level) {
-  if (typeof level.value != 'undefined') ++level.value;
+  if (level && typeof level.value != 'undefined') ++level.value;
 
   element = getElement(element);
 
