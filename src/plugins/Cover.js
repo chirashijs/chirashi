@@ -1,24 +1,29 @@
 import { forEach, forElements, getElements } from '../core';
 import { parent } from '../dom';
-import { resize, unresize, load } from '../events';
-import { size } from '../styles';
+import { resize, unresize, load, watch, unwatch } from '../events';
+import { style, size } from '../styles';
 import { defaultify } from '../utils/defaultify';
 
-const defaults = {};
-
 export class Cover {
-  constructor(options) {
-    this.options = defaultify(options, defaults);
+  constructor(options = {}) {
+    this.options = options;
 
-    this.addElements(this.options.elements);
-    this.elements = [];
+    this.items = [];
+
+    if (this.options.items)
+        forEach(this.options.items, (item) => {
+          this.addElements(item);
+        });
 
     this.resizeCallback = resize(this.resizeAll.bind(this));
   }
 
-  addElements(elements) {
-    forElements(elements, (element) => {
-      this.elements.push(element);
+  addElements(item) {
+    forElements(item.elements, (element) => {
+      let index = this.items.push({
+        element: element,
+        mode: item.mode
+      });
 
       style(parent(element), {
         position: 'relative',
@@ -33,15 +38,24 @@ export class Cover {
         left: '-9999px',
         margin: 'auto'
       });
+
+      let newItem = this.items[index-1];
+
+      newItem.watcher = watch(element, 'src', (value) => {
+          load(element, () => {
+            this.resize(newItem);
+          });
+      });
+
+      load(element, () => {
+        this.resize(newItem);
+      });
     });
   }
 
   removeElements(elements) {
     forElements(elements, (element) => {
       size(element, {width:'', height: ''});
-
-      let index = this.elements.indexOf(element);
-      if (index != -1) this.elements.splice(index, 1);
 
       style(parent(element), {
         position: '',
@@ -51,27 +65,31 @@ export class Cover {
       style(element, {
         position: '',
         top: '',
-        right: '',
-        bottom: '',
-        left: '',
-        margin: ''
+        left: ''
       });
+
+      let i = this.items.length, found = false;
+      while(!found && i--) {
+          if (found = element == this.items[i].elements) {
+              this.items.slice(i, 1);
+          }
+      }
     });
   }
 
   resizeAll() {
-    forEach(this.elements, this.resize.bind(this));
+    forEach(this.items, this.resize.bind(this));
   }
 
-  resize(element) {
+  resize(item) {
       let ratio,
-          imgWidth = element.naturalWidth,
-          imgHeight = element.naturalHeight,
-          parentSize = size(parent(element)),
+          imgWidth = item.element.naturalWidth,
+          imgHeight = item.element.naturalHeight,
+          parentSize = size(parent(item.element)),
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
 
-      switch (this.options.type) {
+      switch (item.mode) {
         case 'fill':
           ratio = Math.max(widthRatio, heightRatio);
 
@@ -85,7 +103,7 @@ export class Cover {
           ratio = 1;
       }
 
-      size(element, {
+      size(item.element, {
         width: ratio * imgWidth,
         height: ratio * imgHeight
       });
@@ -94,15 +112,17 @@ export class Cover {
   kill() {
     unresize(this.resizeCallback);
 
-    size(this.elements, {width:'', height: ''});
+    forEach(this.items, (item) => {
+        size(item.element, {width:'', height: ''});
 
-    forEach(this.elements, (element) => {
-        style(parent(element), {
+        unwatch(item.watcher);
+
+        style(parent(item.element), {
           position: '',
           overflow: ''
         });
 
-        style(element, {
+        style(item.element, {
           position: '',
           top: '',
           right: '',

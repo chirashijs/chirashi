@@ -3,6 +3,9 @@ import { remove, append, find, parent, indexInParent, addClass, removeClass } fr
 import { size, height, width, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
 import { defaultify } from '../utils/defaultify';
+import { Cover } from './cover';
+
+const coverManager = new Cover();
 
 let defaults = {
   infinite: false,
@@ -99,18 +102,9 @@ export class Slider {
     }
 
     if (this.options.cover) {
-      forEach(find(this.container, '.cover'), (element) => {
-        style(parent(element), {
-          position: 'relative',
-          overflow: 'hidden'
-        });
-
-        style(element, {
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
-        });
+      coverManager.addElements({
+          elements: find(this.container, '.cover'),
+          mode: this.options.cover
       });
     }
 
@@ -245,36 +239,6 @@ export class Slider {
     }
 
     size(this.wrapper, wrapperSize);
-
-    if (this.options.cover) {
-      forEach(find(this.container, '.cover'), (coverElement) => {
-        let ratio,
-            imgWidth = coverElement.naturalWidth,
-            imgHeight = coverElement.naturalHeight,
-            parentSize = size(parent(coverElement)),
-            widthRatio = parentSize.width / imgWidth,
-            heightRatio = parentSize.height / imgHeight;
-
-        switch (this.options.cover) {
-          case 'fill':
-            ratio = Math.max(widthRatio, heightRatio);
-
-            break;
-          case 'fit':
-            ratio = Math.min(widthRatio, heightRatio);
-
-            break;
-
-          default:
-            ratio = 1;
-        }
-
-        size(coverElement, {
-          width: ratio * imgWidth,
-          height: ratio * imgHeight
-        });
-      });
-    }
 
     if (this.options.initialize) this.options.initialize(this);
   }
