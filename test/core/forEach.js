@@ -2,8 +2,7 @@ import assert from 'assert';
 import { forEach } from '../../src';
 
 describe('chirashi#forEach', () => {
-    const list1 = ['.test-1', '.test-2', '.test-3'];
-    const list2 = '.test-1, .test-2, .test-3';
+    const list = ['.test-1', '.test-2', '.test-3'];
 
     it('should return a function', () => {
         assert.equal(typeof forEach, 'function');
