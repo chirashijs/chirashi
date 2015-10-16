@@ -46,7 +46,7 @@ export class Parallax {
     this.resize();
     this.resizeCallback = resize(this.resize.bind(this));
 
-    this.update();
+    if (!options.paused) this.play();
   }
 
   refresh() {
@@ -162,6 +162,8 @@ export class Parallax {
   }
 
   update() {
+    if (!this.playing) return;
+
     ++this.frame;
 
     forOf(this.layers, (key, value) => {
@@ -191,13 +193,25 @@ export class Parallax {
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
+  pause() {
+      this.playing = false;
+      cancelAnimationFrame(this.updateRequest);
+  }
+
+  play() {
+      this.playing = true;
+      this.updateRequest = requestAnimationFrame(this.update.bind(this));
+  }
+
   kill() {
+    this.playing = false;
+    cancelAnimationFrame(this.updateRequest);
+
     style(this.container, {
       perspective: ''
     });
 
     unresize(this.resizeCallback);
     off(this.container, 'mousemove', this.resizeCallback);
-    cancelAnimationFrame(this.updateRequest);
   }
 }
