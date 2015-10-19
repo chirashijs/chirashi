@@ -46,7 +46,11 @@ export class Parallax {
     this.resize();
     this.resizeCallback = resize(this.resize.bind(this));
 
-    if (!options.paused) this.play();
+    this.listen = this.playing = !options.paused;
+    if (this.playing) this.play();
+
+    this.mousemoveCallback = this.mousemove.bind(this);
+    on(this.container, 'mousemove', this.mousemoveCallback);
   }
 
   refresh() {
@@ -129,9 +133,6 @@ export class Parallax {
 
       this.layers[key] = value;
     });
-
-    this.mousemoveCallback = this.mousemove.bind(this);
-    on(this.container, 'mousemove', this.mousemoveCallback);
   }
 
   resize() {
@@ -146,19 +147,23 @@ export class Parallax {
   }
 
   mousemove(event) {
-    this.mouse = {
+    if (!this.listen) return;
+
+    this.updateParams({
       x: event.pageX,
       y: event.pageY
-    };
+    });
+  }
 
-    this.params = {
-      angle: Math.atan2(this.center.y - this.mouse.y, this.center.x - this.mouse.x),
-      length: Math.sqrt((this.center.y - this.mouse.y) * (this.center.y - this.mouse.y) + (this.center.x - this.mouse.x) * (this.center.x - this.mouse.x))
-    };
+  updateParams(target) {
+      this.params = {
+        angle: Math.atan2(this.center.y - target.y, this.center.x - target.x),
+        length: Math.sqrt((this.center.y - target.y) * (this.center.y - target.y) + (this.center.x - target.x) * (this.center.x - target.x))
+      };
 
-    this.params.ratio = this.params.length / this.maxLength;
-    this.params.xRatio = Math.cos(this.params.angle) * this.params.ratio;
-    this.params.yRatio = Math.sin(this.params.angle) * this.params.ratio;
+      this.params.ratio = this.params.length / this.maxLength;
+      this.params.xRatio = Math.cos(this.params.angle) * this.params.ratio;
+      this.params.yRatio = Math.sin(this.params.angle) * this.params.ratio;
   }
 
   update() {
@@ -194,13 +199,35 @@ export class Parallax {
   }
 
   pause() {
-      this.playing = false;
+      this.listen = this.playing = false;
       cancelAnimationFrame(this.updateRequest);
   }
 
   play() {
-      this.playing = true;
-      this.updateRequest = requestAnimationFrame(this.update.bind(this));
+      if (this.playing) {
+          this.listen = true;
+      }
+      else {
+          this.listen = this.playing = true;
+          this.updateRequest = requestAnimationFrame(this.update.bind(this));
+      }
+  }
+
+  reset() {
+      this.pause();
+
+      forOf(this.layers, (key, value) => {
+        this.layers[key].currentTransformation = {
+          x: 0,
+          y: 0,
+          rotate: {
+            x: 0,
+            y: 0
+          }
+        }
+
+        transform(value.elements, this.layers[key].currentTransformation);
+      });
   }
 
   kill() {
