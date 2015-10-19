@@ -5,8 +5,6 @@ import { resize, unresize, load, on, off } from '../events';
 import { defaultify } from '../utils/defaultify';
 import { Cover } from './cover';
 
-const coverManager = new Cover();
-
 let defaults = {
   infinite: false,
   slideWidth: '100%',
@@ -35,6 +33,8 @@ export class Slider {
     this.swipeTime = this.options.swipeTime;
 
     this.callbacks = this.options.callback ? [this.options.callback] : [];
+
+    this.coverManager = new Cover();
 
     this.current = 0;
     this.animating = false;
@@ -102,7 +102,7 @@ export class Slider {
     }
 
     if (this.options.cover) {
-      coverManager.addElements({
+      this.coverManager.addElements({
           elements: find(this.container, '.cover'),
           mode: this.options.cover
       });
@@ -133,7 +133,11 @@ export class Slider {
         on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
     }
 
-    load(find(this.wrapper, 'img'), null, this.resize.bind(this));
+    load(find(this.wrapper, 'img'), null, () => {
+        this.resize();
+        this.coverManager.resizeAll();
+        if (this.options.initialize) this.options.initialize(this);
+    });
   }
 
   bulletClick(event) {
@@ -240,7 +244,7 @@ export class Slider {
 
     size(this.wrapper, wrapperSize);
 
-    if (this.options.initialize) this.options.initialize(this);
+    if (this.options.resize) this.options.resize(this);
   }
 
   animationCallback() {
@@ -270,7 +274,8 @@ export class Slider {
   slideTo(target, paused = false) {
     if (this.animating) return;
 
-    this.target = target % this.nbSlide;
+    if (target < 0) this.target = target - (target % -this.nbSlide);
+    else this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
@@ -430,5 +435,7 @@ export class Slider {
 
     if (this.options.clearAnimation) this.options.clearAnimation(this);
     if (this.nextTimeout) clearTimeout(this.nextTimeout);
+
+    if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'));
   }
 }
