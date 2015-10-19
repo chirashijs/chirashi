@@ -1,3 +1,3 @@
-export function unwatch (request) {
-  cancelAnimationFrame(request.value);
+export function unwatch (watching) {
+  watching.value = false;
 }

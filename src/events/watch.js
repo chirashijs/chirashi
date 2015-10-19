@@ -1,9 +1,9 @@
-import { forElements } from '../core';
+import { forEach, forElements } from '../core';
 import { getProp } from '../dom';
 
 export function watch (elements, prop, handler) {
-  var request = {
-      value: null
+  var watching = {
+      value: true
   };
 
   let watched = [];
@@ -16,15 +16,19 @@ export function watch (elements, prop, handler) {
   });
 
   function update () {
+      if (!watching.value) return;
+
       forEach(watched, (item) => {
         let value = getProp(item.element, item.prop);
         if (item.value != value) {
-            handler.apply(item.element, item.prop, value);
+            handler.call(item.element, item.prop, value);
         }
-      })
+      });
 
-      request.value = requestAnimationFrame(update);
+       requestAnimationFrame(update);
   }
 
-  return request;
+  update();
+
+  return watching;
 }
