@@ -4,6 +4,6 @@ export function show (elements) {
   forElements(elements, (element) => {
     if (!element.style) return;
 
-    element.style.visibility = '';
+    element.style.display = '';
   });
 }

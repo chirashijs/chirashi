@@ -136,6 +136,7 @@ export class Slider {
     load(find(this.wrapper, 'img'), null, () => {
         this.resize();
         this.coverManager.resizeAll();
+        if (this.options.initialize) this.options.initialize(this);
     });
   }
 
@@ -243,7 +244,7 @@ export class Slider {
 
     size(this.wrapper, wrapperSize);
 
-    if (this.options.initialize) this.options.initialize(this);
+    if (this.options.resize) this.options.resize(this);
   }
 
   animationCallback() {
@@ -273,7 +274,8 @@ export class Slider {
   slideTo(target, paused = false) {
     if (this.animating) return;
 
-    this.target = target % this.nbSlide;
+    if (target < 0) this.target = target - (target % -this.nbSlide);
+    else this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
     if (paused) tween.pause();
