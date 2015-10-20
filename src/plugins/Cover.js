@@ -113,7 +113,7 @@ export class Cover {
     unresize(this.resizeCallback);
 
     forEach(this.items, (item) => {
-        size(item.element, {width:'', height: ''});
+        size(item.element, {width: '', height: ''});
 
         unwatch(item.watcher);
 

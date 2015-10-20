@@ -37,7 +37,7 @@ export function drag(elements, move, begin, end) {
     };
 
     on(element, 'touchstart, mousedown', callbacks.begin);
-    on(element, 'touchmove, mousemove', callbacks.move);
+    on(document.body, 'touchmove, mousemove', callbacks.move);
     on(document.body, 'touchend, mouseup', callbacks.end);
 
     return callbacks;
