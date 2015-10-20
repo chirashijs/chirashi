@@ -1,7 +1,7 @@
 import { forEach, forElements } from '../core';
 import { getProp } from '../dom';
 
-export function watch (elements, prop, handler) {
+export function watchProp (elements, prop, handler) {
   var watching = {
       value: true
   };

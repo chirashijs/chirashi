@@ -1,6 +1,6 @@
 import { forEach, forElements, getElements } from '../core';
 import { parent } from '../dom';
-import { resize, unresize, load, watch, unwatch } from '../events';
+import { resize, unresize, load, watchProp, unwatchProp } from '../events';
 import { style, size } from '../styles';
 import { defaultify } from '../utils/defaultify';
 
@@ -41,7 +41,7 @@ export class Cover {
 
       let newItem = this.items[index-1];
 
-      newItem.watcher = watch(element, 'src', (value) => {
+      newItem.watcher = watchProp(element, 'src', (value) => {
           load(element, () => {
             this.resize(newItem);
           });
