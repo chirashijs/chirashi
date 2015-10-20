@@ -46,10 +46,6 @@ export class Cover {
             this.resize(newItem);
           });
       });
-
-      load(element, () => {
-        this.resize(newItem);
-      });
     });
   }
 
