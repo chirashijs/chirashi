@@ -6,10 +6,10 @@ export function forEach (elements, callback) {
   if (!elements) return;
 
   if (!(elements instanceof Array || elements instanceof NodeList)) {
-    callback(elements);
+    callback(elements, 0);
   }
   else {
     let i = elements.length;
-    while(i--) callback(elements[i]);
+    while(i--) callback(elements[i], i);
   }
 }
