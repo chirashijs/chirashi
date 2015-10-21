@@ -46,8 +46,7 @@ export class Parallax {
     this.resize();
     this.resizeCallback = resize(this.resize.bind(this));
 
-    this.listen = this.playing = !options.paused;
-    if (this.playing) this.play();
+    if (!options.paused) this.play();
 
     this.mousemoveCallback = this.mousemove.bind(this);
     on(this.container, 'mousemove', this.mousemoveCallback);

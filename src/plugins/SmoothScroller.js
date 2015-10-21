@@ -107,8 +107,6 @@ export class SmoothScroller {
         x: Math.min(Math.max(scrollable.scroll.x - scrollable.delta.x, 0), wrapperSize.width > parentSize.width ? wrapperSize.width - parentSize.width : 0),
         y: Math.min(Math.max(scrollable.scroll.y - scrollable.delta.y, 0), wrapperSize.height > parentSize.height ? wrapperSize.height - parentSize.height : 0)
     };
-
-    this.triggerCallbacks();
   }
 
   updateScroll(ease) {
@@ -131,8 +129,6 @@ export class SmoothScroller {
   autoScroll() {
     this.updateScroll(this.autoEase);
 
-    this.triggerCallbacks();
-
     if (Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1)
         this.autoScrollRequest = requestAnimationFrame(this.autoScroll.bind(this));
     else
@@ -145,6 +141,8 @@ export class SmoothScroller {
   }
 
   update() {
+    if (this.scrollTarget.y - this.scroll.y) this.triggerCallbacks();
+
     forEach(this.scrollable, (scrollable) => {
       transform(scrollable.element, {
         x: -scrollable.scroll.x,
