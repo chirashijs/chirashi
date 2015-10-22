@@ -129,6 +129,7 @@ export class Wasabi {
         top: defaultify(offset.top, offset),
         bottom: defaultify(offset.bottom, offset)
     };
+
     zone.top = top - zone.offset.top;
     zone.bottom = bottom + zone.offset.bottom;
 
@@ -159,9 +160,11 @@ export class Wasabi {
 
     zone.size = zone.bottom - zone.top;
     zone.handle = zoneConfig.handle || this.config.handle;
-    zone.handler = zoneConfig.handler || this.config.handler;
     zone.progress = zoneConfig.progress || this.config.progress;
     zone.snap = zoneConfig.snap || this.config.snap;
+    zone.handler = zoneConfig.handler || this.config.handler;
+    zone.enter = zoneConfig.enter || this.config.enter;
+    zone.leave = zoneConfig.leave || this.config.leave;
 
     if (zoneConfig.tween) {
       zone.tween = zoneConfig.tween;
@@ -227,7 +230,7 @@ export class Wasabi {
       zone.backwardBottom = zone.bottom;
     }
 
-    zone.backwardSize = Math.max(1, zone.backwardBottom - zone.backwardTop);
+    zone.backwardSize = Math.max(this.config.stepMinSize, zone.backwardBottom - zone.backwardTop);
 
     if (zone.snap) this.snaps.push(zone);
 
@@ -277,10 +280,12 @@ export class Wasabi {
 
       if (!zone.entered && entered) {
         if (zone.tween) zone.tween.resume();
-        if(zone.handler) zone.handler(direction, 'enter', zone.selector, zone.element);
+        if(zone.handler) zone.handler('enter', direction, zone.selector, zone.element);
+        if(zone.enter) zone.enter(direction, zone.selector, zone.element);
       }
       else if (zone.entered && !entered) {
-        if(zone.handler) zone.handler(direction, 'leave', zone.selector, zone.element);
+          if(zone.handler) zone.handler('leave', direction, zone.selector, zone.element);
+        if(zone.leave) zone.leave(direction, zone.selector, zone.element);
       }
 
       zone.entered = entered;
