@@ -166,6 +166,8 @@ export class SmoothScroller {
     });
 
     forEach(this.fixed, (fixed) => {
+        if (!fixed.update) return;
+
         transform(fixed.element, {
             x: this.scroll.x - fixed.initial.x,
             y: this.scroll.y - fixed.initial.y
@@ -173,6 +175,8 @@ export class SmoothScroller {
     });
 
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
+
+    if (this.justUnfixed) debugger;
   }
 
   on(callback) {
@@ -316,36 +320,53 @@ export class SmoothScroller {
     });
   }
 
+  indexOf(element) {
+      let i = this.fixed.length, done = false;
+
+      while(i-- && !(done = this.fixed[i].element == element)) {}
+
+     return done ? i : -1;
+  }
+
   fixElements(elements) {
     style(elements, {
         position: 'absolute'
     });
 
     forElements(elements, (element) => {
-      let elOffset = offset(element);
-      this.fixed.push({
-        element: element,
-        initial: this.scroll
-      });
+      let index = this.indexOf(element);
+
+      if (index == -1) {
+        let elOffset = offset(element);
+
+        this.fixed.push({
+          update: true,
+          element: element,
+          initial: this.scroll
+        });
+      }
+      else {
+          this.fixed[index].update = true;
+      }
     });
   }
 
-  unfixElements(elements) {
-    style(elements, {
-        position: '',
-        transform: ''
-    });
-
+  unfixElements(elements, keepTransform = false) {
     forElements(elements, (element) => {
       let i = this.fixed.length, done = false;
 
-      while(!done && i--) {
-        if (done = this.fixed[i].element == element) {
-          this.fixed.splice(i, 1);
+      let index = this.indexOf(element);
+
+      if (!keepTransform) {
+          this.fixed.splice(index, 1);
+
           style(element, {
+            position: '',
             transform: ''
           });
-        }
+      }
+      else {
+          this.fixed[index].update = false;
       }
     });
   }
