@@ -8,7 +8,8 @@ export function getElements (elements) {
     if (elements instanceof Array) {
       let parsedElements = [];
       forEach(elements, (element) => {
-        parsedElements = parsedElements.concat(getElements(element));
+        let newElements = getElements(element);
+        if (newElements) parsedElements = parsedElements.concat(newElements);
       });
 
       return parsedElements;
