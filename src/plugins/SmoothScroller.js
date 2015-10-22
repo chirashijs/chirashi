@@ -4,7 +4,6 @@ import { style, height, width, size, transform, offset, screenPosition, hide, sh
 import { drag, undrag } from '../events';
 import { defaultify, between } from '../utils';
 import { VirtualScroll } from './VirtualScroll';
-import './scroll60fps';
 
 let defaults = {
   ease: 0.2,
