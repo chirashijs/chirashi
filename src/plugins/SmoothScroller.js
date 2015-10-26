@@ -71,41 +71,95 @@ export class SmoothScroller {
   scrolling(event) {
     if (this.scrollDisabled) return;
 
-    let scrollable;
-    if (event.originalEvent.pageX) {
-      let element = document.elementFromPoint(event.originalEvent.pageX, event.originalEvent.pageY);
-      scrollable = this.scrollable.slice();
-      scrollable.sort((a, b) => {
-        let levelA = { value: 0 },
-            levelB = { value: 0 };
+    forEach(this.scrollable, scrollable => scrollable.delta = {x:0,y:0});
 
-        let foundA = !!closest(element, a.element, levelA),
-            foundB = !!closest(element, b.element, levelB);
+    let mouse = event.originalEvent.touches ? event.originalEvent.touches[0] : event.originalEvent;
 
-        if (!foundA) return 1;
-        if (!foundB) return -1;
+    let deltaX = event.deltaX,
+        deltaY = event.deltaY;
 
-        return levelA.value - levelB.value;
-      });
+    let scrollableX, scrollableY;
 
-      scrollable = scrollable[0];
+    if ('pageX' in mouse) {
+      let element = document.elementFromPoint(mouse.pageX, mouse.pageY);
+
+      if (deltaX) {
+          scrollableX = this.scrollable.slice();
+
+          scrollableX
+          .filter((scrollable) => {
+            scrollable.level = { value: 0 };
+
+            return (deltaX < 0 ? !scrollable.edges.begin.x : !scrollable.edges.end.x) && closest(element, scrollable.element, scrollable.level);
+          })
+          .sort((a, b) => {
+            return a.level.value - b.level.value;
+          });
+
+          console.log(scrollableX);
+          scrollableX = scrollableX.length && scrollableX[0];
+      }
+
+      if (deltaY) {
+          scrollableY = this.scrollable.slice();
+
+          scrollableY
+          .filter((scrollable) => {
+            scrollable.level = { value: 0 };
+
+            console.log('scrollable Y ', deltaY < 0, !scrollable.edges.begin.y, !scrollable.edges.end.y);
+            return (deltaY < 0 ? !scrollable.edges.begin.y : !scrollable.edges.end.y) && closest(element, scrollable.element, scrollable.level);
+          })
+          .sort((a, b) => {
+            return a.level.value - b.level.value;
+          });
+
+          scrollableY = scrollableY.length && scrollableY[0];
+      }
     }
     else {
-      scrollable = this.scrollable[0];
+      scrollableX = scrollableY = this.scrollable[0];
     }
 
-    scrollable.delta = {
-        x: event.deltaX,
-        y: event.deltaY
-    };
+    if (scrollableX) {
+        scrollableX.delta = {
+            x: deltaX
+        };
 
-    const wrapperSize = size(scrollable.element),
-          parentSize  = size(scrollable.parent);
+        const wrapperWidth = width(scrollableX.element),
+              parentWidth  = width(scrollableX.parent),
+              maxWidth     = Math.max(wrapperWidth - parentWidth, 0);
 
-    scrollable.scrollTarget = {
-        x: Math.min(Math.max(scrollable.scroll.x - scrollable.delta.x, 0), wrapperSize.width > parentSize.width ? wrapperSize.width - parentSize.width : 0),
-        y: Math.min(Math.max(scrollable.scroll.y - scrollable.delta.y, 0), wrapperSize.height > parentSize.height ? wrapperSize.height - parentSize.height : 0)
-    };
+        let targetX = scrollableX.scroll.x - scrollableX.delta.x;
+        if (scrollableX.edges.begin.x = targetX <= 0) {
+            targetX = 0;
+        }
+        else if (scrollableX.edges.end.x = targetX >= maxWidth) {
+            targetX = maxWidth;
+        }
+
+        scrollableX.scrollTarget.x = targetX;
+    }
+
+    if (scrollableY) {
+        scrollableY.delta = {
+            y: deltaY
+        };
+
+        const wrapperHeight = height(scrollableY.element),
+              parentHeight  = height(scrollableY.parent),
+              maxHeight     = Math.max(wrapperHeight - parentHeight, 0);
+
+        let targetY = scrollableY.scroll.y - scrollableY.delta.y;
+        if (scrollableY.edges.begin.y = targetY <= 0) {
+            targetY = 0;
+        }
+        else if (scrollableY.edges.end.y = targetY >= maxHeight) {
+            targetY = maxHeight;
+        }
+
+        scrollableY.scrollTarget.y = targetY;
+    }
   }
 
   updateScroll(ease) {
@@ -227,6 +281,16 @@ export class SmoothScroller {
         scrollTarget: {
           x: 0,
           y: 0
+        },
+        edges: {
+            begin: {
+                x: true,
+                y: true
+            },
+            end: {
+                x: width(element) >= width(element.parentNode),
+                y: height(element) >= height(element.parentNode)
+            }
         }
       }) - 1;
 
