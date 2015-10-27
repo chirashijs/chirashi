@@ -86,31 +86,29 @@ export class SmoothScroller {
       if (deltaX) {
           scrollableX = this.scrollable.slice();
 
-          scrollableX
-          .filter((scrollable) => {
+          scrollableX = scrollableX.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return (deltaX < 0 ? !scrollable.edges.begin.x : !scrollable.edges.end.x) && closest(element, scrollable.element, scrollable.level);
-          })
-          .sort((a, b) => {
+            return (deltaX < 0 && scrollable.xRatio < 0.9 || deltaX > 0 && scrollable.xRatio > 0.1) && !!closest(element, scrollable.element, scrollable.level);
+          });
+
+          scrollableX.sort((a, b) => {
             return a.level.value - b.level.value;
           });
 
-          console.log(scrollableX);
           scrollableX = scrollableX.length && scrollableX[0];
       }
 
       if (deltaY) {
           scrollableY = this.scrollable.slice();
 
-          scrollableY
-          .filter((scrollable) => {
+          scrollableY = scrollableY.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            console.log('scrollable Y ', deltaY < 0, !scrollable.edges.begin.y, !scrollable.edges.end.y);
-            return (deltaY < 0 ? !scrollable.edges.begin.y : !scrollable.edges.end.y) && closest(element, scrollable.element, scrollable.level);
-          })
-          .sort((a, b) => {
+            return (deltaY < 0 && scrollable.yRatio < 0.9 || deltaY > 0 && scrollable.yRatio > 0.1) && !!closest(element, scrollable.element, scrollable.level);
+          });
+
+          scrollableY.sort((a, b) => {
             return a.level.value - b.level.value;
           });
 
@@ -127,18 +125,9 @@ export class SmoothScroller {
         };
 
         const wrapperWidth = width(scrollableX.element),
-              parentWidth  = width(scrollableX.parent),
-              maxWidth     = Math.max(wrapperWidth - parentWidth, 0);
+              parentWidth  = width(scrollableX.parent);
 
-        let targetX = scrollableX.scroll.x - scrollableX.delta.x;
-        if (scrollableX.edges.begin.x = targetX <= 0) {
-            targetX = 0;
-        }
-        else if (scrollableX.edges.end.x = targetX >= maxWidth) {
-            targetX = maxWidth;
-        }
-
-        scrollableX.scrollTarget.x = targetX;
+        scrollableX.scrollTarget.x = Math.min(Math.max(scrollableX.scroll.x - scrollableX.delta.x, 0), wrapperWidth > parentWidth ? wrapperWidth - parentWidth : 0);
     }
 
     if (scrollableY) {
@@ -147,18 +136,9 @@ export class SmoothScroller {
         };
 
         const wrapperHeight = height(scrollableY.element),
-              parentHeight  = height(scrollableY.parent),
-              maxHeight     = Math.max(wrapperHeight - parentHeight, 0);
+              parentHeight  = height(scrollableY.parent);
 
-        let targetY = scrollableY.scroll.y - scrollableY.delta.y;
-        if (scrollableY.edges.begin.y = targetY <= 0) {
-            targetY = 0;
-        }
-        else if (scrollableY.edges.end.y = targetY >= maxHeight) {
-            targetY = maxHeight;
-        }
-
-        scrollableY.scrollTarget.y = targetY;
+        scrollableY.scrollTarget.y = Math.min(Math.max(scrollableY.scroll.y - scrollableY.delta.y, 0), wrapperHeight > parentHeight ? wrapperHeight - parentHeight : 0);
     }
   }
 
@@ -282,16 +262,8 @@ export class SmoothScroller {
           x: 0,
           y: 0
         },
-        edges: {
-            begin: {
-                x: true,
-                y: true
-            },
-            end: {
-                x: width(element) >= width(element.parentNode),
-                y: height(element) >= height(element.parentNode)
-            }
-        }
+        xRatio: (width(element) >= width(element.parentNode) ? 1 : 0),
+        yRatio: (height(element) >= height(element.parentNode) ? 1 : 0)
       }) - 1;
 
       let scrollable = this.scrollable[index];
