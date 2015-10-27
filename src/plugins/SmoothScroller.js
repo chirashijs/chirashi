@@ -89,7 +89,7 @@ export class SmoothScroller {
           scrollableX = scrollableX.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return (deltaX < 0 && scrollable.xRatio < 0.9 || deltaX > 0 && scrollable.xRatio > 0.1) && !!closest(element, scrollable.element, scrollable.level);
+            return (deltaX < 0 && scrollable.xRatio < 0.99 || deltaX > 0 && scrollable.xRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableX.sort((a, b) => {
@@ -105,7 +105,7 @@ export class SmoothScroller {
           scrollableY = scrollableY.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return (deltaY < 0 && scrollable.yRatio < 0.9 || deltaY > 0 && scrollable.yRatio > 0.1) && !!closest(element, scrollable.element, scrollable.level);
+            return (deltaY < 0 && scrollable.yRatio < 0.99 || deltaY > 0 && scrollable.yRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableY.sort((a, b) => {
