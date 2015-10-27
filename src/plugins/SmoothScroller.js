@@ -36,6 +36,7 @@ export class SmoothScroller {
     this.scrollable = [];
     this.addScrollable(this.wrapper, this.config.scrollbar);
 
+    this.updateCallbacks = [];
     this.scrollCallbacks = [];
 
     this.localCallback = this.scrolling.bind(this);
@@ -140,6 +141,8 @@ export class SmoothScroller {
 
         scrollableY.scrollTarget.y = Math.min(Math.max(scrollableY.scroll.y - scrollableY.delta.y, 0), wrapperHeight > parentHeight ? wrapperHeight - parentHeight : 0);
     }
+
+    this.triggerScrollCallbacks();
   }
 
   updateScroll(ease) {
@@ -168,13 +171,18 @@ export class SmoothScroller {
         this.enableScroll();
   }
 
-  triggerCallbacks() {
+  triggerUpdateCallbacks() {
+    let i = this.updateCallbacks.length;
+    while(i--) this.updateCallbacks[i](this.scrollTarget);
+  }
+
+  triggerScrollCallbacks() {
     let i = this.scrollCallbacks.length;
     while(i--) this.scrollCallbacks[i](this.scrollTarget);
   }
 
   update() {
-    if (this.scrollTarget.y - this.scroll.y) this.triggerCallbacks();
+    if (this.scrollTarget.y - this.scroll.y) this.triggerUpdateCallbacks();
 
     forEach(this.scrollable, (scrollable) => {
       transform(scrollable.element, {
@@ -212,12 +220,32 @@ export class SmoothScroller {
     if (this.justUnfixed) debugger;
   }
 
-  on(callback) {
-    this.scrollCallbacks.push(callback);
+  on(events, callback) {
+    switch (events) {
+        case 'scroll':
+        this.scrollCallbacks.push(callback);
+
+        break;
+
+        case 'update':
+        this.updateCallbacks.push(callback);
+
+        break;
+    }
   }
 
-  off(callback) {
-    this.scrollCallbacks.splice(this.scrollCallbacks.indexOf(callback));
+  off(events, callback) {
+    switch (events) {
+        case 'scroll':
+        this.scrollCallbacks.splice(this.scrollCallbacks.indexOf(callback));
+
+        break;
+
+        case 'update':
+        this.updateCallbacks.splice(this.updateCallbacks.indexOf(callback));
+
+        break;
+    }
   }
 
   scrollTo(target) {

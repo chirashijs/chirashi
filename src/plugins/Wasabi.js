@@ -38,7 +38,7 @@ export class Wasabi {
         this.scrollTop = this.previousScrollTop = this.scroller.scroll.y;
 
         this.scrollerCallback = this.onScroller.bind(this);
-        this.scroller.on(this.scrollerCallback);
+        this.scroller.on('update', this.scrollerCallback);
     }
 
     this.resizeCallback = resize(this.refresh.bind(this));
@@ -343,9 +343,7 @@ export class Wasabi {
       VirtualScroll.off(this.virtualScrollCallback);
     }
     else if (this.scrollerCallback) {
-      this.scroller.off(this.scrollerCallback);
-
-      if (this.snapingCallback) this.scroller.off(this.snapingCallback);
+      this.scroller.off('update', this.scrollerCallback);
     }
 
     let i = this.zones.length;
