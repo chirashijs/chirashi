@@ -11,6 +11,8 @@ export function drag(elements, move, begin, end) {
       e.preventDefault();
       e.stopPropagation();
 
+      if ('touches' in e && e.touches.length) e = e.touches[0];
+
       dragging = true;
 
       if (begin) begin({ x: e.pageX, y: e.pageY });
@@ -21,6 +23,8 @@ export function drag(elements, move, begin, end) {
 
       e.preventDefault();
       e.stopPropagation();
+
+      if ('touches' in e && e.touches.length) e = e.touches[0];
 
       if (move) move({ x: e.pageX, y: e.pageY });
     };
