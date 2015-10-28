@@ -1,7 +1,7 @@
 import { forEach, forElements, getElement } from '../core';
 import { closest, append, remove } from '../dom';
 import { style, height, width, size, transform, offset, screenPosition, hide, show } from '../styles';
-import { drag, undrag } from '../events';
+import { drag, undrag, resize, unresize } from '../events';
 import { defaultify, between } from '../utils';
 import { VirtualScroll } from './VirtualScroll';
 
@@ -47,6 +47,9 @@ export class SmoothScroller {
 
     this.normalScroll();
     this.update();
+
+    this.resizeCallback = this.resize.bind(this);
+    resize(this.resizeCallback);
   }
 
   get scroll() {
@@ -190,8 +193,10 @@ export class SmoothScroller {
         y: -scrollable.scroll.y
       });
 
-      scrollable.xRatio = scrollable.scroll.x / (width(scrollable.element) - width(scrollable.parent));
-      scrollable.yRatio = scrollable.scroll.y / (height(scrollable.element) - height(scrollable.parent));
+      let scrollableWidth = (width(scrollable.element) - width(scrollable.parent)),
+          scrollableHeight = (height(scrollable.element) - height(scrollable.parent));
+      scrollable.xRatio = scrollableWidth && scrollable.scroll.x / scrollableWidth;
+      scrollable.yRatio = scrollableHeight && scrollable.scroll.y / scrollableHeight;
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
         transform(scrollable.scrollbar.horizontal.cursor, {
@@ -381,6 +386,19 @@ export class SmoothScroller {
         }
       }
     });
+  }
+
+  resize() {
+      forEach(this.scrollable, (scrollable) => {
+        console.log(scrollable.element, scrollable.yRatio);
+        scrollable.scroll.x = scrollable.xRatio * (width(scrollable.element) - width(scrollable.parent));
+        scrollable.scroll.y = scrollable.yRatio * (height(scrollable.element) - height(scrollable.parent));
+
+        transform(scrollable.element, {
+          x: -scrollable.scroll.x,
+          y: -scrollable.scroll.y
+        });
+      });
   }
 
   indexOf(element) {

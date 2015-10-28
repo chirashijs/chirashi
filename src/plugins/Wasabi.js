@@ -17,6 +17,10 @@ let defaults = {
   }
 };
 
+function randomColor () {
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
+
 //Scroll manager
 export class Wasabi {
   constructor(config) {
@@ -46,16 +50,15 @@ export class Wasabi {
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
       style(this.debugWrapper, {
-        'z-index': 9999,
+        'z-index': 10000,
         width: 25,
         height: height(this.wrapper),
         position: 'absolute',
         top: 0,
-        right: 0
+        right: 0,
+        background: '#2d2d2d'
       });
       append(this.wrapper, this.debugWrapper);
-
-      if (this.scroller) this.scroller.fixElement(this.debugWrapper);
     }
 
     this.currentSnapIndex = 0;
@@ -66,6 +69,8 @@ export class Wasabi {
   }
 
   refresh() {
+    if (this.config.debug) console.log('%c WASABI DEBUG ', 'background: #2d2d2d; color: #b0dd44');
+
     this.zones = [];
     this.snaps = [];
 
@@ -134,6 +139,9 @@ export class Wasabi {
     zone.bottom = bottom + zone.offset.bottom;
 
     if (this.config.debug) {
+      let color = randomColor();
+      console.log(zone.selector +' %c ' + color, 'color:'+color);
+      console.log(zone.element);
       let topDebug = createElement(`<div class="wasabi-marker"></div>`);
       append(this.debugWrapper, topDebug);
       style(topDebug, {
@@ -142,7 +150,7 @@ export class Wasabi {
         right: 0,
         width: 25,
         height: 2,
-        background: 'green'
+        background: color
       });
 
       let bottomDebug = clone(topDebug);
@@ -154,7 +162,7 @@ export class Wasabi {
         right: 0,
         width: 25,
         height: 2,
-        background: 'green'
+        background: color
       });
     }
 
@@ -355,8 +363,6 @@ export class Wasabi {
     }
 
     this.zones = this.snaps = null;
-
-    if (this.scroller && this.debugWrapper) this.scroller.unfixElement(this.debugWrapper);
 
     unresize(this.resizeCallback);
 
