@@ -294,10 +294,12 @@ export class Slider {
       y: touch.pageY
     });
 
-    event.stopPropagation();
+    // event.stopPropagation();
   }
 
   touchmove(event) {
+    if (!this.touchOrig) return;
+
     let touch = event.touches[0];
 
     this.dragMove({
@@ -305,12 +307,13 @@ export class Slider {
       y: touch.pageY
     });
 
-    event.stopPropagation();
+    // event.stopPropagation();
   }
 
   touchend(event) {
     this.dragEnd();
-    event.stopPropagation();
+
+    // event.stopPropagation();
   }
 
   mousestart(event) {
@@ -319,7 +322,7 @@ export class Slider {
       y: event.pageY
     });
 
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   mousemove(event) {
@@ -330,12 +333,12 @@ export class Slider {
       y: event.pageY
     });
 
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   mouseend(event) {
     this.dragEnd();
-    event.preventDefault();
+    // event.preventDefault();
   }
 
   dragStart(position) {
