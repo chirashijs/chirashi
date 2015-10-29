@@ -390,7 +390,6 @@ export class SmoothScroller {
 
   resize() {
       forEach(this.scrollable, (scrollable) => {
-        console.log(scrollable.element, scrollable.yRatio);
         scrollable.scroll.x = scrollable.xRatio * (width(scrollable.element) - width(scrollable.parent));
         scrollable.scroll.y = scrollable.yRatio * (height(scrollable.element) - height(scrollable.parent));
 
