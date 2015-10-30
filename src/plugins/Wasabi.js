@@ -62,6 +62,7 @@ export class Wasabi {
     }
 
     this.currentSnapIndex = 0;
+    this.running = true;
     this.refresh();
     this.update();
 
@@ -277,6 +278,8 @@ export class Wasabi {
   }
 
   update() {
+    if (!this.running) return;
+
     let i = this.zones.length,
         direction = this.previousScrollTop < this.scrollTop ? 'forward' : 'backward';
 
@@ -345,6 +348,11 @@ export class Wasabi {
   }
 
   kill() {
+    this.running = false;
+
+    unresize(this.resizeCallback);
+    cancelAnimationFrame(this.updateRequest);
+
     remove(this.debugWrapper);
 
     if (this.virtualScrollCallback) {
@@ -363,10 +371,6 @@ export class Wasabi {
     }
 
     this.zones = this.snaps = null;
-
-    unresize(this.resizeCallback);
-
-    cancelAnimationFrame(this.updateRequest);
   }
 
   concatenateVars(object) {
