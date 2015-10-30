@@ -45,6 +45,8 @@ export class SmoothScroller {
     this.fixed = [];
     this.fixElements(this.config.fixed);
 
+    this.running = true;
+
     this.normalScroll();
     this.update();
 
@@ -185,6 +187,8 @@ export class SmoothScroller {
   }
 
   update() {
+    if (!this.running) return;
+
     if (this.scrollTarget.y - this.scroll.y) this.triggerUpdateCallbacks();
 
     forEach(this.scrollable, (scrollable) => {
@@ -452,6 +456,9 @@ export class SmoothScroller {
   }
 
   kill() {
+      this.scrollDisabled = true;
+      this.running = false;
+
       cancelAnimationFrame(this.normalRequest);
       cancelAnimationFrame(this.autoScrollRequest);
       cancelAnimationFrame(this.updateRequest);
