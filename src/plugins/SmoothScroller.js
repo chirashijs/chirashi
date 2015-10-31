@@ -456,6 +456,8 @@ export class SmoothScroller {
   }
 
   kill() {
+      console.log('kill scroller');
+
       this.scrollDisabled = true;
       this.running = false;
 
@@ -472,6 +474,10 @@ export class SmoothScroller {
       });
 
       forEach(this.scrollable, (scrollable) => {
+        style(scrollable.element, {
+          transform: ''
+        });
+
         style(scrollable.parent, {
           overflow: ''
         });
@@ -489,10 +495,5 @@ export class SmoothScroller {
         });
       });
       this.fixed = null;
-
-      style(this.wrapper, {
-        transform: '',
-        'will-change': ''
-      });
   }
 };
