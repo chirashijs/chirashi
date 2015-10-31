@@ -482,7 +482,7 @@ export class SmoothScroller {
           overflow: ''
         });
 
-        remove(scrollable.parent, '.scrollbar');
+        remove(find(scrollable.parent, '.scrollbar'));
 
         undrag(scrollable.dragVCallbacks);
         undrag(scrollable.dragHCallbacks);
