@@ -1,5 +1,5 @@
-import { forElements } from '../core';
-import { on } from './on';
+import { forEach } from '../core';
+import { off } from './off';
 
 export function undrag(undragProperties) {
   forEach(undragProperties, (undragProperty) => {
