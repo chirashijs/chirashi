@@ -75,6 +75,8 @@ export class SmoothScroller {
   }
 
   scrolling(event) {
+    event.originalEvent.preventDefault();
+
     if (this.scrollDisabled) return;
 
     forEach(this.scrollable, scrollable => scrollable.delta = {x:0,y:0});
