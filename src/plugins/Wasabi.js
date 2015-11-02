@@ -141,8 +141,10 @@ export class Wasabi {
 
     if (this.config.debug) {
       let color = randomColor();
+
       console.log(zone.selector +' %c ' + color, 'color:'+color);
       console.log(zone.element);
+
       let topDebug = createElement(`<div class="wasabi-marker"></div>`);
       append(this.debugWrapper, topDebug);
       style(topDebug, {
