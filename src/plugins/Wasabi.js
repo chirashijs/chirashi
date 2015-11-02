@@ -1,4 +1,4 @@
-import { getSelector, forElements } from '../core';
+import { getSelector, forElements, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, screenPosition, height, transform, size } from '../styles';
 import { resize, unresize, load } from '../events';
@@ -301,42 +301,14 @@ export class Wasabi {
         if(zone.leave) zone.leave(direction, zone.selector, zone.element);
       }
 
+      this.updateParallax(zone.element, progress);
+
       zone.entered = entered;
       if (zone.entered) {
         let snapIndex = this.snaps.indexOf(zone);
         if (snapIndex != -1 && snapIndex != this.currentSnapIndex) {
           this.currentSnap = zone;
           this.currentSnapIndex = snapIndex;
-        }
-
-        if (zone.element) {
-          forElements(find(zone.element, '[data-wasabi]'), (element) => {
-            let options = eval('('+data(element, 'wasabi')+')');
-
-            let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
-                toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
-                fromX = (options.from && options.from.x) || 0,
-                fromY = (options.from && options.from.y) || 0,
-                parentSize = size(element.parentNode);
-
-            if (typeof toX == 'string' && toX.indexOf('%') != -1)
-                toX = parseInt(toX, 10) * parentSize.width;
-
-            if (typeof toY == 'string' && toY.indexOf('%') != -1)
-                toY = parseInt(toY, 10) * parentSize.height;
-
-            if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
-                fromX = parseInt(fromX, 10) * parentSize.width
-
-            if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
-                fromY = parseInt(fromY, 10) * parentSize.height;
-
-
-            transform(element, {
-              x: fromX + (toX - fromX) * progress,
-              y: fromY + (toY - fromY) * progress
-            });
-          });
         }
 
         if (zone.progress) zone.progress(direction, progress, zone.selector);
@@ -375,6 +347,36 @@ export class Wasabi {
     this.zones = this.snaps = null;
   }
 
+  updateParallax(zoneElement, progress) {
+      forElements(find(zoneElement, '[data-wasabi]'), (element) => {
+        let options = eval('('+data(element, 'wasabi')+')');
+
+        let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
+            toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
+            fromX = (options.from && options.from.x) || 0,
+            fromY = (options.from && options.from.y) || 0,
+            parentSize = size(element.parentNode);
+
+        if (typeof toX == 'string' && toX.indexOf('%') != -1)
+            toX = parseInt(toX, 10) * parentSize.width;
+
+        if (typeof toY == 'string' && toY.indexOf('%') != -1)
+            toY = parseInt(toY, 10) * parentSize.height;
+
+        if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
+            fromX = parseInt(fromX, 10) * parentSize.width
+
+        if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
+            fromY = parseInt(fromY, 10) * parentSize.height;
+
+
+        transform(element, {
+          x: fromX + (toX - fromX) * progress,
+          y: fromY + (toY - fromY) * progress
+        });
+      });
+  }
+
   concatenateVars(object) {
     if (!object) return;
 
@@ -404,7 +406,7 @@ export class Wasabi {
       tween = tweens[i];
 
       if (tween.target) {
-        TweenMax.set(tween.target, {
+        TweenLite.set(tween.target, {
           clearProps: this.concatenateVars(tween.vars).join(',')
         });
       }
