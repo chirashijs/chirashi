@@ -354,7 +354,7 @@ export class SmoothScroller {
       if (!scrollable.scrollbar) return;
 
       if (scrollable.scrollbar.vertical) {
-        let ratio = between(height(scrollable.parent)/height(scrollable.element));
+        let ratio = between(height(scrollable.parent) / height(scrollable.element));
         height(scrollable.scrollbar.vertical.cursor, ratio*100+'%');
 
         if (ratio == 1 || ratio == 0) hide(scrollable.scrollbar.vertical.bar);
@@ -362,7 +362,7 @@ export class SmoothScroller {
       }
 
       if (scrollable.scrollbar.horizontal) {
-        let ratio = between(width(scrollable.parent)/width(scrollable.element));
+        let ratio = between(width(scrollable.parent) / width(scrollable.element));
         width(scrollable.scrollbar.horizontal.cursor, ratio*100+'%');
 
         if (ratio == 1 || ratio == 0) hide(scrollable.scrollbar.horizontal.bar);
