@@ -97,7 +97,7 @@ export class SmoothScroller {
           scrollableX = scrollableX.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return (deltaX < 0 && scrollable.xRatio < 0.99 || deltaX > 0 && scrollable.xRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
+            return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.99 || deltaX > 0 && scrollable.xRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableX.sort((a, b) => {
@@ -113,7 +113,7 @@ export class SmoothScroller {
           scrollableY = scrollableY.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return (deltaY < 0 && scrollable.yRatio < 0.99 || deltaY > 0 && scrollable.yRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
+            return scrollable.yRatio != -1 && (deltaY < 0 && scrollable.yRatio < 0.99 || deltaY > 0 && scrollable.yRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableY.sort((a, b) => {
@@ -201,8 +201,8 @@ export class SmoothScroller {
 
       let scrollableWidth = (width(scrollable.element) - width(scrollable.parent)),
           scrollableHeight = (height(scrollable.element) - height(scrollable.parent));
-      scrollable.xRatio = scrollableWidth ? scrollable.scroll.x / scrollableWidth : 1;
-      scrollable.yRatio = scrollableHeight ? scrollable.scroll.y / scrollableHeight : 1;
+      scrollable.xRatio = scrollableWidth ? scrollable.scroll.x / scrollableWidth : -1;
+      scrollable.yRatio = scrollableHeight ? scrollable.scroll.y / scrollableHeight : -1;
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
         transform(scrollable.scrollbar.horizontal.cursor, {
@@ -301,12 +301,12 @@ export class SmoothScroller {
           x: 0,
           y: 0
         },
-        xRatio: (width(element) >= width(element.parentNode) ? 1 : 0),
-        yRatio: (height(element) >= height(element.parentNode) ? 1 : 0)
+        xRatio: (width(element) >= width(element.parentNode) ? -1 : 0),
+        yRatio: (height(element) >= height(element.parentNode) ? -1 : 0)
       }) - 1;
 
       let scrollable = this.scrollable[index];
-      
+
       if (scrollbar == 'auto' || scrollbar == 'vertical') {
         let scrollbarElement = append(element.parentNode, '<div class="scrollbar vertical"></div>'),
             cursorElement = append(scrollbarElement, '<div class="cursor"></div>');
