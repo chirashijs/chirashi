@@ -459,6 +459,8 @@ export class SmoothScroller {
   }
 
   kill() {
+      console.log('kill scroller');
+
       this.scrollDisabled = true;
       this.running = false;
 
