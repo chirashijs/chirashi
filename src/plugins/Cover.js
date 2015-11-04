@@ -127,7 +127,5 @@ export class Cover {
           margin: ''
         });
     });
-
-    this = null;
   }
 };
