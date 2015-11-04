@@ -141,7 +141,6 @@ export class Slider {
   }
 
   bulletClick(event) {
-      console.log('bulletClick');
       event.preventDefault();
 
       this.slideTo(indexInParent(event.currentTarget));
