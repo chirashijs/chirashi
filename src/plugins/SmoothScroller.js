@@ -55,22 +55,32 @@ export class SmoothScroller {
   }
 
   get scroll() {
+    if (!this.scrollable) return {x: 0, y: 0};
+
     return this.scrollable[0].scroll;
   }
 
   set scroll(value) {
+    if (!this.scrollable) return;
+
     this.scrollable[0].scroll = value;
   }
 
   get scrollTarget() {
+    if (!this.scrollable) return {x: 0, y: 0};
+
     return this.scrollable[0].scrollTarget;
   }
 
   set scrollTarget(value) {
+    if (!this.scrollable) return;
+
     this.scrollable[0].scrollTarget = value;
   }
 
   get delta() {
+    if (!this.scrollable) return 0;
+
     return this.scrollable[0].delta;
   }
 
@@ -459,8 +469,6 @@ export class SmoothScroller {
   }
 
   kill() {
-      console.log('kill scroller');
-
       this.scrollDisabled = true;
       this.running = false;
 
@@ -490,6 +498,7 @@ export class SmoothScroller {
         undrag(scrollable.dragVCallbacks);
         undrag(scrollable.dragHCallbacks);
       });
+
       this.scrollable = null;
 
       forEach(this.fixed, fixed => {
@@ -497,6 +506,5 @@ export class SmoothScroller {
           transform: ''
         });
       });
-      this.fixed = null;
   }
 };
