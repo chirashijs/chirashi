@@ -1,5 +1,5 @@
-import { isWindows } from 'windows';
-import { isWindowsPhone } from 'windowsPhone';
+import { isWindows } from './windows';
+import { isWindowsPhone } from './windowsPhone';
 
 export function isWindowsTablet() {
   let ua = navigator.userAgent.toLowerCase(),

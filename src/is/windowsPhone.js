@@ -1,4 +1,4 @@
-import { isWindows } from 'windows';
+import { isWindows } from './windows';
 
 export function isWindowsPhone() {
   let ua = navigator.userAgent.toLowerCase();
