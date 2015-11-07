@@ -1,5 +1,7 @@
-import { off } from './off';
+import off from './off';
 
-export function unresize (callback) {
+export function unscroll (callback) {
   off(window, 'scroll mousewheel DOMMouseScroll', callback);
 }
+
+export default unscroll;

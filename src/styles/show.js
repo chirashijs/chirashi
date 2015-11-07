@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 export function show (elements) {
   forElements(elements, (element) => {
@@ -7,3 +7,5 @@ export function show (elements) {
     element.style.visibility = '';
   });
 }
+
+export default show;

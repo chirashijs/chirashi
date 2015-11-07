@@ -4,3 +4,5 @@ export function isIE(version) {
 
   return version ? ie == version : ie;
 }
+
+export default isIE;

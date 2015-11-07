@@ -1,4 +1,4 @@
-import { getElement } from '../core';
+import getElement from '../core/get-element';
 
 export function offset (element) {
   element = getElement(element);
@@ -11,3 +11,5 @@ export function offset (element) {
     left: rect.left + document.body.scrollLeft
   };
 }
+
+export default offset;

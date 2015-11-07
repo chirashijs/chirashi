@@ -1,4 +1,4 @@
-import { getElement } from '../core';
+import getElement from '../core/get-element';
 
 export function next (element) {
   element = getElement(element);
@@ -6,3 +6,5 @@ export function next (element) {
 
   return element.nextElementSibling;
 }
+
+export default next;

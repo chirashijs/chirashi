@@ -1,5 +1,5 @@
-import { forElements } from '../core';
-import { on } from './on';
+import forElements from '../core/for-elements';
+import on from './on';
 
 export function drag(elements, move, begin, end) {
   let undragProperties = [];
@@ -51,3 +51,5 @@ export function drag(elements, move, begin, end) {
 
   return undragProperties;
 }
+
+export default drag;

@@ -1,11 +1,33 @@
-import { forEach, getElement, getSelectorAll } from '../core';
-import { remove, append, find, parent, indexInParent, addClass, removeClass } from '../dom';
-import { size, height, width, style, transform, screenPosition } from '../styles';
-import { resize, unresize, load, on, off } from '../events';
-import { defaultify } from '../utils/defaultify';
-import { Cover } from './cover';
+import forEach from '../core/for-each';
+import getElement from '../core/get-element';
+import getSelectorAll from '../core/get-selector-all';
 
-let defaults = {
+import remove from '../dom/remove';
+import append from '../dom/append';
+import find from '../dom/find';
+import parent from '../dom/parent';
+import indexInParent from '../dom/index-in-parent';
+import addClass from '../dom/add-class';
+import removeClass from '../dom/remove-class';
+
+import size from '../styles/size';
+import height from '../styles/height';
+import width from '../styles/width';
+import style from '../styles/style';
+import transform from '../styles/transform';
+import screenPosition from '../styles/screen-position';
+
+import resize from '../events/resize';
+import unresize from '../events/unresize';
+import load from '../events/load';
+import on from '../events/on';
+import off from '../events/off';
+
+import defaultify from '../utils/defaultify';
+
+import Cover from './cover';
+
+const defaults = {
   infinite: false,
   slideWidth: '100%',
   slideHeight: '100%',
@@ -442,3 +464,5 @@ export class Slider {
     if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'));
   }
 }
+
+export default Slider;

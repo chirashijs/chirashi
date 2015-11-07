@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { getElement } from '../../src';
+import getElement from '../../src/core/get-element';
 
 describe('chirashi#getElement', () => {
     it('should return a function', () => {

@@ -1,8 +1,21 @@
-import { forEach, forOf, getElement, getElements } from '../core';
-import { data, find } from '../dom';
-import { on, off, resize, unresize } from '../events';
-import { size, style, transform } from '../styles';
-import { defaultify } from '../utils/defaultify';
+import forEach from '../core/for-each';
+import forOf from '../core/for-of';
+import forElements from '../core/for-elements';
+import getElements from '../core/get-elements';
+
+import data from '../dom/data';
+import find from '../dom/find';
+
+import resize from '../events/resize';
+import unresize from '../events/unresize';
+import on from '../events/on';
+import off from '../events/off';
+
+import size from '../styles/size';
+import style from '../styles/style';
+import transform from '../styles/transform';
+
+import defaultify from '../utils/defaultify';
 
 const M_PI = Math.PI,
       M_PI_2 = Math.PI / 2;
@@ -241,3 +254,5 @@ export class Parallax {
     off(this.container, 'mousemove', this.resizeCallback);
   }
 }
+
+export default Parallax;

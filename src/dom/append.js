@@ -1,5 +1,5 @@
-import { forElements } from '../core';
-import { createElement } from './createElement';
+import forElements from '../core/for-elements';
+import createElement from './create-element';
 
 export function append (elements, node) {
   if (typeof node == 'string') node = createElement(node);
@@ -12,3 +12,5 @@ export function append (elements, node) {
 
   return node;
 }
+
+export default append;

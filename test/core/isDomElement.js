@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { isDomElement } from '../../src';
+import isDomElement from '../../src/core/is-dom-element';
 
 describe('chirashi#isDomElement', () => {
 

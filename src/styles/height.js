@@ -1,5 +1,5 @@
-import { setHeight } from './setHeight';
-import { getHeight } from './getHeight';
+import setHeight from './set-height';
+import getHeight from './get-height';
 
 export function height (elements, height) {
   if (typeof height != 'undefined') {
@@ -9,3 +9,5 @@ export function height (elements, height) {
     return getHeight(elements);
   }
 }
+
+export default height;

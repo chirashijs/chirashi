@@ -1,5 +1,5 @@
-import { setProp } from './setProp';
-import { getProp } from './getProp';
+import setProp from './setProp';
+import getProp from './getProp';
 
 export function prop (elements, option) {
   if (typeof option == 'object') {
@@ -9,3 +9,5 @@ export function prop (elements, option) {
     return getProp(elements, option);
   }
 }
+
+export default prop;

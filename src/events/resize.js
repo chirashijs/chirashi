@@ -1,4 +1,4 @@
-import { on } from './on';
+import on from './on';
 
 export function resize (userCallback) {
   let callback = () => {
@@ -12,3 +12,5 @@ export function resize (userCallback) {
 
   return callback;
 }
+
+export function resize;

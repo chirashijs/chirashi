@@ -1,9 +1,27 @@
-import { getSelector, forElements, forEach } from '../core';
-import { remove, data, find, createElement, append, clone } from '../dom';
-import { style, screenPosition, height, transform, size } from '../styles';
-import { resize, unresize, load } from '../events';
-import { defaultify } from '../utils/defaultify';
-import { VirtualScroll } from './VirtualScroll';
+import forEach from '../core/for-each';
+import forElements from '../core/for-elements';
+
+import remove from '../dom/remove';
+import data from '../dom/data';
+import find from '../dom/find';
+import createElement from '../dom/createElement';
+import append from '../dom/append';
+import clone from '../dom/clone';
+import clone from '../dom/clone';
+
+import style from '../styles/style';
+import screenPosition from '../styles/screen-position';
+import height from '../styles/height';
+import transform from '../styles/transform';
+import size from '../styles/size';
+
+import resize from '../events/resize';
+import unresize from '../events/unresize';
+import load from '../events/load';
+
+import defaultify from '../utils/defaultify';
+
+import VirtualScroll from './virtual-scroll';
 
 let defaults = {
   debug: false,
@@ -413,3 +431,5 @@ export class Wasabi {
     }
   }
 }
+
+export default Wasabi;

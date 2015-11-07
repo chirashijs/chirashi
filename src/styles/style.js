@@ -1,5 +1,5 @@
-import { setStyle } from './setStyle';
-import { getStyle } from './getStyle';
+import setStyle from './setStyle';
+import getStyle from './getStyle';
 
 export function style (elements, option) {
   if (typeof option == 'object') {
@@ -9,3 +9,5 @@ export function style (elements, option) {
     return getStyle(elements, option);
   }
 }
+
+export default style;

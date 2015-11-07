@@ -1,5 +1,5 @@
-import { setWidth } from './setWidth';
-import { getWidth } from './getWidth';
+import setWidth from './setWidth';
+import getWidth from './getWidth';
 
 export function width (elements, width) {
   if (typeof width != 'undefined') {
@@ -9,3 +9,5 @@ export function width (elements, width) {
     return getWidth(elements);
   }
 }
+
+export default width;

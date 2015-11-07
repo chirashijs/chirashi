@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { forElements } from '../../src';
+import forElements from '../../src/core/for-elements';
 
 describe('chirashi#forElements', () => {
     const elements = [0, 1, 2];

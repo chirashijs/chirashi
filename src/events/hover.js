@@ -1,5 +1,5 @@
-import { forElements } from '../core';
-import { on } from './on';
+import forElements from '../core/for-elements';
+import on from './on';
 
 export function hover (elements, enter, leave) {
   forElements(elements, (element) => {
@@ -7,3 +7,5 @@ export function hover (elements, enter, leave) {
     if (leave) on(element, 'mouseleave', leave);
   });
 }
+
+export default hover;

@@ -4,3 +4,5 @@ export function isSafari() {
 
   return /safari/i.test(ua) && /apple computer/.test(vendor);
 }
+
+export default isSafari;

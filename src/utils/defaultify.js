@@ -1,4 +1,4 @@
-import { deepClone } from './deepClone'
+import deepClone from './deep-clone'
 
 export function defaultify (options, defaults) {
   if (typeof options == 'undefined' || options == null)
@@ -16,3 +16,5 @@ export function defaultify (options, defaults) {
 
   return newOptions;
 }
+
+export default defaultify;

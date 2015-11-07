@@ -1,6 +1,7 @@
-import { forEach, getElements } from '../core';
-import { on } from './on';
-import { off } from './off';
+import forEach from '../core/for-each';
+import getElements from '../core/get-elements';
+import on from './on';
+import off from './off';
 
 export function load (elements, eachCallback, allCallback) {
   elements = getElements(elements);
@@ -40,3 +41,5 @@ export function load (elements, eachCallback, allCallback) {
     }
   });
 }
+
+export default load;

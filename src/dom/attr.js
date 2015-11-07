@@ -1,5 +1,5 @@
-import { setAttr } from './setAttr';
-import { getAttr } from './getAttr';
+import setAttr from './set-attr';
+import getAttr from './get-attr';
 
 export function attr (elements, option) {
   if (typeof option == 'object') {
@@ -9,3 +9,5 @@ export function attr (elements, option) {
     return getAttr(elements, option);
   }
 }
+
+export default attr;

@@ -1,5 +1,5 @@
-import { forElements } from '../core';
-import { off } from './off';
+import forElements from '../core/for-elements';
+import off from './off';
 
 export function unhover (elements, enter, leave) {
   forElements(elements, (element) => {
@@ -7,3 +7,5 @@ export function unhover (elements, enter, leave) {
     if (leave) off(element, 'mouseleave', leave);
   });
 }
+
+export default unhover;

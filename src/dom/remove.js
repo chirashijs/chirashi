@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 export function remove (elements) {
   forElements(elements, (element) => {
@@ -7,3 +7,5 @@ export function remove (elements) {
     element.parentNode.removeChild(element);
   });
 }
+
+export default remove;

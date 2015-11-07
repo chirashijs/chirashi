@@ -1,5 +1,5 @@
-import { setHtml } from './setHtml';
-import { getHtml } from './getHtml';
+import setHtml from './set-html';
+import getHtml from './get-html';
 
 export function html (elements, string) {
   if (typeof string == 'string') {
@@ -9,3 +9,5 @@ export function html (elements, string) {
     return getHtml(elements);
   }
 }
+
+export default html;

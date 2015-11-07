@@ -1,5 +1,5 @@
 import assert from 'assert';
-import { forEach } from '../../src';
+import forEach from '../../src/core/for-each';
 
 describe('chirashi#forEach', () => {
     const list = ['.test-1', '.test-2', '.test-3'];

@@ -1,5 +1,6 @@
 import assert from 'assert';
-import { getElements, isDomElement } from '../../src';
+import getElements from '../../src/core/get-elements';
+import isDomElement from '../../src/core/is-dom-element';
 
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return

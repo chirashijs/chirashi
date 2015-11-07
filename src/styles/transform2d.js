@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 function applyPropertyToMatrix (property, value, matrix) {
   switch (property) {
@@ -88,3 +88,5 @@ export function transform2d (elements, transformation) {
     element.style[prefix+'transform'] = element.style.transform = matrix;
   });
 }
+
+export default transform2d;

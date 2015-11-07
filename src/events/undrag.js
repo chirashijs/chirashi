@@ -1,5 +1,5 @@
-import { forEach } from '../core';
-import { off } from './off';
+import forEach from '../core/for-each';
+import off from './off';
 
 export function undrag(undragProperties) {
   forEach(undragProperties, (undragProperty) => {
@@ -8,3 +8,5 @@ export function undrag(undragProperties) {
     off(document.body, 'touchend, mouseup', undragProperty.end);
   });
 }
+
+export default undrag;

@@ -1,4 +1,4 @@
-import { getElement } from '../core';
+import getElement from '../core/get-element';
 
 export function closest (element, tested, level) {
   if (level && typeof level.value != 'undefined') ++level.value;
@@ -11,3 +11,5 @@ export function closest (element, tested, level) {
                 element
                 : closest(element.parentNode, tested, level)));
 }
+
+export default closest;

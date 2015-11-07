@@ -1,8 +1,19 @@
-import { forEach, forElements, getElements } from '../core';
-import { parent } from '../dom';
-import { resize, unresize, load, watchProp, unwatchProp } from '../events';
-import { style, size } from '../styles';
-import { defaultify } from '../utils/defaultify';
+import forEach from '../core/for-each';
+import forElements from '../core/for-elements';
+import getElements from '../core/get-elements';
+
+import parent from '../dom/parent';
+
+import resize from '../events/resize';
+import unresize from '../events/unresize';
+import load from '../events/load';
+import watchProp from '../events/watch-prop';
+import unwatchProp from '../events/unwatch-prop';
+
+import style from '../styles/style';
+import size from '../styles/size';
+
+import defaultify from '../utils/defaultify';
 
 export class Cover {
   constructor(options = {}) {
@@ -129,3 +140,5 @@ export class Cover {
     });
   }
 };
+
+export default Cover;

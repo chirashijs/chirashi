@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 export function on (elements, events, callback) {
   events = events.split(' ');
@@ -10,3 +10,5 @@ export function on (elements, events, callback) {
     while(i--) element.addEventListener(events[i], callback);
   });
 }
+
+export default on;

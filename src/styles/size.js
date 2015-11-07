@@ -1,5 +1,5 @@
-import { setSize } from './setSize';
-import { getSize } from './getSize';
+import setSize from './setSize';
+import getSize from './getSize';
 
 export function size (elements, object) {
   if (typeof object != 'object') {
@@ -9,3 +9,5 @@ export function size (elements, object) {
     setSize(elements, object);
   }
 }
+
+export default size;

@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 export function hide (elements) {
   forElements(elements, (element) => {
@@ -7,3 +7,5 @@ export function hide (elements) {
     element.style.visibility = 'hidden';
   });
 }
+
+export default hide;

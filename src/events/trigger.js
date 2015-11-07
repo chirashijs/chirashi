@@ -1,4 +1,4 @@
-import { forElements } from '../core';
+import forElements from '../core/for-elements';
 
 export function trigger (elements, events, data) {
   events = events.split(' ');
@@ -21,3 +21,5 @@ export function trigger (elements, events, data) {
     });
   }
 }
+
+export default trigger;

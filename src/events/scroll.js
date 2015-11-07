@@ -1,4 +1,4 @@
-import { on } from './on';
+import on from './on';
 
 export function scroll (userCallback) {
   let callback = (event) => {
@@ -26,3 +26,5 @@ export function scroll (userCallback) {
 
   return callback;
 }
+
+export default scroll;

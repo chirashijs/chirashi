@@ -1,5 +1,5 @@
-import { transform2d } from './transform2d'
-import { transform3d } from './transform3d'
+import transform2d from './transform2d'
+import transform3d from './transform3d'
 
 export function transform (elements, transformation) {
     const prefix = '-'+(Array.prototype.slice
@@ -17,3 +17,5 @@ export function transform (elements, transformation) {
 
     document.documentElement.style[prefix+'transform'] = '';
 }
+
+export default transform;

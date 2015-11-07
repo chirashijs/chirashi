@@ -4,3 +4,5 @@ export function isChrome() {
 
   return /chrome|chromium/i.test(ua) && /google inc/.test(vendor);
 }
+
+export default isChrome;
