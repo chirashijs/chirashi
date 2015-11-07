@@ -171,7 +171,7 @@ export class Slider {
   updateActiveBullet(index) {
       if (!this.options.bullets) return;
 
-      let bullets = getSelectorAll('.'+this.options.bullets.wrapper+' > li');
+      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > li');
       removeClass(bullets, 'active');
       addClass(bullets[index], 'active');
   }
@@ -300,6 +300,7 @@ export class Slider {
     else this.target = target % this.nbSlide;
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
+
     if (paused) tween.pause();
     else this.updateActiveBullet(this.target);
 
