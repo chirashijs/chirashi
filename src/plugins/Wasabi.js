@@ -255,6 +255,9 @@ export class Wasabi {
         next = this.snaps[this.currentSnapIndex+1];
 
     if (previous && scrollTarget.y < this.currentSnap.top) {
+      --this.currentSnapIndex;
+      this.currentSnap = previous;
+
       this.scroller.scrollTarget.y = this.currentSnap.top + this.currentSnap.offset.top;
       this.scroller.scrollTo({
         x: 0,
@@ -262,6 +265,9 @@ export class Wasabi {
       });
     }
     else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+      ++this.currentSnapIndex;
+      this.currentSnap = next;
+
       this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight - this.currentSnap.offset.bottom;
       this.scroller.scrollTo({
         x: 0,
@@ -305,12 +311,6 @@ export class Wasabi {
 
       zone.entered = entered;
       if (zone.entered) {
-        let snapIndex = this.snaps.indexOf(zone);
-        if (snapIndex != -1 && snapIndex != this.currentSnapIndex) {
-          this.currentSnap = zone;
-          this.currentSnapIndex = snapIndex;
-        }
-
         if (zone.progress) zone.progress(direction, progress, zone.selector);
         if (zone.progressTween && zone.progressTween.progress) zone.progressTween.progress(progress);
       }
