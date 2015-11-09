@@ -107,7 +107,7 @@ export class SmoothScroller {
           scrollableX = scrollableX.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.99 || deltaX > 0 && scrollable.xRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
+            return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.9999 || deltaX > 0 && scrollable.xRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableX.sort((a, b) => {
@@ -123,7 +123,7 @@ export class SmoothScroller {
           scrollableY = scrollableY.filter((scrollable) => {
             scrollable.level = { value: 0 };
 
-            return scrollable.yRatio != -1 && (deltaY < 0 && scrollable.yRatio < 0.99 || deltaY > 0 && scrollable.yRatio > 0.01) && !!closest(element, scrollable.element, scrollable.level);
+            return scrollable.yRatio != -1 && (deltaY < 0 && scrollable.yRatio < 0.9999 || deltaY > 0 && scrollable.yRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
           });
 
           scrollableY.sort((a, b) => {
@@ -407,13 +407,17 @@ export class SmoothScroller {
 
   resize() {
       forEach(this.scrollable, (scrollable) => {
-        scrollable.scroll.x = scrollable.xRatio * (width(scrollable.element) - width(scrollable.parent));
-        scrollable.scroll.y = scrollable.yRatio * (height(scrollable.element) - height(scrollable.parent));
+        let scrollOffset = offset(scrollable.element);
 
-        transform(scrollable.element, {
-          x: -scrollable.scroll.x,
-          y: -scrollable.scroll.y
-        });
+        if(height(scrollable.element) + scrollOffset.top < height(scrollable.parent)) {
+            scrollable.yRatio = 1.0;
+            scrollable.scrollTarget.y = scrollable.scroll.y = scrollable.yRatio * (height(scrollable.element) - height(scrollable.parent));
+        }
+
+        if(width(scrollable.element) + scrollOffset.top < width(scrollable.parent)) {
+            scrollable.xRatio = 1.0;
+            scrollable.scrollTarget.x = scrollable.scroll.x = scrollable.xRatio * (width(scrollable.element) - width(scrollable.parent));
+        }
       });
   }
 
