@@ -32,11 +32,8 @@ export class Cover {
 
       style(element, {
         position: 'absolute',
-        top: '-9999px',
-        right: '-9999px',
-        bottom: '-9999px',
-        left: '-9999px',
-        margin: 'auto'
+        top: '50%',
+        left: '50%'
       });
 
       let newItem = this.items[index-1];
@@ -99,9 +96,17 @@ export class Cover {
           ratio = 1;
       }
 
+      let width = ratio * imgWidth,
+          height = ratio * imgHeight;
+
       size(item.element, {
-        width: ratio * imgWidth,
-        height: ratio * imgHeight
+        width: width,
+        height: height
+      });
+
+      style(item.element, {
+        marginTop: -height / 2,
+        marginLeft: -width / 2
       });
   }
 
