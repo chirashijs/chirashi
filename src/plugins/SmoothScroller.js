@@ -269,6 +269,26 @@ export class SmoothScroller {
     }
   }
 
+  immediateScroll(target) {
+      let scrollable = this.scrollable[0];
+
+      let scrollableWidth = (width(this.wrapper) - window.innerWidth),
+          scrollableHeight = (height(this.wrapper) - window.innerHeight);
+
+      this.scroll = this.scrollTarget = {
+          x: Math.min(Math.max(target.x, 0), scrollableWidth > 0 ? scrollableWidth : 0),
+          y: Math.min(Math.max(target.y, 0), scrollableHeight > 0 ? scrollableHeight : 0)
+      };
+
+      transform(scrollable.element, {
+        x: -scrollable.scroll.x,
+        y: -scrollable.scroll.y
+      });
+
+      scrollable.xRatio = scrollableWidth ? scrollable.scroll.x / scrollableWidth : -1;
+      scrollable.yRatio = scrollableHeight ? scrollable.scroll.y / scrollableHeight : -1;
+  }
+
   scrollTo(target, selector) {
     if (typeof selector != 'undefined') {
       forElements(selector, (element) => {
