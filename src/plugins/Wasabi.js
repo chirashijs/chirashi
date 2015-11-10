@@ -45,7 +45,9 @@ export class Wasabi {
         this.scroller.on('update', this.scrollerCallback);
     }
 
-    this.resizeCallback = resize(this.refresh.bind(this));
+    this.resizeCallback = resize(() => {
+        setTimeout(this.refresh.bind(this));
+    });
 
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
