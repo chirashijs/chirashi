@@ -248,7 +248,6 @@ export class Slider {
   }
 
   animationCallback() {
-      console.log('animationCallback');
     this.animating = false;
     this.touchOrig = null;
 
@@ -278,7 +277,6 @@ export class Slider {
   }
 
   slideTo(target, paused = false) {
-    console.log('animating', this.animating, paused);
     if (this.animating) return;
 
     this.animating = !paused;
