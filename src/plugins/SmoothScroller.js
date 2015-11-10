@@ -201,7 +201,7 @@ export class SmoothScroller {
   update() {
     if (!this.running) return;
 
-    if (this.scrollTarget.y - this.scroll.y) this.triggerUpdateCallbacks();
+    if (this.scrollTarget.y - this.scroll.y || this.scrollTarget.x - this.scroll.x) this.triggerUpdateCallbacks();
 
     forEach(this.scrollable, (scrollable) => {
       transform(scrollable.element, {
@@ -269,20 +269,37 @@ export class SmoothScroller {
     }
   }
 
-  scrollTo(target) {
-    this.disableScroll();
+  scrollTo(target, selector) {
+    if (typeof selector != 'undefined') {
+      forElements(selector, (element) => {
+        let scrollable = this.getScrollable(element);
 
-    const wrapperWidth  = width(this.wrapper),
-          windowWidth   = window.innerWidth,
-          wrapperHeight = height(this.wrapper),
-          windowHeight  = window.innerHeight;
+        if (scrollable) {
+            let elementSize = size(scrollable.element),
+                parentSize = size(scrollable.parent);
 
-    this.scrollTarget = {
-        x: Math.min(Math.max(target.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
-        y: Math.min(Math.max(target.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
-    };
+            scrollable.scrollTarget = {
+                x: Math.min(Math.max(target.x, 0), elementSize.width > parentSize.width ? elementSize.width - parentSize.width : 0),
+                y: Math.min(Math.max(target.y, 0), elementSize.height > parentSize.height ? elementSize.height - parentSize.height : 0)
+            };
+        }
+      });
+    }
+    else {
+        this.disableScroll();
 
-    this.autoScroll();
+        const wrapperWidth  = width(this.wrapper),
+              windowWidth   = window.innerWidth,
+              wrapperHeight = height(this.wrapper),
+              windowHeight  = window.innerHeight;
+
+        this.scrollTarget = {
+            x: Math.min(Math.max(target.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
+            y: Math.min(Math.max(target.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
+        };
+
+        this.autoScroll();
+    }
   }
 
   disableScroll() {
@@ -427,6 +444,14 @@ export class SmoothScroller {
       while(i-- && !(done = this.fixed[i].element == element)) {}
 
      return done ? i : -1;
+  }
+
+  getScrollable(element) {
+      let i = this.scrollable.length, done = false;
+
+      while(i-- && !(done = this.scrollable[i].element == element)) {}
+
+     return done ? this.scrollable[i] : null;
   }
 
   fixElements(elements) {
