@@ -130,7 +130,7 @@ export class Slider {
 
         addClass('.'+this.options.bullets.wrapper+' > li:first-child', 'active');
 
-        on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click', this.bulletClickCallback);
     }
 
     load(find(this.wrapper, 'img'), null, () => {
@@ -248,6 +248,7 @@ export class Slider {
   }
 
   animationCallback() {
+      console.log('animationCallback');
     this.animating = false;
     this.touchOrig = null;
 
@@ -271,18 +272,23 @@ export class Slider {
     this.slideTo(this.current+1);
   }
 
+  computeTarget(index) {
+    if (index < 0) index = this.nbSlide + index;
+    return index % this.nbSlide;
+  }
+
   slideTo(target, paused = false) {
+    console.log('animating', this.animating, paused);
     if (this.animating) return;
 
-    if (target < 0) this.target = target - (target % -this.nbSlide);
-    else this.target = target % this.nbSlide;
+    this.animating = !paused;
+
+    this.target = this.computeTarget(target);
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
 
     if (paused) tween.pause();
     else this.updateActiveBullet(this.target);
-
-    this.animating = !paused;
 
     return tween;
   }
@@ -343,6 +349,8 @@ export class Slider {
   }
 
   dragStart(position) {
+    if (this.animating) return;
+
     this.touchOrig = position;
     this.touchLength = 0;
 
@@ -351,7 +359,7 @@ export class Slider {
   }
 
   dragMove(position) {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig || this.animating) return;
 
     this.touchLength = this.options.touchDirection == 'horizontal' ? position.x - this.touchOrig.x : position.y - this.touchOrig.y;
     let forward = this.touchLength < 0;
@@ -359,7 +367,7 @@ export class Slider {
     if (this.swipeNext != forward) {
       this.swipeNext = forward;
 
-      this.target = this.current + (this.swipeNext ? 1 : -1);
+      this.target = this.computeTarget(this.current + (this.swipeNext ? 1 : -1));
     }
 
     if (this.onDrag) {
@@ -375,7 +383,11 @@ export class Slider {
   }
 
   dragEnd() {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig || this.animating) {
+        this.touchOrig = null;
+
+        return;
+    }
 
     let absLength = Math.abs(this.touchLength);
     if (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold) {
@@ -418,8 +430,8 @@ export class Slider {
     }
 
     if (this.options.bullets) {
-      off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
-      remove('.'+this.options.bullets.wrapper);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click', this.bulletClickCallback);
+      remove(find(this.container, '.'+this.options.bullets.wrapper));
     }
 
     size(this.slides, {
