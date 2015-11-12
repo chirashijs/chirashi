@@ -42,11 +42,13 @@ export class Cover {
 
       if(!newItem.size) {
           newItem.watcher = watchProp(element, 'src', (value) => {
+            newItem.loaded = false;
             this.loadAndResize(newItem);
           });
       }
 
       if (newItem.forceResize) {
+          newItem.loaded = true;
           this.loadAndResize(newItem);
       }
     });
@@ -81,8 +83,9 @@ export class Cover {
   }
 
   loadAndResize(item) {
-      if (!item.size) {
+      if (!item.loaded) {
           load(item.element, () => {
+            item.loaded = true;
             this.resize(item);
           });
       }
@@ -90,6 +93,8 @@ export class Cover {
   }
 
   resize(item) {
+      if (!item.loaded) return;
+      
       let ratio,
           imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
           imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
