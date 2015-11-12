@@ -80,8 +80,8 @@ export class Cover {
 
   resize(item) {
       let ratio,
-          imgWidth = item.size.width || item.element.naturalWidth || item.element.videoWidth,
-          imgHeight = item.size.height || item.element.naturalHeight || item.element.videoHeight,
+          imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
+          imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
           parentSize = size(parent(item.element)),
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
