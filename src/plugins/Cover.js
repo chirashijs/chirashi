@@ -43,6 +43,8 @@ export class Cover {
             this.resize(newItem);
           });
       });
+
+      this.resize(newItem);
     });
   }
 
@@ -76,12 +78,13 @@ export class Cover {
 
   resize(item) {
       let ratio,
-          imgWidth = item.element.naturalWidth,
-          imgHeight = item.element.naturalHeight,
+          imgWidth = item.element.naturalWidth || item.element.videoWidth,
+          imgHeight = item.element.naturalHeight || item.element.videoHeight,
           parentSize = size(parent(item.element)),
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
 
+      console.log(item.element, imgWidth, imgHeight);
       switch (item.mode) {
         case 'fill':
           ratio = Math.max(widthRatio, heightRatio);
