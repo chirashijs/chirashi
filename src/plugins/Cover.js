@@ -23,7 +23,8 @@ export class Cover {
       let index = this.items.push({
         element: element,
         mode: item.mode,
-        size: item.size
+        size: item.size,
+        forceResize: item.forceResize
       });
 
       style(parent(element), {
