@@ -1,6 +1,6 @@
 import { forEach, forElements, getElements } from '../core';
 import { parent } from '../dom';
-import { resize, unresize, load, watch, unwatch } from '../events';
+import { resize, unresize, load, watchProp, unwatchProp } from '../events';
 import { style, size } from '../styles';
 import { defaultify } from '../utils/defaultify';
 
@@ -22,7 +22,8 @@ export class Cover {
     forElements(item.elements, (element) => {
       let index = this.items.push({
         element: element,
-        mode: item.mode
+        mode: item.mode,
+        size: item.size
       });
 
       style(parent(element), {
@@ -32,24 +33,21 @@ export class Cover {
 
       style(element, {
         position: 'absolute',
-        top: '-9999px',
-        right: '-9999px',
-        bottom: '-9999px',
-        left: '-9999px',
-        margin: 'auto'
+        top: '50%',
+        left: '50%'
       });
 
       let newItem = this.items[index-1];
 
-      newItem.watcher = watch(element, 'src', (value) => {
-          load(element, () => {
-            this.resize(newItem);
+      if(!newItem.size) {
+          newItem.watcher = watchProp(element, 'src', (value) => {
+            this.loadAndResize(newItem);
           });
-      });
+      }
 
-      load(element, () => {
-        this.resize(newItem);
-      });
+      if (newItem.forceResize) {
+          this.loadAndResize(newItem);
+      }
     });
   }
 
@@ -81,10 +79,20 @@ export class Cover {
     forEach(this.items, this.resize.bind(this));
   }
 
+  loadAndResize(item) {
+      if (!item.size) {
+          load(item.element, () => {
+              console.log('load', item.element);
+            this.resize(item);
+          });
+      }
+      else this.resize(item);
+  }
+
   resize(item) {
       let ratio,
-          imgWidth = item.element.naturalWidth,
-          imgHeight = item.element.naturalHeight,
+          imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
+          imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
           parentSize = size(parent(item.element)),
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
@@ -103,9 +111,17 @@ export class Cover {
           ratio = 1;
       }
 
+      let width = ratio * imgWidth,
+          height = ratio * imgHeight;
+
       size(item.element, {
-        width: ratio * imgWidth,
-        height: ratio * imgHeight
+        width: width,
+        height: height
+      });
+
+      style(item.element, {
+        marginTop: -height / 2,
+        marginLeft: -width / 2
       });
   }
 
@@ -113,9 +129,9 @@ export class Cover {
     unresize(this.resizeCallback);
 
     forEach(this.items, (item) => {
-        size(item.element, {width:'', height: ''});
+        size(item.element, {width: '', height: ''});
 
-        unwatch(item.watcher);
+        if (item.watcher) unwatch(item.watcher);
 
         style(parent(item.element), {
           position: '',
