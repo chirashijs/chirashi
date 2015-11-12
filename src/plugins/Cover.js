@@ -47,10 +47,8 @@ export class Cover {
           });
       }
 
-      if (newItem.forceResize) {
-          newItem.loaded = true;
-          this.loadAndResize(newItem);
-      }
+      newItem.loaded = !!newItem.forceResize;
+      this.loadAndResize(newItem);
     });
   }
 
@@ -83,7 +81,6 @@ export class Cover {
   }
 
   loadAndResize(item) {
-      console.log(item);
       if (!item.loaded) {
           load(item.element, () => {
             item.loaded = true;
