@@ -130,7 +130,7 @@ export class Slider {
 
         addClass('.'+this.options.bullets.wrapper+' > li:first-child', 'active');
 
-        on(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click', this.bulletClickCallback);
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click touchstart', this.bulletClickCallback);
     }
 
     load(find(this.wrapper, 'img'), null, () => {
@@ -428,7 +428,7 @@ export class Slider {
     }
 
     if (this.options.bullets) {
-      off(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click', this.bulletClickCallback);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click touchstart', this.bulletClickCallback);
       remove(find(this.container, '.'+this.options.bullets.wrapper));
     }
 
