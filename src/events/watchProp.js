@@ -21,6 +21,7 @@ export function watchProp (elements, prop, handler) {
       forEach(watched, (item) => {
         let value = getProp(item.element, item.prop);
         if (item.value != value) {
+            item.value = value;
             handler.call(item.element, item.prop, value);
         }
       });
