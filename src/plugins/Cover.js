@@ -84,7 +84,6 @@ export class Cover {
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
 
-      console.log(item.element, imgWidth, imgHeight);
       switch (item.mode) {
         case 'fill':
           ratio = Math.max(widthRatio, heightRatio);
