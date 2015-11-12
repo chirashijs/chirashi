@@ -82,7 +82,6 @@ export class Cover {
   loadAndResize(item) {
       if (!item.size) {
           load(item.element, () => {
-              console.log('load', item.element);
             this.resize(item);
           });
       }
