@@ -39,14 +39,10 @@ export class Cover {
       let newItem = this.items[index-1];
 
       newItem.watcher = watchProp(element, 'src', (value) => {
-          load(element, () => {
-            this.resize(newItem);
-          });
+        this.loadAndResize(newItem);
       });
 
-      load(element, () => {
-        this.resize(newItem);
-      });
+      this.loadAndResize(newItem);
     });
   }
 
@@ -76,6 +72,15 @@ export class Cover {
 
   resizeAll() {
     forEach(this.items, this.resize.bind(this));
+  }
+
+  loadAndResize(item) {
+      if (!item.size) {
+          load(element, () => {
+            this.resize(item);
+          });
+      }
+      else this.resize(item);
   }
 
   resize(item) {
