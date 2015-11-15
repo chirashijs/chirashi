@@ -1,6 +1,6 @@
 import { forEach, forElements, getElements } from '../core';
 import { parent } from '../dom';
-import { resize, unresize, load, watchProp, unwatchProp } from '../events';
+import { resize, unresize, on, off } from '../events';
 import { style, size } from '../styles';
 import { defaultify } from '../utils/defaultify';
 
@@ -40,15 +40,14 @@ export class Cover {
 
       let newItem = this.items[index-1];
 
-      if(!newItem.size) {
-          newItem.watcher = watchProp(element, 'src', (value) => {
-            newItem.loaded = false;
-            this.loadAndResize(newItem);
-          });
+      if (!newItem.size) {
+        newItem.watcher = () => {
+            this.resize(newItem);
+        };
+        on(element, 'load', newItem.watcher);
       }
 
-      newItem.loaded = !!newItem.forceResize;
-      this.loadAndResize(newItem);
+      if (newItem.size || element.naturalWidth || element.videoWidth) this.resize(newItem);
     });
   }
 
@@ -70,7 +69,8 @@ export class Cover {
       let i = this.items.length, found = false;
       while(!found && i--) {
           if (found = element == this.items[i].elements) {
-              this.items.slice(i, 1);
+              let item = this.items.slice(i, 1);
+              if (item.watcher) off(newItem.element, 'load', item.watcher);
           }
       }
     });
@@ -80,19 +80,7 @@ export class Cover {
     forEach(this.items, this.resize.bind(this));
   }
 
-  loadAndResize(item) {
-      if (!item.loaded) {
-          load(item.element, () => {
-            item.loaded = true;
-            this.resize(item);
-          });
-      }
-      else this.resize(item);
-  }
-
   resize(item) {
-      if (!item.loaded) return;
-
       let ratio,
           imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
           imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
@@ -134,7 +122,7 @@ export class Cover {
     forEach(this.items, (item) => {
         size(item.element, {width: '', height: ''});
 
-        if (item.watcher) unwatch(item.watcher);
+        if (item.watcher) off(item.element, 'load', item.watcher);
 
         style(parent(item.element), {
           position: '',
