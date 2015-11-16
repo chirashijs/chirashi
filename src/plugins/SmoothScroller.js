@@ -137,25 +137,40 @@ export class SmoothScroller {
       scrollableX = scrollableY = this.scrollable[0];
     }
 
-    if (scrollableX) {
+    if (scrollableX != scrollableY) {
+        if (scrollableX) {
+            this.setNewTarget(scrollableX, {
+                x: scrollableX.scroll.x - deltaX,
+                y: scrollableX.scroll.y
+            });
+
+            scrollableX.delta = {
+                x: -(scrollableX.scrollTarget.x - scrollableX.scroll.x),
+                y: 0
+            };
+        }
+
+        if (scrollableY) {
+            this.setNewTarget(scrollableY, {
+                x: scrollableY.scroll.x,
+                y: scrollableY.scroll.y - deltaY
+            });
+
+            scrollableY.delta = {
+                x: 0,
+                y: -(scrollableY.scrollTarget.y - scrollableY.scroll.y)
+            };
+        }
+    }
+    else {
         this.setNewTarget(scrollableX, {
             x: scrollableX.scroll.x - deltaX,
-            y: scrollableX.scroll.y
+            y: scrollableX.scroll.y - deltaY
         });
 
         scrollableX.delta = {
-            x: scrollableX.scrollTarget.x - scrollableX.scroll.x
-        };
-    }
-
-    if (scrollableY) {
-        this.setNewTarget(scrollableY, {
-            x: scrollableY.scroll.x,
-            y: scrollableY.scroll.y - deltaY
-        });
-
-        scrollableY.delta = {
-            x: scrollableY.scrollTarget.y - scrollableY.scroll.y
+            x: -(scrollableX.scrollTarget.x - scrollableX.scroll.x),
+            y: -(scrollableX.scrollTarget.y - scrollableX.scroll.y)
         };
     }
 
