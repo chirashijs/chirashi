@@ -442,19 +442,17 @@ export class SmoothScroller {
 
   resize() {
       forEach(this.scrollable, (scrollable) => {
-        let scrollOffset = offset(scrollable.element);
-
         scrollable.elementSize = size(scrollable.element);
         scrollable.parentSize = size(scrollable.element.parentNode);
 
-        if(height(scrollable.element) + scrollOffset.top < height(scrollable.parent)) {
+        if(scrollable.elementSize.height - scrollable.scroll.y < scrollable.parentSize.height) {
             scrollable.yRatio = 1.0;
-            scrollable.scrollTarget.y = scrollable.scroll.y = scrollable.yRatio * (height(scrollable.element) - height(scrollable.parent));
+            scrollable.scrollTarget.y = scrollable.scroll.y = scrollable.yRatio * (scrollable.elementSize.height - scrollable.parentSize.height);
         }
 
-        if(width(scrollable.element) + scrollOffset.top < width(scrollable.parent)) {
+        if(scrollable.elementSize.width - scrollable.scroll.x < scrollable.parentSize.width) {
             scrollable.xRatio = 1.0;
-            scrollable.scrollTarget.x = scrollable.scroll.x = scrollable.xRatio * (width(scrollable.element) - width(scrollable.parent));
+            scrollable.scrollTarget.x = scrollable.scroll.x = scrollable.xRatio * (scrollable.elementSize.width - scrollable.parentSize.width);
         }
       });
   }
