@@ -131,6 +131,11 @@ export class SmoothScroller {
           });
 
           scrollableY = scrollableY.length && scrollableY[0];
+
+          if (!scrollableY && this.scrollable[0].yRatio == -1 && (deltaY < 0 && this.scrollable[0].xRatio < 0.9999 || deltaY > 0 && this.scrollable[0].xRatio > 0.0001)) {
+              deltaX = deltaY;
+              scrollableX = this.scrollable[0];
+          }
       }
     }
     else {
