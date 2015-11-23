@@ -130,18 +130,32 @@ export class SmoothScroller {
             return a.level.value - b.level.value;
           });
 
-          scrollableY = scrollableY.length && scrollableY[0];
+          scrollableY = !!scrollableY.length && scrollableY[0];
+      }
 
-          if (!scrollableY && this.scrollable[0].yRatio == -1 && (deltaY < 0 && this.scrollable[0].xRatio < 0.9999 || deltaY > 0 && this.scrollable[0].xRatio > 0.0001)) {
-              deltaX = deltaY;
-              scrollableX = this.scrollable[0];
-          }
+      if (!scrollableX && !scrollableY && !deltaX && deltaY) {
+        deltaX = deltaY;
+
+        scrollableX = this.scrollable.slice();
+
+        scrollableX = scrollableX.filter((scrollable) => {
+          scrollable.level = { value: 0 };
+
+          return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.9999 || deltaX > 0 && scrollable.xRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
+        });
+
+        scrollableX.sort((a, b) => {
+          return a.level.value - b.level.value;
+        });
+
+        scrollableX = scrollableX.length && scrollableX[0];
       }
     }
     else {
       scrollableX = scrollableY = this.scrollable[0];
     }
 
+    console.log(scrollableX, scrollableY);
     if (scrollableX != scrollableY) {
         if (scrollableX) {
             this.setNewTarget(scrollableX, {
