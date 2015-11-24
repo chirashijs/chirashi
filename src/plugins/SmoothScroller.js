@@ -155,7 +155,6 @@ export class SmoothScroller {
       scrollableX = scrollableY = this.scrollable[0];
     }
 
-    console.log(scrollableX, scrollableY);
     if (scrollableX != scrollableY) {
         if (scrollableX) {
             this.setNewTarget(scrollableX, {
