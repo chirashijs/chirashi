@@ -331,6 +331,11 @@ export class Wasabi {
       entered = progress >= 0 && progress <= 1;
 
       if (!zone.entered && entered) {
+        if (zone.snap) {
+            this.currentSnapIndex = this.snaps.indexOf(zone);
+            this.currentSnap = this.snaps[this.currentSnapIndex];
+        }
+        
         if (zone.tween) zone.tween.resume();
         if(zone.handler) zone.handler('enter', direction, zone.selector, zone.element);
         if(zone.enter) zone.enter(direction, zone.selector, zone.element);
