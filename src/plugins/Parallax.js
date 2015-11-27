@@ -8,6 +8,7 @@ const M_PI = Math.PI,
       M_PI_2 = Math.PI / 2;
 
 const defaults = {
+  accelerometer: false,
   center: {
     x: 0.5,
     y: 0.5
@@ -48,8 +49,14 @@ export class Parallax {
 
     if (!options.paused) this.play();
 
-    this.mousemoveCallback = this.mousemove.bind(this);
-    on(this.container, 'mousemove', this.mousemoveCallback);
+    if (this.options.accelerometer && window.DeviceMotionEvent) {
+        this.devicemoveCallback = this.devicemove.bind(this);
+        on(window, 'devicemotion', this.devicemoveCallback);
+    }
+    else {
+        this.mousemoveCallback = this.mousemove.bind(this);
+        on(this.container, 'mousemove', this.mousemoveCallback);
+    }
   }
 
   refresh() {
@@ -149,15 +156,24 @@ export class Parallax {
     if (!this.listen) return;
 
     this.updateParams({
-      x: event.pageX,
-      y: event.pageY
+      x: this.center.x - event.pageX,
+      y: this.center.y - event.pageY
     });
   }
 
-  updateParams(target) {
+  devicemove(event) {
+    if (!this.listen) return;
+
+    this.updateParams({
+      x: event.accelerationIncludingGravity.x * this.center.x,
+      y: -event.accelerationIncludingGravity.z * this.center.y
+    });
+  }
+
+  updateParams(variation) {
       this.params = {
-        angle: Math.atan2(this.center.y - target.y, this.center.x - target.x),
-        length: Math.sqrt((this.center.y - target.y) * (this.center.y - target.y) + (this.center.x - target.x) * (this.center.x - target.x))
+        angle: Math.atan2(variation.y, variation.x),
+        length: Math.sqrt(variation.y * variation.y + variation.x * variation.x)
       };
 
       this.params.ratio = this.params.length / this.maxLength;
@@ -238,6 +254,7 @@ export class Parallax {
     });
 
     unresize(this.resizeCallback);
-    off(this.container, 'mousemove', this.resizeCallback);
+    if(this.devicemoveCallback) off(window, 'devicemotion', this.devicemoveCallback);
+    if(this.mousemoveCallback) off(this.container, 'mousemove', this.mousemoveCallback);
   }
 }
