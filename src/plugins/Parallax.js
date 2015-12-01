@@ -143,6 +143,15 @@ export class Parallax {
   }
 
   resize() {
+    if (window.innerWidth > window.innerHeight) {
+        this.gravityH = 'z';
+        this.gravityV = 'x';
+    }
+    else {
+        this.gravityH = 'x';
+        this.gravityV = 'z';
+    }
+
     this.containerSize = size(this.container);
 
     this.center = {
@@ -166,8 +175,8 @@ export class Parallax {
     if (!this.listen) return;
 
     this.updateParams({
-      x: between(event.accelerationIncludingGravity.x / 90, -1, 1) * this.center.x,
-      y: -between(event.accelerationIncludingGravity.z / 90, -1, 1) * this.center.y
+      x: between(event.accelerationIncludingGravity[this.gravityH] / 90, -1, 1) * (this.center.x / 2),
+      y: -between(event.accelerationIncludingGravity[this.gravityV] / 90, -1, 1) * (this.center.y / 2)
     });
   }
 
