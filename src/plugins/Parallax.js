@@ -3,6 +3,7 @@ import { data, find } from '../dom';
 import { on, off, resize, unresize } from '../events';
 import { size, style, transform } from '../styles';
 import { defaultify } from '../utils/defaultify';
+import { between } from '../utils/between';
 
 const M_PI = Math.PI,
       M_PI_2 = Math.PI / 2;
@@ -165,8 +166,8 @@ export class Parallax {
     if (!this.listen) return;
 
     this.updateParams({
-      x: event.accelerationIncludingGravity.x * this.center.x,
-      y: -event.accelerationIncludingGravity.z * this.center.y
+      x: between(event.accelerationIncludingGravity.x / 90, -1, 1) * this.center.x,
+      y: -between(event.accelerationIncludingGravity.z / 90, -1, 1) * this.center.y
     });
   }
 
