@@ -13,6 +13,7 @@ export * from './mobile';
 export * from './object';
 export * from './safari';
 export * from './tablet';
+export * from './touchable';
 export * from './windows';
 export * from './windowsPhone';
 export * from './windowsTablet';
