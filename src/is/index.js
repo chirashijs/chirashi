@@ -9,6 +9,7 @@ export * from './ipad';
 export * from './iphone';
 export * from './ipod';
 export * from './larger';
+export * from './mobile';
 export * from './object';
 export * from './safari';
 export * from './tablet';

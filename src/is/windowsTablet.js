@@ -3,7 +3,7 @@ import { isWindowsPhone } from './windowsPhone';
 
 export function isWindowsTablet() {
   let ua = navigator.userAgent.toLowerCase(),
-      vendor = navigator.vendor.toLowerCase();
+      vendor = navigator.vendor && navigator.vendor.toLowerCase();
 
   return isWindows() && !isWindowsPhone() && /touch/i.test(ua);
 }
