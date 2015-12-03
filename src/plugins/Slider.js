@@ -452,8 +452,10 @@ export class Slider {
 
     if (this.options.bullets) {
       off(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
-      off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
-      off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+      if (this.options.bullets.arrows) {
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+      }
       remove(find(this.container, '.'+this.options.bullets.wrapper));
     }
 
