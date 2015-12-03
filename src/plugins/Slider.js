@@ -1,5 +1,5 @@
 import { forEach, getElement, getSelectorAll } from '../core';
-import { remove, append, find, parent, indexInParent, addClass, removeClass } from '../dom';
+import { createElement, remove, append, find, parent, indexInParent, addClass, removeClass } from '../dom';
 import { size, height, width, style, transform, screenPosition } from '../styles';
 import { resize, unresize, load, on, off } from '../events';
 import { defaultify } from '../utils/defaultify';
@@ -46,7 +46,19 @@ export class Slider {
       };
     }
 
-    if (this.options.bullets) this.bulletClickCallback = this.bulletClick.bind(this);
+    if (this.options.bullets) {
+        this.bulletClickCallback = this.bulletClick.bind(this);
+        this.leftClickCallback = (e) => {
+            e.preventDefault();
+
+            this.slideDown();
+        };
+        this.rightClickCallback = (e) => {
+            e.preventDefault();
+
+            this.slideUp();
+        };
+    }
 
     this.refresh();
     this.resizeCallback = resize(this.resize.bind(this));
@@ -120,17 +132,25 @@ export class Slider {
     if (this.options.bullets) {
         remove(find(this.container, '.'+this.options.bullets.wrapper));
 
-        append(this.container, '<ul class='+this.options.bullets.wrapper+'></ul>');
+        append(this.container, '<div class='+this.options.bullets.wrapper+'></div>');
         let bulletsWrapper = find(this.container, '.'+this.options.bullets.wrapper),
             i = -1;
 
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' left" href="#">'+ this.options.bullets.arrows.element +'</a>');
+
+        let bullets = createElement('<ul></ul>');
         while(++i < this.slides.length) {
-            append(bulletsWrapper, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
+            append(bullets, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
         }
+        append(bulletsWrapper, bullets);
 
-        addClass('.'+this.options.bullets.wrapper+' > li:first-child', 'active');
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' right" href="#">'+ this.options.bullets.arrows.element +'</a>');
 
-        on(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click touchstart', this.bulletClickCallback);
+        addClass('.'+this.options.bullets.wrapper+' > ul > li:first-child', 'active');
+
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
     }
 
     load(find(this.wrapper, 'img'), null, () => {
@@ -149,7 +169,7 @@ export class Slider {
   updateActiveBullet(index) {
       if (!this.options.bullets) return;
 
-      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > li');
+      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > ul > li');
       removeClass(bullets, 'active');
       addClass(bullets[index], 'active');
   }
@@ -428,7 +448,9 @@ export class Slider {
     }
 
     if (this.options.bullets) {
-      off(find(this.container, '.'+this.options.bullets.wrapper+' > li'), 'click touchstart', this.bulletClickCallback);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
       remove(find(this.container, '.'+this.options.bullets.wrapper));
     }
 
