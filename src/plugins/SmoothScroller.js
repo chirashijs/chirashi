@@ -248,13 +248,13 @@ export class SmoothScroller {
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
         transform(scrollable.scrollbar.horizontal.cursor, {
-          x: scrollable.xRatio * (width(scrollable.scrollbar.horizontal.bar) - width(scrollable.scrollbar.horizontal.cursor))
+          x: scrollable.xRatio * (scrollable.scrollbar.horizontal.barSize - scrollable.scrollbar.horizontal.cursorSize)
         });
       }
 
       if (scrollable.scrollbar && scrollable.scrollbar.vertical) {
         transform(scrollable.scrollbar.vertical.cursor, {
-          y: scrollable.yRatio * (height(scrollable.scrollbar.vertical.bar) - height(scrollable.scrollbar.vertical.cursor))
+          y: scrollable.yRatio * (scrollable.scrollbar.vertical.barSize - scrollable.scrollbar.vertical.cursorSize)
         });
       }
     });
