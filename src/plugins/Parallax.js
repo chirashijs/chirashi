@@ -143,14 +143,14 @@ export class Parallax {
   }
 
   resize() {
-    if (window.innerWidth > window.innerHeight) {
-        this.gravityH = 'z';
-        this.gravityV = 'x';
-    }
-    else {
-        this.gravityH = 'x';
-        this.gravityV = 'z';
-    }
+    // if (window.innerWidth > window.innerHeight) {
+    //     this.gravityH = 'z';
+    //     this.gravityV = 'x';
+    // }
+    // else {
+    //     this.gravityH = 'x';
+    //     this.gravityV = 'z';
+    // }
 
     this.containerSize = size(this.container);
 
@@ -174,9 +174,17 @@ export class Parallax {
   devicemove(event) {
     if (!this.listen) return;
 
+    if (!this.initialGravity) {
+      this.initialGravity = {
+        x: event.accelerationIncludingGravity.y,
+        y: event.accelerationIncludingGravity.x
+      };
+    }
+
+    // console.log();
     this.updateParams({
-      x: between(event.accelerationIncludingGravity[this.gravityH] / 90, -1, 1) * (this.center.x / 2),
-      y: -between(event.accelerationIncludingGravity[this.gravityV] / 90, -1, 1) * (this.center.y / 2)
+      x: between((event.accelerationIncludingGravity.y - this.initialGravity.x) / 90, -1, 1) * this.center.x * this.options.accelerometer,
+      y: -between((event.accelerationIncludingGravity.x - this.initialGravity.y) / 90, -1, 1) * this.center.y * this.options.accelerometer
     });
   }
 
