@@ -1,13 +1,13 @@
 import { getElement } from '../core';
 
-export function closest (element, selector, level) {
+export function closest (element, tested, level) {
   if (level && typeof level.value != 'undefined') ++level.value;
 
   element = getElement(element);
 
-  return (!(element instanceof HTMLElement)
-    ? null
-    : (typeof selector == 'string' && element.matches(selector) || element == selector
-      ? element
-      : closest(element.parentNode, selector, level)));
+  return (!element ?
+            false
+            : ((typeof tested == 'string' && element.matches(tested) || element == tested) ?
+                element
+                : closest(element.parentNode, tested, level)));
 }

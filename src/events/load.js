@@ -1,9 +1,9 @@
-import { forElements, getSelectorAll } from '../core';
+import { forEach, getElements } from '../core';
 import { on } from './on';
 import { off } from './off';
 
 export function load (elements, eachCallback, allCallback) {
-  if (typeof elements == 'string') elements = getSelectorAll(elements);
+  elements = getElements(elements);
 
   if (!elements || elements.length == 0) {
     if (allCallback) allCallback();
@@ -28,7 +28,7 @@ export function load (elements, eachCallback, allCallback) {
     if (!(--n.value) && allCallback) allCallback();
   };
 
-  forElements(elements, (element) => {
+  forEach(elements, (element) => {
     if (element.tagName == 'IMG' && !element.src) {
         callback(null, element, 'image without src');
     }

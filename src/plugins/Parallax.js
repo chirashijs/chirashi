@@ -3,11 +3,13 @@ import { data, find } from '../dom';
 import { on, off, resize, unresize } from '../events';
 import { size, style, transform } from '../styles';
 import { defaultify } from '../utils/defaultify';
+import { between } from '../utils/between';
 
 const M_PI = Math.PI,
       M_PI_2 = Math.PI / 2;
 
 const defaults = {
+  accelerometer: false,
   center: {
     x: 0.5,
     y: 0.5
@@ -46,7 +48,16 @@ export class Parallax {
     this.resize();
     this.resizeCallback = resize(this.resize.bind(this));
 
-    this.update();
+    if (!options.paused) this.play();
+
+    if (this.options.accelerometer && window.DeviceMotionEvent) {
+        this.devicemoveCallback = this.devicemove.bind(this);
+        on(window, 'devicemotion', this.devicemoveCallback);
+    }
+    else {
+        this.mousemoveCallback = this.mousemove.bind(this);
+        on(this.container, 'mousemove', this.mousemoveCallback);
+    }
   }
 
   refresh() {
@@ -129,9 +140,6 @@ export class Parallax {
 
       this.layers[key] = value;
     });
-
-    this.mousemoveCallback = this.mousemove.bind(this);
-    on(this.container, 'mousemove', this.mousemoveCallback);
   }
 
   resize() {
@@ -146,22 +154,44 @@ export class Parallax {
   }
 
   mousemove(event) {
-    this.mouse = {
-      x: event.pageX,
-      y: event.pageY
-    };
+    if (!this.listen) return;
 
-    this.params = {
-      angle: Math.atan2(this.center.y - this.mouse.y, this.center.x - this.mouse.x),
-      length: Math.sqrt((this.center.y - this.mouse.y) * (this.center.y - this.mouse.y) + (this.center.x - this.mouse.x) * (this.center.x - this.mouse.x))
-    };
+    this.updateParams({
+      x: this.center.x - event.pageX,
+      y: this.center.y - event.pageY
+    });
+  }
 
-    this.params.ratio = this.params.length / this.maxLength;
-    this.params.xRatio = Math.cos(this.params.angle) * this.params.ratio;
-    this.params.yRatio = Math.sin(this.params.angle) * this.params.ratio;
+  devicemove(event) {
+    if (!this.listen) return;
+
+    if (!this.initialGravity) {
+      this.initialGravity = {
+        x: event.accelerationIncludingGravity.y,
+        y: event.accelerationIncludingGravity.x
+      };
+    }
+
+    this.updateParams({
+      x: between((event.accelerationIncludingGravity.y - this.initialGravity.x) / 90, -1, 1) * this.center.x * this.options.accelerometer,
+      y: -between((event.accelerationIncludingGravity.x - this.initialGravity.y) / 90, -1, 1) * this.center.y * this.options.accelerometer
+    });
+  }
+
+  updateParams(variation) {
+      this.params = {
+        angle: Math.atan2(variation.y, variation.x),
+        length: Math.sqrt(variation.y * variation.y + variation.x * variation.x)
+      };
+
+      this.params.ratio = this.params.length / this.maxLength;
+      this.params.xRatio = Math.cos(this.params.angle) * this.params.ratio;
+      this.params.yRatio = Math.sin(this.params.angle) * this.params.ratio;
   }
 
   update() {
+    if (!this.playing) return;
+
     ++this.frame;
 
     forOf(this.layers, (key, value) => {
@@ -191,13 +221,48 @@ export class Parallax {
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
   }
 
+  pause() {
+      this.listen = this.playing = false;
+      cancelAnimationFrame(this.updateRequest);
+  }
+
+  play() {
+      if (this.playing) {
+          this.listen = true;
+      }
+      else {
+          this.listen = this.playing = true;
+          this.updateRequest = requestAnimationFrame(this.update.bind(this));
+      }
+  }
+
+  reset() {
+      this.pause();
+
+      forOf(this.layers, (key, value) => {
+        this.layers[key].currentTransformation = {
+          x: 0,
+          y: 0,
+          rotate: {
+            x: 0,
+            y: 0
+          }
+        }
+
+        transform(value.elements, this.layers[key].currentTransformation);
+      });
+  }
+
   kill() {
+    this.playing = false;
+    cancelAnimationFrame(this.updateRequest);
+
     style(this.container, {
       perspective: ''
     });
 
     unresize(this.resizeCallback);
-    off(this.container, 'mousemove', this.resizeCallback);
-    cancelAnimationFrame(this.updateRequest);
+    if(this.devicemoveCallback) off(window, 'devicemotion', this.devicemoveCallback);
+    if(this.mousemoveCallback) off(this.container, 'mousemove', this.mousemoveCallback);
   }
 }

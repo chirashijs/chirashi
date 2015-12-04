@@ -1,4 +1,4 @@
-import { getSelector, forElements } from '../core';
+import { getSelector, forElements, forEach } from '../core';
 import { remove, data, find, createElement, append, clone } from '../dom';
 import { style, screenPosition, height, transform, size } from '../styles';
 import { resize, unresize, load } from '../events';
@@ -16,6 +16,10 @@ let defaults = {
     bottom: 'bottom'
   }
 };
+
+function randomColor () {
+    return '#' + Math.floor(Math.random()*16777215).toString(16);
+}
 
 //Scroll manager
 export class Wasabi {
@@ -38,27 +42,29 @@ export class Wasabi {
         this.scrollTop = this.previousScrollTop = this.scroller.scroll.y;
 
         this.scrollerCallback = this.onScroller.bind(this);
-        this.scroller.on(this.scrollerCallback);
+        this.scroller.on('update', this.scrollerCallback);
     }
 
-    this.resizeCallback = resize(this.refresh.bind(this));
+    this.resizeCallback = resize(() => {
+        requestAnimationFrame(this.refresh.bind(this));
+    });
 
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
       style(this.debugWrapper, {
-        'z-index': 9999,
+        'z-index': 10000,
         width: 25,
         height: height(this.wrapper),
         position: 'absolute',
         top: 0,
-        right: 0
+        right: 0,
+        background: '#2d2d2d'
       });
       append(this.wrapper, this.debugWrapper);
-
-      if (this.scroller) this.scroller.fixElement(this.debugWrapper);
     }
 
     this.currentSnapIndex = 0;
+    this.running = true;
     this.refresh();
     this.update();
 
@@ -66,6 +72,8 @@ export class Wasabi {
   }
 
   refresh() {
+    if (this.config.debug) console.log('%c WASABI DEBUG ', 'background: #2d2d2d; color: #b0dd44');
+
     this.zones = [];
     this.snaps = [];
 
@@ -118,6 +126,37 @@ export class Wasabi {
       zone.selector = zoneConfig.selector;
       top = screenPosition(element).top + this.scrollTop;
       bottom = top + height(element);
+
+      zone.parallax = [];
+      forElements(find(element, '[data-wasabi]'), (pxElement) => {
+        let options = eval('('+data(pxElement, 'wasabi')+')');
+
+        let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
+            toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
+            fromX = (options.from && options.from.x) || 0,
+            fromY = (options.from && options.from.y) || 0,
+            parentSize = size(element.parentNode);
+
+        if (typeof toX == 'string' && toX.indexOf('%') != -1)
+            toX = parseInt(toX, 10) * parentSize.width;
+
+        if (typeof toY == 'string' && toY.indexOf('%') != -1)
+            toY = parseInt(toY, 10) * parentSize.height;
+
+        if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
+            fromX = parseInt(fromX, 10) * parentSize.width
+
+        if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
+            fromY = parseInt(fromY, 10) * parentSize.height;
+
+        zone.parallax.push({
+            element: pxElement,
+            toX: toX,
+            toY: toY,
+            fromX: fromX,
+            fromY: fromY
+        });
+      });
     }
     else {
       top = zoneConfig.top;
@@ -129,10 +168,16 @@ export class Wasabi {
         top: defaultify(offset.top, offset),
         bottom: defaultify(offset.bottom, offset)
     };
+
     zone.top = top - zone.offset.top;
     zone.bottom = bottom + zone.offset.bottom;
 
     if (this.config.debug) {
+      let color = randomColor();
+
+      console.log(zone.selector +' %c ' + color, 'color:'+color);
+      console.log(zone.element);
+
       let topDebug = createElement(`<div class="wasabi-marker"></div>`);
       append(this.debugWrapper, topDebug);
       style(topDebug, {
@@ -141,7 +186,7 @@ export class Wasabi {
         right: 0,
         width: 25,
         height: 2,
-        background: 'green'
+        background: color
       });
 
       let bottomDebug = clone(topDebug);
@@ -153,15 +198,17 @@ export class Wasabi {
         right: 0,
         width: 25,
         height: 2,
-        background: 'green'
+        background: color
       });
     }
 
     zone.size = zone.bottom - zone.top;
     zone.handle = zoneConfig.handle || this.config.handle;
-    zone.handler = zoneConfig.handler || this.config.handler;
     zone.progress = zoneConfig.progress || this.config.progress;
     zone.snap = zoneConfig.snap || this.config.snap;
+    zone.handler = zoneConfig.handler || this.config.handler;
+    zone.enter = zoneConfig.enter || this.config.enter;
+    zone.leave = zoneConfig.leave || this.config.leave;
 
     if (zoneConfig.tween) {
       zone.tween = zoneConfig.tween;
@@ -227,7 +274,7 @@ export class Wasabi {
       zone.backwardBottom = zone.bottom;
     }
 
-    zone.backwardSize = Math.max(1, zone.backwardBottom - zone.backwardTop);
+    zone.backwardSize = Math.max(this.config.stepMinSize, zone.backwardBottom - zone.backwardTop);
 
     if (zone.snap) this.snaps.push(zone);
 
@@ -241,6 +288,9 @@ export class Wasabi {
         next = this.snaps[this.currentSnapIndex+1];
 
     if (previous && scrollTarget.y < this.currentSnap.top) {
+      --this.currentSnapIndex;
+      this.currentSnap = previous;
+
       this.scroller.scrollTarget.y = this.currentSnap.top + this.currentSnap.offset.top;
       this.scroller.scrollTo({
         x: 0,
@@ -248,6 +298,9 @@ export class Wasabi {
       });
     }
     else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+      ++this.currentSnapIndex;
+      this.currentSnap = next;
+
       this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight - this.currentSnap.offset.bottom;
       this.scroller.scrollTo({
         x: 0,
@@ -266,6 +319,8 @@ export class Wasabi {
   }
 
   update() {
+    if (!this.running) return;
+
     let i = this.zones.length,
         direction = this.previousScrollTop < this.scrollTop ? 'forward' : 'backward';
 
@@ -277,50 +332,28 @@ export class Wasabi {
 
       if (!zone.entered && entered) {
         if (zone.tween) zone.tween.resume();
-        if(zone.handler) zone.handler(direction, 'enter', zone.selector, zone.element);
+        if(zone.handler) zone.handler('enter', direction, zone.selector, zone.element);
+        if(zone.enter) zone.enter(direction, zone.selector, zone.element);
+
+        if(zone.snap) {
+            this.currentSnapIndex = this.snaps.indexOf(zone);
+            this.currentSnap = this.snaps[this.currentSnapIndex];
+        }
       }
       else if (zone.entered && !entered) {
-        if(zone.handler) zone.handler(direction, 'leave', zone.selector, zone.element);
+          if(zone.handler) zone.handler('leave', direction, zone.selector, zone.element);
+        if(zone.leave) zone.leave(direction, zone.selector, zone.element);
       }
+
+      forEach(zone.parallax, (item) => {
+        transform(item.element, {
+          x: item.fromX + (item.toX - item.fromX) * progress,
+          y: item.fromY + (item.toY - item.fromY) * progress
+        });
+      });
 
       zone.entered = entered;
       if (zone.entered) {
-        let snapIndex = this.snaps.indexOf(zone);
-        if (snapIndex != -1 && snapIndex != this.currentSnapIndex) {
-          this.currentSnap = zone;
-          this.currentSnapIndex = snapIndex;
-        }
-
-        if (zone.element) {
-          forElements(find(zone.element, '[data-wasabi]'), (element) => {
-            let options = eval('('+data(element, 'wasabi')+')');
-
-            let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
-                toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
-                fromX = (options.from && options.from.x) || 0,
-                fromY = (options.from && options.from.y) || 0,
-                parentSize = size(element.parentNode);
-
-            if (typeof toX == 'string' && toX.indexOf('%') != -1)
-                toX = parseInt(toX, 10) * parentSize.width;
-
-            if (typeof toY == 'string' && toY.indexOf('%') != -1)
-                toY = parseInt(toY, 10) * parentSize.height;
-
-            if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
-                fromX = parseInt(fromX, 10) * parentSize.width
-
-            if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
-                fromY = parseInt(fromY, 10) * parentSize.height;
-
-
-            transform(element, {
-              x: fromX + (toX - fromX) * progress,
-              y: fromY + (toY - fromY) * progress
-            });
-          });
-        }
-
         if (zone.progress) zone.progress(direction, progress, zone.selector);
         if (zone.progressTween && zone.progressTween.progress) zone.progressTween.progress(progress);
       }
@@ -332,15 +365,18 @@ export class Wasabi {
   }
 
   kill() {
+    this.running = false;
+
+    unresize(this.resizeCallback);
+    cancelAnimationFrame(this.updateRequest);
+
     remove(this.debugWrapper);
 
     if (this.virtualScrollCallback) {
       VirtualScroll.off(this.virtualScrollCallback);
     }
     else if (this.scrollerCallback) {
-      this.scroller.off(this.scrollerCallback);
-
-      if (this.snapingCallback) this.scroller.off(this.snapingCallback);
+      this.scroller.off('update', this.scrollerCallback);
     }
 
     let i = this.zones.length;
@@ -352,12 +388,6 @@ export class Wasabi {
     }
 
     this.zones = this.snaps = null;
-
-    if (this.scroller && this.debugWrapper) this.scroller.unfixElement(this.debugWrapper);
-
-    unresize(this.resizeCallback);
-
-    cancelAnimationFrame(this.updateRequest);
   }
 
   concatenateVars(object) {
@@ -389,7 +419,7 @@ export class Wasabi {
       tween = tweens[i];
 
       if (tween.target) {
-        TweenMax.set(tween.target, {
+        TweenLite.set(tween.target, {
           clearProps: this.concatenateVars(tween.vars).join(',')
         });
       }

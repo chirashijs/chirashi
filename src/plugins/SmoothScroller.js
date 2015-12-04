@@ -1,10 +1,9 @@
 import { forEach, forElements, getElement } from '../core';
 import { closest, append, remove } from '../dom';
 import { style, height, width, size, transform, offset, screenPosition, hide, show } from '../styles';
-import { drag, undrag } from '../events';
+import { drag, undrag, resize, unresize } from '../events';
 import { defaultify, between } from '../utils';
 import { VirtualScroll } from './VirtualScroll';
-import './scroll60fps';
 
 let defaults = {
   ease: 0.2,
@@ -37,6 +36,7 @@ export class SmoothScroller {
     this.scrollable = [];
     this.addScrollable(this.wrapper, this.config.scrollbar);
 
+    this.updateCallbacks = [];
     this.scrollCallbacks = [];
 
     this.localCallback = this.scrolling.bind(this);
@@ -45,70 +45,154 @@ export class SmoothScroller {
     this.fixed = [];
     this.fixElements(this.config.fixed);
 
+    this.running = true;
+
     this.normalScroll();
     this.update();
+
+    this.resizeCallback = this.resize.bind(this);
+    resize(this.resizeCallback);
   }
 
   get scroll() {
+    if (!this.scrollable) return {x: 0, y: 0};
+
     return this.scrollable[0].scroll;
   }
 
   set scroll(value) {
+    if (!this.scrollable) return;
+
     this.scrollable[0].scroll = value;
   }
 
   get scrollTarget() {
+    if (!this.scrollable) return {x: 0, y: 0};
+
     return this.scrollable[0].scrollTarget;
   }
 
   set scrollTarget(value) {
+    if (!this.scrollable) return;
+
     this.scrollable[0].scrollTarget = value;
   }
 
   get delta() {
+    if (!this.scrollable) return 0;
+
     return this.scrollable[0].delta;
   }
 
   scrolling(event) {
+    event.originalEvent.preventDefault();
+
     if (this.scrollDisabled) return;
 
-    let scrollable;
-    if (event.originalEvent.pageX) {
-      let element = document.elementFromPoint(event.originalEvent.pageX, event.originalEvent.pageY);
-      scrollable = this.scrollable.slice();
-      scrollable.sort((a, b) => {
-        let levelA = { value: 0 },
-            levelB = { value: 0 };
+    forEach(this.scrollable, scrollable => scrollable.delta = {x:0,y:0});
 
-        let foundA = !!closest(element, a.element, levelA),
-            foundB = !!closest(element, b.element, levelB);
+    let mouse = event.originalEvent.touches ? event.originalEvent.touches[0] : event.originalEvent;
 
-        if (!foundA) return 1;
-        if (!foundB) return -1;
+    let deltaX = event.deltaX,
+        deltaY = event.deltaY;
 
-        return levelA.value - levelB.value;
-      });
+    let scrollableX, scrollableY;
 
-      scrollable = scrollable[0];
+    if ('pageX' in mouse) {
+      let element = document.elementFromPoint(mouse.pageX, mouse.pageY);
+
+      if (deltaX) {
+          scrollableX = this.scrollable.slice();
+
+          scrollableX = scrollableX.filter((scrollable) => {
+            scrollable.level = { value: 0 };
+
+            return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.9999 || deltaX > 0 && scrollable.xRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
+          });
+
+          scrollableX.sort((a, b) => {
+            return a.level.value - b.level.value;
+          });
+
+          scrollableX = scrollableX.length && scrollableX[0];
+      }
+
+      if (deltaY) {
+          scrollableY = this.scrollable.slice();
+
+          scrollableY = scrollableY.filter((scrollable) => {
+            scrollable.level = { value: 0 };
+
+            return scrollable.yRatio != -1 && (deltaY < 0 && scrollable.yRatio < 0.9999 || deltaY > 0 && scrollable.yRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
+          });
+
+          scrollableY.sort((a, b) => {
+            return a.level.value - b.level.value;
+          });
+
+          scrollableY = !!scrollableY.length && scrollableY[0];
+      }
+
+      if (!scrollableX && !scrollableY && !deltaX && deltaY) {
+        deltaX = deltaY;
+
+        scrollableX = this.scrollable.slice();
+
+        scrollableX = scrollableX.filter((scrollable) => {
+          scrollable.level = { value: 0 };
+
+          return scrollable.xRatio != -1 && (deltaX < 0 && scrollable.xRatio < 0.9999 || deltaX > 0 && scrollable.xRatio > 0.0001) && !!closest(element, scrollable.element, scrollable.level);
+        });
+
+        scrollableX.sort((a, b) => {
+          return a.level.value - b.level.value;
+        });
+
+        scrollableX = scrollableX.length && scrollableX[0];
+      }
     }
     else {
-      scrollable = this.scrollable[0];
+      scrollableX = scrollableY = this.scrollable[0];
     }
 
-    scrollable.delta = {
-        x: event.deltaX,
-        y: event.deltaY
-    };
+    if (scrollableX != scrollableY) {
+        if (scrollableX) {
+            this.setNewTarget(scrollableX, {
+                x: scrollableX.scroll.x - deltaX,
+                y: scrollableX.scroll.y
+            });
 
-    const wrapperSize = size(scrollable.element),
-          parentSize  = size(scrollable.parent);
+            scrollableX.delta = {
+                x: -(scrollableX.scrollTarget.x - scrollableX.scroll.x),
+                y: 0
+            };
+        }
 
-    scrollable.scrollTarget = {
-        x: Math.min(Math.max(scrollable.scroll.x - scrollable.delta.x, 0), wrapperSize.width > parentSize.width ? wrapperSize.width - parentSize.width : 0),
-        y: Math.min(Math.max(scrollable.scroll.y - scrollable.delta.y, 0), wrapperSize.height > parentSize.height ? wrapperSize.height - parentSize.height : 0)
-    };
+        if (scrollableY) {
+            this.setNewTarget(scrollableY, {
+                x: scrollableY.scroll.x,
+                y: scrollableY.scroll.y - deltaY
+            });
 
-    this.triggerCallbacks();
+            scrollableY.delta = {
+                x: 0,
+                y: -(scrollableY.scrollTarget.y - scrollableY.scroll.y)
+            };
+        }
+    }
+    else if(scrollableX) {
+        this.setNewTarget(scrollableX, {
+            x: scrollableX.scroll.x - deltaX,
+            y: scrollableX.scroll.y - deltaY
+        });
+
+        scrollableX.delta = {
+            x: -(scrollableX.scrollTarget.x - scrollableX.scroll.x),
+            y: -(scrollableX.scrollTarget.y - scrollableX.scroll.y)
+        };
+    }
+
+    this.triggerScrollCallbacks();
   }
 
   updateScroll(ease) {
@@ -131,43 +215,53 @@ export class SmoothScroller {
   autoScroll() {
     this.updateScroll(this.autoEase);
 
-    this.triggerCallbacks();
-
     if (Math.abs(this.scrollTarget.y - this.scroll.y) > 1 || Math.abs(this.scrollTarget.x - this.scroll.x) > 1)
         this.autoScrollRequest = requestAnimationFrame(this.autoScroll.bind(this));
     else
         this.enableScroll();
   }
 
-  triggerCallbacks() {
+  triggerUpdateCallbacks() {
+    let i = this.updateCallbacks.length;
+    while(i--) this.updateCallbacks[i](this.scrollTarget);
+  }
+
+  triggerScrollCallbacks() {
     let i = this.scrollCallbacks.length;
     while(i--) this.scrollCallbacks[i](this.scrollTarget);
   }
 
   update() {
+    if (!this.running) return;
+
+    if (this.scrollTarget.y - this.scroll.y || this.scrollTarget.x - this.scroll.x) this.triggerUpdateCallbacks();
+
     forEach(this.scrollable, (scrollable) => {
+    //   if (!(scrollable.scrollTarget.y - scrollable.scroll.y || scrollable.scrollTarget.x - scrollable.scroll.x)) return;
+
       transform(scrollable.element, {
         x: -scrollable.scroll.x,
         y: -scrollable.scroll.y
       });
 
-      scrollable.xRatio = scrollable.scroll.x / (width(scrollable.element) - width(scrollable.parent));
-      scrollable.yRatio = scrollable.scroll.y / (height(scrollable.element) - height(scrollable.parent));
+      this.computeRatio(scrollable);
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
         transform(scrollable.scrollbar.horizontal.cursor, {
-          x: scrollable.xRatio * (width(scrollable.scrollbar.horizontal.bar) - width(scrollable.scrollbar.horizontal.cursor))
+          x: scrollable.xRatio * (scrollable.scrollbar.horizontal.barSize - scrollable.scrollbar.horizontal.cursorSize)
         });
       }
 
       if (scrollable.scrollbar && scrollable.scrollbar.vertical) {
         transform(scrollable.scrollbar.vertical.cursor, {
-          y: scrollable.yRatio * (height(scrollable.scrollbar.vertical.bar) - height(scrollable.scrollbar.vertical.cursor))
+          y: scrollable.yRatio * (scrollable.scrollbar.vertical.barSize - scrollable.scrollbar.vertical.cursorSize)
         });
       }
     });
 
     forEach(this.fixed, (fixed) => {
+        if (!fixed.update) return;
+
         transform(fixed.element, {
             x: this.scroll.x - fixed.initial.x,
             y: this.scroll.y - fixed.initial.y
@@ -175,30 +269,77 @@ export class SmoothScroller {
     });
 
     this.updateRequest = requestAnimationFrame(this.update.bind(this));
+
+    if (this.justUnfixed) debugger;
   }
 
-  on(callback) {
-    this.scrollCallbacks.push(callback);
+  on(events, callback) {
+    switch (events) {
+        case 'scroll':
+        this.scrollCallbacks.push(callback);
+
+        break;
+
+        case 'update':
+        this.updateCallbacks.push(callback);
+
+        break;
+    }
   }
 
-  off(callback) {
-    this.scrollCallbacks.splice(this.scrollCallbacks.indexOf(callback));
+  off(events, callback) {
+    switch (events) {
+        case 'scroll':
+        this.scrollCallbacks.splice(this.scrollCallbacks.indexOf(callback));
+
+        break;
+
+        case 'update':
+        this.updateCallbacks.splice(this.updateCallbacks.indexOf(callback));
+
+        break;
+    }
   }
 
-  scrollTo(target) {
-    this.disableScroll();
+  immediateScroll(target) {
+      let scrollable = this.scrollable[0];
 
-    const wrapperWidth  = width(this.wrapper),
-          windowWidth   = window.innerWidth,
-          wrapperHeight = height(this.wrapper),
-          windowHeight  = window.innerHeight;
+      this.setNewTarget(scrollable, target);
 
-    this.scrollTarget = {
-        x: Math.min(Math.max(target.x, 0), wrapperWidth > windowWidth ? wrapperWidth - windowWidth : 0),
-        y: Math.min(Math.max(target.y, 0), wrapperHeight > windowHeight ? wrapperHeight - windowHeight : 0)
-    };
+      scrollable.scroll = scrollable.scrollTarget;
 
-    this.autoScroll();
+      transform(scrollable.element, {
+        x: -scrollable.scroll.x,
+        y: -scrollable.scroll.y
+      });
+
+      this.computeRatio(scrollable);
+    //   scrollable.xRatio = scrollableWidth ? scrollable.scroll.x / scrollableWidth : -1;
+    //   scrollable.yRatio = scrollableHeight ? scrollable.scroll.y / scrollableHeight : -1;
+  }
+
+  scrollTo(target, selector) {
+    if (typeof selector != 'undefined') {
+      forElements(selector, (element) => {
+        let scrollable = this.getScrollable(element);
+
+        if (scrollable) this.setNewTarget(scrollable, target);
+      });
+    }
+    else {
+        this.disableScroll();
+
+        this.setNewTarget(this.scrollable[0], target);
+
+        this.autoScroll();
+    }
+  }
+
+  setNewTarget(scrollable, target) {
+      scrollable.scrollTarget = {
+          x: Math.min(Math.max(target.x, 0), scrollable.scrollableSize.width),
+          y: Math.min(Math.max(target.y, 0), scrollable.scrollableSize.height)
+      };
   }
 
   disableScroll() {
@@ -210,6 +351,11 @@ export class SmoothScroller {
     this.normalScroll();
   }
 
+  computeRatio(scrollable) {
+    scrollable.xRatio = scrollable.scrollableSize.width ? scrollable.scroll.x / scrollable.scrollableSize.width : -1;
+    scrollable.yRatio = scrollable.scrollableSize.height ? scrollable.scroll.y / scrollable.scrollableSize.height : -1;
+  }
+
   addScrollable(elements, scrollbar=false) {
     forElements(elements, (element) => {
       style(element.parentNode, {
@@ -218,7 +364,6 @@ export class SmoothScroller {
 
       let index = this.scrollable.push({
         element: element,
-        parent: element.parentNode,
         scroll: {
           x: 0,
           y: 0
@@ -226,10 +371,23 @@ export class SmoothScroller {
         scrollTarget: {
           x: 0,
           y: 0
-        }
+        },
+        parentSize: size(element.parentNode),
+        elementSize: size(element)
       }) - 1;
 
       let scrollable = this.scrollable[index];
+
+      scrollable.scrollableSize = {
+          width: Math.max(scrollable.elementSize.width - scrollable.parentSize.width, 0),
+          height: Math.max(scrollable.elementSize.height - scrollable.parentSize.height, 0)
+      };
+
+      this.computeRatio(scrollable);
+
+    //   scrollable.xRatio = (scrollable.elementSize.width >= scrollable.parentSize.width ? -1 : 0);
+    //   scrollable.yRatio = (scrollable.elementSize.height >= scrollable.parentSize.height ? -1 : 0);
+
       if (scrollbar == 'auto' || scrollbar == 'vertical') {
         let scrollbarElement = append(element.parentNode, '<div class="scrollbar vertical"></div>'),
             cursorElement = append(scrollbarElement, '<div class="cursor"></div>');
@@ -240,11 +398,9 @@ export class SmoothScroller {
           cursor: cursorElement
         };
 
-        height(scrollable.scrollbar.vertical.cursor, height(scrollable.parent)/height(scrollable.element)*100+'%');
-
         let handleScrollCursor = (position) => {
-          let ratio = between((position.y - screenPosition(scrollbarElement).top - height(scrollable.scrollbar.vertical.cursor)/2) / (height(scrollable.scrollbar.vertical.bar) - height(scrollable.scrollbar.vertical.cursor)));
-          scrollable.scrollTarget.y = ratio * (height(scrollable.element) - height(scrollable.parent));
+          let ratio = between((position.y - screenPosition(scrollbarElement).top - scrollable.scrollbar.vertical.cursorSize/2) / (scrollable.scrollbar.vertical.barSize - scrollable.scrollbar.vertical.cursorSize));
+          scrollable.scrollTarget.y = ratio * scrollable.scrollableSize.height;
         };
 
         scrollable.dragVCallbacks = drag(scrollbarElement, handleScrollCursor, handleScrollCursor);
@@ -260,24 +416,29 @@ export class SmoothScroller {
           cursor: cursorElement
         };
 
-        width(scrollable.scrollbar.horizontal.cursor, width(scrollable.parent)/width(scrollable.element)*100+'%');
-
         let handleScrollCursor = (position) => {
-          let ratio = between((position.x - screenPosition(scrollbarElement).left - width(scrollable.scrollbar.horizontal.cursor)/2) / (width(scrollable.scrollbar.horizontal.bar) - width(scrollable.scrollbar.horizontal.cursor)));
-          scrollable.scrollTarget.x = ratio * (width(scrollable.element) - width(scrollable.parent));
+          let ratio = between((position.x - screenPosition(scrollbarElement).left - scrollable.scrollbar.horizontal.cursorSize/2) / (scrollable.scrollbar.horizontal.barSize - scrollable.scrollbar.horizontal.cursorSize));
+          scrollable.scrollTarget.x = ratio * scrollable.scrollableSize.width;
         };
 
         scrollable.dragHCallbacks = drag(scrollbarElement, handleScrollCursor, handleScrollCursor);
+
+        this.refreshElementScrollbars(scrollable);
       }
     });
   }
 
   refreshScrollbars() {
-    forEach(this.scrollable, (scrollable) => {
+    forEach(this.scrollable, this.refreshElementScrollbars.bind(this));
+  }
+
+  refreshElementScrollbars(scrollable) {
       if (!scrollable.scrollbar) return;
 
       if (scrollable.scrollbar.vertical) {
-        let ratio = between(height(scrollable.parent)/height(scrollable.element));
+        let ratio = between(scrollable.parentSize.height / scrollable.elementSize.height);
+        scrollable.scrollbar.vertical.barSize = height(scrollable.scrollbar.vertical.bar);
+        scrollable.scrollbar.vertical.cursorSize = ratio * scrollable.scrollbar.vertical.barSize;
         height(scrollable.scrollbar.vertical.cursor, ratio*100+'%');
 
         if (ratio == 1 || ratio == 0) hide(scrollable.scrollbar.vertical.bar);
@@ -285,13 +446,14 @@ export class SmoothScroller {
       }
 
       if (scrollable.scrollbar.horizontal) {
-        let ratio = between(width(scrollable.parent)/width(scrollable.element));
+        let ratio = between(scrollable.parentSize.width / scrollable.elementSize.width);
+        scrollable.scrollbar.horizontal.barSize = width(scrollable.scrollbar.horizontal.bar);
+        scrollable.scrollbar.horizontal.cursorSize = ratio * scrollable.scrollbar.horizontal.barSize;
         width(scrollable.scrollbar.horizontal.cursor, ratio*100+'%');
 
         if (ratio == 1 || ratio == 0) hide(scrollable.scrollbar.horizontal.bar);
         else show(scrollable.scrollbar.horizontal.bar);
       }
-    });
   }
 
   removeScrollable(elements) {
@@ -318,41 +480,94 @@ export class SmoothScroller {
     });
   }
 
+  resize() {
+      forEach(this.scrollable, (scrollable) => {
+        scrollable.elementSize = size(scrollable.element);
+        scrollable.parentSize = size(scrollable.element.parentNode);
+        scrollable.scrollableSize = {
+            width: Math.max(scrollable.elementSize.width - scrollable.parentSize.width, 0),
+            height: Math.max(scrollable.elementSize.height - scrollable.parentSize.height, 0)
+        };
+
+        this.computeRatio(scrollable);
+
+        if(scrollable.elementSize.height - scrollable.scroll.y < scrollable.parentSize.height) {
+            scrollable.yRatio = 1.0;
+            scrollable.scrollTarget.y = scrollable.scroll.y = scrollable.yRatio * scrollable.scrollableSize.height;
+        }
+
+        if(scrollable.elementSize.width - scrollable.scroll.x < scrollable.parentSize.width) {
+            scrollable.xRatio = 1.0;
+            scrollable.scrollTarget.x = scrollable.scroll.x = scrollable.xRatio * scrollable.scrollableSize.width;
+        }
+
+        this.refreshElementScrollbars(scrollable);
+      });
+  }
+
+  indexOf(element) {
+      let i = this.fixed.length, done = false;
+
+      while(i-- && !(done = this.fixed[i].element == element)) {}
+
+     return done ? i : -1;
+  }
+
+  getScrollable(element) {
+      let i = this.scrollable.length, done = false;
+
+      while(i-- && !(done = this.scrollable[i].element == element)) {}
+
+     return done ? this.scrollable[i] : null;
+  }
+
   fixElements(elements) {
     style(elements, {
         position: 'absolute'
     });
 
     forElements(elements, (element) => {
-      let elOffset = offset(element);
-      this.fixed.push({
-        element: element,
-        initial: this.scroll
-      });
+      let index = this.indexOf(element);
+
+      if (index == -1) {
+        let elOffset = offset(element);
+
+        this.fixed.push({
+          update: true,
+          element: element,
+          initial: this.scroll
+        });
+      }
+      else {
+          this.fixed[index].update = true;
+      }
     });
   }
 
-  unfixElements(elements) {
-    style(elements, {
-        position: '',
-        transform: ''
-    });
-
+  unfixElements(elements, keepTransform = false) {
     forElements(elements, (element) => {
       let i = this.fixed.length, done = false;
 
-      while(!done && i--) {
-        if (done = this.fixed[i].element == element) {
-          this.fixed.splice(i, 1);
+      let index = this.indexOf(element);
+
+      if (!keepTransform) {
+          this.fixed.splice(index, 1);
+
           style(element, {
+            position: '',
             transform: ''
           });
-        }
+      }
+      else {
+          this.fixed[index].update = false;
       }
     });
   }
 
   kill() {
+      this.scrollDisabled = true;
+      this.running = false;
+
       cancelAnimationFrame(this.normalRequest);
       cancelAnimationFrame(this.autoScrollRequest);
       cancelAnimationFrame(this.updateRequest);
@@ -366,27 +581,26 @@ export class SmoothScroller {
       });
 
       forEach(this.scrollable, (scrollable) => {
-        style(scrollable.parent, {
+        style(scrollable.element, {
+          transform: ''
+        });
+
+        style(scrollable.element.parentNode, {
           overflow: ''
         });
 
-        remove(scrollable.parent, '.scrollbar');
+        remove(find(scrollable.element.parentNode, '.scrollbar'));
 
         undrag(scrollable.dragVCallbacks);
         undrag(scrollable.dragHCallbacks);
       });
+
       this.scrollable = null;
 
       forEach(this.fixed, fixed => {
         style(fixed.element, {
           transform: ''
         });
-      });
-      this.fixed = null;
-
-      style(this.wrapper, {
-        transform: '',
-        'will-change': ''
       });
   }
 };

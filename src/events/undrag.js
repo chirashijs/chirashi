@@ -1,10 +1,10 @@
-import { forElements } from '../core';
-import { on } from './on';
+import { forEach } from '../core';
+import { off } from './off';
 
-export function undrag(elements, callbacks) {
-  forElements(elements, (element) => {
-    off(element, 'touchstart, mousedown', callbacks.begin);
-    off(element, 'touchmove, mousemove', callbacks.move);
-    off(document.body, 'touchend, mouseup', callbacks.end);
+export function undrag(undragProperties) {
+  forEach(undragProperties, (undragProperty) => {
+    off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin);
+    off(document.body, 'touchmove, mousemove', undragProperty.move);
+    off(document.body, 'touchend, mouseup', undragProperty.end);
   });
 }
