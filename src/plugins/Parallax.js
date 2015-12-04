@@ -143,15 +143,6 @@ export class Parallax {
   }
 
   resize() {
-    // if (window.innerWidth > window.innerHeight) {
-    //     this.gravityH = 'z';
-    //     this.gravityV = 'x';
-    // }
-    // else {
-    //     this.gravityH = 'x';
-    //     this.gravityV = 'z';
-    // }
-
     this.containerSize = size(this.container);
 
     this.center = {
@@ -181,7 +172,6 @@ export class Parallax {
       };
     }
 
-    // console.log();
     this.updateParams({
       x: between((event.accelerationIncludingGravity.y - this.initialGravity.x) / 90, -1, 1) * this.center.x * this.options.accelerometer,
       y: -between((event.accelerationIncludingGravity.x - this.initialGravity.y) / 90, -1, 1) * this.center.y * this.options.accelerometer
