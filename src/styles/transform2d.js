@@ -1,5 +1,11 @@
 import forElements from '../core/for-elements';
 
+const prefix = '-'+(Array.prototype.slice
+  .call(window.getComputedStyle(document.documentElement, ''))
+  .join('')
+  .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+)[1]+'-';
+
 function applyPropertyToMatrix (property, value, matrix) {
   switch (property) {
     case 'x':
@@ -75,12 +81,6 @@ export function transform2d (elements, transformation) {
   }
 
   matrix = 'matrix('+matrix.join(',')+')';
-
-  const prefix = '-'+(Array.prototype.slice
-    .call(window.getComputedStyle(document.documentElement, ''))
-    .join('')
-    .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-  )[1]+'-';
 
   forElements(elements, (element) => {
     if (!element.style) return;

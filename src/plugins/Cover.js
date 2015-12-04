@@ -6,9 +6,8 @@ import parent from '../dom/parent';
 
 import resize from '../events/resize';
 import unresize from '../events/unresize';
-import load from '../events/load';
-import watchProp from '../events/watch-prop';
-import unwatchProp from '../events/unwatch-prop';
+import on from '../events/on';
+import off from '../events/off';
 
 import style from '../styles/style';
 import size from '../styles/size';
@@ -33,7 +32,9 @@ export class Cover {
     forElements(item.elements, (element) => {
       let index = this.items.push({
         element: element,
-        mode: item.mode
+        mode: item.mode,
+        size: item.size,
+        forceResize: item.forceResize
       });
 
       style(parent(element), {
@@ -43,20 +44,20 @@ export class Cover {
 
       style(element, {
         position: 'absolute',
-        top: '-9999px',
-        right: '-9999px',
-        bottom: '-9999px',
-        left: '-9999px',
-        margin: 'auto'
+        top: '50%',
+        left: '50%'
       });
 
       let newItem = this.items[index-1];
 
-      newItem.watcher = watchProp(element, 'src', (value) => {
-          load(element, () => {
+      if (!newItem.size) {
+        newItem.watcher = () => {
             this.resize(newItem);
-          });
-      });
+        };
+        on(element, 'load', newItem.watcher);
+      }
+
+      if (newItem.size || element.naturalWidth || element.videoWidth) this.resize(newItem);
     });
   }
 
@@ -78,7 +79,8 @@ export class Cover {
       let i = this.items.length, found = false;
       while(!found && i--) {
           if (found = element == this.items[i].elements) {
-              this.items.slice(i, 1);
+              let item = this.items.slice(i, 1);
+              if (item.watcher) off(newItem.element, 'load', item.watcher);
           }
       }
     });
@@ -88,10 +90,22 @@ export class Cover {
     forEach(this.items, this.resize.bind(this));
   }
 
+  loadAndResize(item) {
+      if (!item.loaded) {
+          load(item.element, () => {
+            item.loaded = true;
+            this.resize(item);
+          });
+      }
+      else this.resize(item);
+  }
+
   resize(item) {
+      if (!item.loaded) return;
+
       let ratio,
-          imgWidth = item.element.naturalWidth,
-          imgHeight = item.element.naturalHeight,
+          imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
+          imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
           parentSize = size(parent(item.element)),
           widthRatio = parentSize.width / imgWidth,
           heightRatio = parentSize.height / imgHeight;
@@ -110,9 +124,17 @@ export class Cover {
           ratio = 1;
       }
 
+      let width = ratio * imgWidth,
+          height = ratio * imgHeight;
+
       size(item.element, {
-        width: ratio * imgWidth,
-        height: ratio * imgHeight
+        width: width,
+        height: height
+      });
+
+      style(item.element, {
+        marginTop: -height / 2,
+        marginLeft: -width / 2
       });
   }
 
@@ -122,7 +144,7 @@ export class Cover {
     forEach(this.items, (item) => {
         size(item.element, {width: '', height: ''});
 
-        unwatch(item.watcher);
+        if (item.watcher) off(item.element, 'load', item.watcher);
 
         style(parent(item.element), {
           position: '',

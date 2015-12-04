@@ -63,7 +63,9 @@ export class Wasabi {
         this.scroller.on('update', this.scrollerCallback);
     }
 
-    this.resizeCallback = resize(this.refresh.bind(this));
+    this.resizeCallback = resize(() => {
+        requestAnimationFrame(this.refresh.bind(this));
+    });
 
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>');
@@ -142,6 +144,37 @@ export class Wasabi {
       zone.selector = zoneConfig.selector;
       top = screenPosition(element).top + this.scrollTop;
       bottom = top + height(element);
+
+      zone.parallax = [];
+      forElements(find(element, '[data-wasabi]'), (pxElement) => {
+        let options = eval('('+data(pxElement, 'wasabi')+')');
+
+        let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
+            toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
+            fromX = (options.from && options.from.x) || 0,
+            fromY = (options.from && options.from.y) || 0,
+            parentSize = size(element.parentNode);
+
+        if (typeof toX == 'string' && toX.indexOf('%') != -1)
+            toX = parseInt(toX, 10) * parentSize.width;
+
+        if (typeof toY == 'string' && toY.indexOf('%') != -1)
+            toY = parseInt(toY, 10) * parentSize.height;
+
+        if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
+            fromX = parseInt(fromX, 10) * parentSize.width
+
+        if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
+            fromY = parseInt(fromY, 10) * parentSize.height;
+
+        zone.parallax.push({
+            element: pxElement,
+            toX: toX,
+            toY: toY,
+            fromX: fromX,
+            fromY: fromY
+        });
+      });
     }
     else {
       top = zoneConfig.top;
@@ -273,6 +306,9 @@ export class Wasabi {
         next = this.snaps[this.currentSnapIndex+1];
 
     if (previous && scrollTarget.y < this.currentSnap.top) {
+      --this.currentSnapIndex;
+      this.currentSnap = previous;
+
       this.scroller.scrollTarget.y = this.currentSnap.top + this.currentSnap.offset.top;
       this.scroller.scrollTo({
         x: 0,
@@ -280,6 +316,9 @@ export class Wasabi {
       });
     }
     else if (next && scrollTarget.y > this.currentSnap.bottom - this.windowHeight) {
+      ++this.currentSnapIndex;
+      this.currentSnap = next;
+
       this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight - this.currentSnap.offset.bottom;
       this.scroller.scrollTo({
         x: 0,
@@ -313,22 +352,26 @@ export class Wasabi {
         if (zone.tween) zone.tween.resume();
         if(zone.handler) zone.handler('enter', direction, zone.selector, zone.element);
         if(zone.enter) zone.enter(direction, zone.selector, zone.element);
+
+        if(zone.snap) {
+            this.currentSnapIndex = this.snaps.indexOf(zone);
+            this.currentSnap = this.snaps[this.currentSnapIndex];
+        }
       }
       else if (zone.entered && !entered) {
           if(zone.handler) zone.handler('leave', direction, zone.selector, zone.element);
         if(zone.leave) zone.leave(direction, zone.selector, zone.element);
       }
 
-      this.updateParallax(zone.element, progress);
+      forEach(zone.parallax, (item) => {
+        transform(item.element, {
+          x: item.fromX + (item.toX - item.fromX) * progress,
+          y: item.fromY + (item.toY - item.fromY) * progress
+        });
+      });
 
       zone.entered = entered;
       if (zone.entered) {
-        let snapIndex = this.snaps.indexOf(zone);
-        if (snapIndex != -1 && snapIndex != this.currentSnapIndex) {
-          this.currentSnap = zone;
-          this.currentSnapIndex = snapIndex;
-        }
-
         if (zone.progress) zone.progress(direction, progress, zone.selector);
         if (zone.progressTween && zone.progressTween.progress) zone.progressTween.progress(progress);
       }
@@ -363,36 +406,6 @@ export class Wasabi {
     }
 
     this.zones = this.snaps = null;
-  }
-
-  updateParallax(zoneElement, progress) {
-      forElements(find(zoneElement, '[data-wasabi]'), (element) => {
-        let options = eval('('+data(element, 'wasabi')+')');
-
-        let toX = (typeof options.x !== 'undefined') ? options.x : ((options.to && options.to.x) || 0),
-            toY = (typeof options.y !== 'undefined') ? options.y : ((options.to && options.to.y) || 0),
-            fromX = (options.from && options.from.x) || 0,
-            fromY = (options.from && options.from.y) || 0,
-            parentSize = size(element.parentNode);
-
-        if (typeof toX == 'string' && toX.indexOf('%') != -1)
-            toX = parseInt(toX, 10) * parentSize.width;
-
-        if (typeof toY == 'string' && toY.indexOf('%') != -1)
-            toY = parseInt(toY, 10) * parentSize.height;
-
-        if (typeof fromX == 'string' && fromX.indexOf('%') != -1)
-            fromX = parseInt(fromX, 10) * parentSize.width
-
-        if (typeof fromY == 'string' && fromY.indexOf('%') != -1)
-            fromY = parseInt(fromY, 10) * parentSize.height;
-
-
-        transform(element, {
-          x: fromX + (toX - fromX) * progress,
-          y: fromY + (toY - fromY) * progress
-        });
-      });
   }
 
   concatenateVars(object) {

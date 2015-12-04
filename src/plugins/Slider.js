@@ -2,6 +2,7 @@ import forEach from '../core/for-each';
 import getElement from '../core/get-element';
 import getSelectorAll from '../core/get-selector-all';
 
+import createElement from '../dom/create-element';
 import remove from '../dom/remove';
 import append from '../dom/append';
 import find from '../dom/find';
@@ -68,7 +69,19 @@ export class Slider {
       };
     }
 
-    if (this.options.bullets) this.bulletClickCallback = this.bulletClick.bind(this);
+    if (this.options.bullets) {
+        this.bulletClickCallback = this.bulletClick.bind(this);
+        this.leftClickCallback = (e) => {
+            e.preventDefault();
+
+            this.slideDown();
+        };
+        this.rightClickCallback = (e) => {
+            e.preventDefault();
+
+            this.slideUp();
+        };
+    }
 
     this.refresh();
     this.resizeCallback = resize(this.resize.bind(this));
@@ -142,17 +155,28 @@ export class Slider {
     if (this.options.bullets) {
         remove(find(this.container, '.'+this.options.bullets.wrapper));
 
-        append(this.container, '<ul class='+this.options.bullets.wrapper+'></ul>');
+        append(this.container, '<div class='+this.options.bullets.wrapper+'></div>');
         let bulletsWrapper = find(this.container, '.'+this.options.bullets.wrapper),
             i = -1;
 
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' left" href="#">'+ this.options.bullets.arrows.element +'</a>');
+
+        let bullets = createElement('<ul></ul>');
         while(++i < this.slides.length) {
-            append(bulletsWrapper, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
+            append(bullets, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
         }
+        append(bulletsWrapper, bullets);
 
-        addClass('.'+this.options.bullets.wrapper+' > li:first-child', 'active');
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' right" href="#">'+ this.options.bullets.arrows.element +'</a>');
 
-        on('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
+        addClass('.'+this.options.bullets.wrapper+' > ul > li:first-child', 'active');
+
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+
+        if (this.options.bullets.arrows) {
+            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
+            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+        }
     }
 
     load(find(this.wrapper, 'img'), null, () => {
@@ -171,7 +195,7 @@ export class Slider {
   updateActiveBullet(index) {
       if (!this.options.bullets) return;
 
-      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > li');
+      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > ul > li');
       removeClass(bullets, 'active');
       addClass(bullets[index], 'active');
   }
@@ -293,18 +317,22 @@ export class Slider {
     this.slideTo(this.current+1);
   }
 
+  computeTarget(index) {
+    if (index < 0) index = this.nbSlide + index;
+    return index % this.nbSlide;
+  }
+
   slideTo(target, paused = false) {
     if (this.animating) return;
 
-    if (target < 0) this.target = target - (target % -this.nbSlide);
-    else this.target = target % this.nbSlide;
+    this.animating = !paused;
+
+    this.target = this.computeTarget(target);
 
     let tween = this.options.animationTween(this, this.animationCallback.bind(this));
 
     if (paused) tween.pause();
     else this.updateActiveBullet(this.target);
-
-    this.animating = !paused;
 
     return tween;
   }
@@ -365,6 +393,8 @@ export class Slider {
   }
 
   dragStart(position) {
+    if (this.animating) return;
+
     this.touchOrig = position;
     this.touchLength = 0;
 
@@ -373,7 +403,7 @@ export class Slider {
   }
 
   dragMove(position) {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig || this.animating) return;
 
     this.touchLength = this.options.touchDirection == 'horizontal' ? position.x - this.touchOrig.x : position.y - this.touchOrig.y;
     let forward = this.touchLength < 0;
@@ -381,7 +411,7 @@ export class Slider {
     if (this.swipeNext != forward) {
       this.swipeNext = forward;
 
-      this.target = this.current + (this.swipeNext ? 1 : -1);
+      this.target = this.computeTarget(this.current + (this.swipeNext ? 1 : -1));
     }
 
     if (this.onDrag) {
@@ -397,7 +427,11 @@ export class Slider {
   }
 
   dragEnd() {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig || this.animating) {
+        this.touchOrig = null;
+
+        return;
+    }
 
     let absLength = Math.abs(this.touchLength);
     if (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold) {
@@ -440,8 +474,12 @@ export class Slider {
     }
 
     if (this.options.bullets) {
-      off('.'+this.options.bullets.wrapper+' > li', 'click', this.bulletClickCallback);
-      remove('.'+this.options.bullets.wrapper);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+      if (this.options.bullets.arrows) {
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+      }
+      remove(find(this.container, '.'+this.options.bullets.wrapper));
     }
 
     size(this.slides, {
