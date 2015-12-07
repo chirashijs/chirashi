@@ -372,6 +372,8 @@ export class Slider {
   dragStart(position) {
     if (this.animating) return;
 
+    if (this.options.auto) clearTimeout(this.nextTimeout);
+
     this.touchOrig = position;
     this.touchLength = 0;
 
@@ -425,6 +427,8 @@ export class Slider {
         this.slideTo(this.current);
       }
     }
+
+    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
   }
 
   on(callback) {
