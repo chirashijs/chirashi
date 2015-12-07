@@ -80,19 +80,7 @@ export class Cover {
     forEach(this.items, this.resize.bind(this));
   }
 
-  loadAndResize(item) {
-      if (!item.loaded) {
-          load(item.element, () => {
-            item.loaded = true;
-            this.resize(item);
-          });
-      }
-      else this.resize(item);
-  }
-
   resize(item) {
-      if (!item.loaded) return;
-
       let ratio,
           imgWidth = (item.size && item.size.width) || item.element.naturalWidth || item.element.videoWidth,
           imgHeight = (item.size && item.size.height) || item.element.naturalHeight || item.element.videoHeight,
