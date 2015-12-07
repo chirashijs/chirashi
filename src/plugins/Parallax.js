@@ -143,6 +143,7 @@ export class Parallax {
   }
 
   resize() {
+    this.initialGravity = null;
     this.containerSize = size(this.container);
 
     this.center = {
