@@ -40,19 +40,6 @@ export class Cover {
 
       let newItem = this.items[index-1];
 
-<<<<<<< HEAD
-      if(!newItem.size) {
-          newItem.watcher = watchProp(element, 'src', (value) => {
-            newItem.loaded = false;
-            this.loadAndResize(newItem);
-          });
-      }
-
-      if (newItem.forceResize) {
-          newItem.loaded = true;
-          this.loadAndResize(newItem);
-      }
-=======
       if (!newItem.size) {
         newItem.watcher = () => {
             this.resize(newItem);
@@ -61,7 +48,6 @@ export class Cover {
       }
 
       if (newItem.size || element.naturalWidth || element.videoWidth) this.resize(newItem);
->>>>>>> 2.1
     });
   }
 
@@ -148,11 +134,7 @@ export class Cover {
     forEach(this.items, (item) => {
         size(item.element, {width: '', height: ''});
 
-<<<<<<< HEAD
-        if (item.watcher) unwatch(item.watcher);
-=======
         if (item.watcher) off(item.element, 'load', item.watcher);
->>>>>>> 2.1
 
         style(parent(item.element), {
           position: '',
