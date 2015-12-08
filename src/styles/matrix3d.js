@@ -89,7 +89,7 @@ function applyPropertyToMatrix (property, value, matrix) {
   }
 }
 
-export function transform3d (elements, transformation) {
+export function matrix3d (elements, transformation) {
   let properties = Object.keys(transformation),
   i = properties.length,
   matrix = [

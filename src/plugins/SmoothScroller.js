@@ -1,6 +1,6 @@
 import { forEach, forElements, getElement } from '../core';
 import { closest, append, remove } from '../dom';
-import { style, height, width, size, transform, offset, screenPosition, hide, show } from '../styles';
+import { style, height, width, size, translate, offset, screenPosition, hide, show } from '../styles';
 import { drag, undrag, resize, unresize } from '../events';
 import { defaultify, between } from '../utils';
 import { VirtualScroll } from './VirtualScroll';
@@ -239,7 +239,7 @@ export class SmoothScroller {
     forEach(this.scrollable, (scrollable) => {
     //   if (!(scrollable.scrollTarget.y - scrollable.scroll.y || scrollable.scrollTarget.x - scrollable.scroll.x)) return;
 
-      transform(scrollable.element, {
+      translate(scrollable.element, {
         x: -scrollable.scroll.x,
         y: -scrollable.scroll.y
       });
@@ -247,13 +247,13 @@ export class SmoothScroller {
       this.computeRatio(scrollable);
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
-        transform(scrollable.scrollbar.horizontal.cursor, {
+        translate(scrollable.scrollbar.horizontal.cursor, {
           x: scrollable.xRatio * (scrollable.scrollbar.horizontal.barSize - scrollable.scrollbar.horizontal.cursorSize)
         });
       }
 
       if (scrollable.scrollbar && scrollable.scrollbar.vertical) {
-        transform(scrollable.scrollbar.vertical.cursor, {
+        translate(scrollable.scrollbar.vertical.cursor, {
           y: scrollable.yRatio * (scrollable.scrollbar.vertical.barSize - scrollable.scrollbar.vertical.cursorSize)
         });
       }
@@ -262,7 +262,7 @@ export class SmoothScroller {
     forEach(this.fixed, (fixed) => {
         if (!fixed.update) return;
 
-        transform(fixed.element, {
+        translate(fixed.element, {
             x: this.scroll.x - fixed.initial.x,
             y: this.scroll.y - fixed.initial.y
         });
@@ -308,7 +308,7 @@ export class SmoothScroller {
 
       scrollable.scroll = scrollable.scrollTarget;
 
-      transform(scrollable.element, {
+      translate(scrollable.element, {
         x: -scrollable.scroll.x,
         y: -scrollable.scroll.y
       });
