@@ -76,7 +76,8 @@ export var VirtualScroll = (function(document) {
 
 		// for our purpose deltamode = 1 means user is on a wheel mouse, not touch pad
 		// real meaning: https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent#Delta_modes
-		if(isFirefox && e.deltaMode == 1) {
+		// if(isFirefox && e.deltaMode == 1) {
+		if(isFirefox) {
 			event.deltaX *= firefoxMult;
 			event.deltaY *= firefoxMult;
 		}
