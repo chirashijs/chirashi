@@ -13,4 +13,4 @@ export function resize (userCallback) {
   return callback;
 }
 
-export function resize;
+export resize;
