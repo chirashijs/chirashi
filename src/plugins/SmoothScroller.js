@@ -3,9 +3,10 @@ import { closest, append, remove } from '../dom';
 import { style, height, width, size, translate, offset, screenPosition, hide, show } from '../styles';
 import { drag, undrag, resize, unresize } from '../events';
 import { defaultify, between } from '../utils';
-import { VirtualScroll } from './VirtualScroll';
+import { ScrollEvents } from './ScrollEvents';
 
 let defaults = {
+  autoDelay: 1100,
   ease: 0.2,
   autoEase: 0.08,
   fixed: []
@@ -40,7 +41,8 @@ export class SmoothScroller {
     this.scrollCallbacks = [];
 
     this.localCallback = this.scrolling.bind(this);
-    VirtualScroll.on(this.localCallback);
+    this.scrollEvents = new ScrollEvents();
+    this.scrollEvents.on(this.localCallback);
 
     this.fixed = [];
     this.fixElements(this.config.fixed);
@@ -86,6 +88,9 @@ export class SmoothScroller {
 
   scrolling(event) {
     event.originalEvent.preventDefault();
+
+    if (this.autoTimestamp && Date.now() - this.autoTimestamp < this.config.autoDelay) return;
+    this.autoTimestamp = null;
 
     if (this.scrollDisabled) return;
 
@@ -327,6 +332,8 @@ export class SmoothScroller {
       });
     }
     else {
+        this.autoTimestamp = Date.now();
+
         this.disableScroll();
 
         this.setNewTarget(this.scrollable[0], target);
@@ -571,7 +578,7 @@ export class SmoothScroller {
       cancelAnimationFrame(this.normalRequest);
       cancelAnimationFrame(this.autoScrollRequest);
       cancelAnimationFrame(this.updateRequest);
-      VirtualScroll.off(this.localCallback);
+      this.scrollEvents.off(this.localCallback);
 
       style('html, body', {
         width: '',
