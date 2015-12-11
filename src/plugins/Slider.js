@@ -268,6 +268,11 @@ export class Slider {
     size(this.wrapper, wrapperSize);
 
     if (this.options.resize) this.options.resize(this);
+
+    if (this.options.auto) {
+        clearTimeout(this.nextTimeout);
+        this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+    }
   }
 
   animationCallback() {
