@@ -24,7 +24,7 @@ import unresize from '../events/unresize';
 import defaultify from '../utils/defaultify';
 import between from '../utils/between';
 
-import ScrollEvents from './ScrollEvents';
+import ScrollEvents from './scroll-events';
 
 let defaults = {
   autoDelay: 1100,
