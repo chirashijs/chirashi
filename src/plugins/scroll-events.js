@@ -1,7 +1,7 @@
-import { forEach } from '../core/forEach';
-import { on } from '../events/on';
-import { off } from '../events/off';
-import { defaultify } from '../utils/defaultify';
+import forEach from '../core/for-each';
+import on from '../events/on';
+import off from '../events/off';
+import defaultify from '../utils/defaultify';
 
 const defaults = {
 	touchMult: 4, // Mutiply the touch action by two making the scroll a bit faster than finger movement
