@@ -24,9 +24,10 @@ import unresize from '../events/unresize';
 import defaultify from '../utils/defaultify';
 import between from '../utils/between';
 
-import VirtualScroll from './virtual-scroll';
+import ScrollEvents from './ScrollEvents';
 
-const defaults = {
+let defaults = {
+  autoDelay: 1100,
   ease: 0.2,
   autoEase: 0.08,
   fixed: []
@@ -61,7 +62,8 @@ export class SmoothScroller {
     this.scrollCallbacks = [];
 
     this.localCallback = this.scrolling.bind(this);
-    VirtualScroll.on(this.localCallback);
+    this.scrollEvents = new ScrollEvents();
+    this.scrollEvents.on(this.localCallback);
 
     this.fixed = [];
     this.fixElements(this.config.fixed);
@@ -107,6 +109,9 @@ export class SmoothScroller {
 
   scrolling(event) {
     event.originalEvent.preventDefault();
+
+    if (this.autoTimestamp && Date.now() - this.autoTimestamp < this.config.autoDelay) return;
+    this.autoTimestamp = null;
 
     if (this.scrollDisabled) return;
 
@@ -260,7 +265,7 @@ export class SmoothScroller {
     forEach(this.scrollable, (scrollable) => {
     //   if (!(scrollable.scrollTarget.y - scrollable.scroll.y || scrollable.scrollTarget.x - scrollable.scroll.x)) return;
 
-      transform(scrollable.element, {
+      translate(scrollable.element, {
         x: -scrollable.scroll.x,
         y: -scrollable.scroll.y
       });
@@ -268,13 +273,13 @@ export class SmoothScroller {
       this.computeRatio(scrollable);
 
       if (scrollable.scrollbar && scrollable.scrollbar.horizontal) {
-        transform(scrollable.scrollbar.horizontal.cursor, {
+        translate(scrollable.scrollbar.horizontal.cursor, {
           x: scrollable.xRatio * (scrollable.scrollbar.horizontal.barSize - scrollable.scrollbar.horizontal.cursorSize)
         });
       }
 
       if (scrollable.scrollbar && scrollable.scrollbar.vertical) {
-        transform(scrollable.scrollbar.vertical.cursor, {
+        translate(scrollable.scrollbar.vertical.cursor, {
           y: scrollable.yRatio * (scrollable.scrollbar.vertical.barSize - scrollable.scrollbar.vertical.cursorSize)
         });
       }
@@ -283,7 +288,7 @@ export class SmoothScroller {
     forEach(this.fixed, (fixed) => {
         if (!fixed.update) return;
 
-        transform(fixed.element, {
+        translate(fixed.element, {
             x: this.scroll.x - fixed.initial.x,
             y: this.scroll.y - fixed.initial.y
         });
@@ -329,7 +334,7 @@ export class SmoothScroller {
 
       scrollable.scroll = scrollable.scrollTarget;
 
-      transform(scrollable.element, {
+      translate(scrollable.element, {
         x: -scrollable.scroll.x,
         y: -scrollable.scroll.y
       });
@@ -348,6 +353,8 @@ export class SmoothScroller {
       });
     }
     else {
+        this.autoTimestamp = Date.now();
+
         this.disableScroll();
 
         this.setNewTarget(this.scrollable[0], target);
@@ -592,7 +599,7 @@ export class SmoothScroller {
       cancelAnimationFrame(this.normalRequest);
       cancelAnimationFrame(this.autoScrollRequest);
       cancelAnimationFrame(this.updateRequest);
-      VirtualScroll.off(this.localCallback);
+      this.scrollEvents.off(this.localCallback);
 
       style('html, body', {
         width: '',

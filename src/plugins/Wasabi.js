@@ -21,7 +21,7 @@ import load from '../events/load';
 
 import defaultify from '../utils/defaultify';
 
-import VirtualScroll from './virtual-scroll';
+import ScrollEvents from './ScrollEvents';
 
 let defaults = {
   debug: false,
@@ -50,8 +50,9 @@ export class Wasabi {
       this.wrapper = document.body;
       this.scrollTop = this.previousScrollTop = screenPosition(this.wrapper).top;
 
-      this.virtualScrollCallback = this.onVirtualScroll.bind(this);
-      VirtualScroll.on(this.virtualScrollCallback);
+      this.scrollEventsManager = new ScrollEvents()
+      this.scrollEventsCallback = this.onScrollEvent.bind(this);
+      this.scrollEventsManager.on(this.scrollEventsCallback);
     }
     else {
         this.scroller = this.config.scroller;
@@ -332,7 +333,7 @@ export class Wasabi {
     this.testSnapping(scrollTarget);
   }
 
-  onVirtualScroll(event) {
+  onScrollEvent(event) {
     this.scrollTop = screenPosition(this.wrapper).top;
   }
 
@@ -390,8 +391,8 @@ export class Wasabi {
 
     remove(this.debugWrapper);
 
-    if (this.virtualScrollCallback) {
-      VirtualScroll.off(this.virtualScrollCallback);
+    if (this.scrollEventsCallback) {
+      this.scrollEventsManager.off(this.scrollEventsCallback);
     }
     else if (this.scrollerCallback) {
       this.scroller.off('update', this.scrollerCallback);
