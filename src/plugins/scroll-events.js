@@ -255,4 +255,4 @@ export class ScrollEvents {
 	}
 }
 
-export default SmoothEvents;
+export default ScrollEvents;
