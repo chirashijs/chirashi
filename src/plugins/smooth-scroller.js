@@ -632,3 +632,5 @@ export class SmoothScroller {
       });
   }
 };
+
+export default ScrollEvents;
