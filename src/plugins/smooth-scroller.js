@@ -633,4 +633,4 @@ export class SmoothScroller {
   }
 };
 
-export default ScrollEvents;
+export default SmoothScroller;
