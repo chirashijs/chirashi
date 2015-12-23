@@ -6,7 +6,7 @@ const prefix = '-'+(Array.prototype.slice
   .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
 )[1]+'-';
 
-export function translate3d (elements, transformation, keep) {
+export function scale3d (elements, transformation, keep) {
   forElements(elements, (element) => {
     if (!element.style) return;
 
