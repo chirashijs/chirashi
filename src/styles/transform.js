@@ -13,7 +13,7 @@ export function transform (elements, transformation) {
             translate(elements, transformation);
         }
 
-        if (scale.x || scale.y || scale.z) {
+        if (transformation.scale || transformation.scaleX || transformation.scaleY || transformation.scaleZ) {
             scale(elements, transformation, shouldKeep);
         }
     }
