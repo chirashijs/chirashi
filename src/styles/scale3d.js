@@ -10,7 +10,7 @@ export function scale3d (elements, transformation, keep) {
   forElements(elements, (element) => {
     if (!element.style) return;
 
-    let style = 'scale3d('+ transformation.scaleX || 1 +','+ transformation.scaleY || 1 +','+ transformation.scaleZ || 1 +')';
+    let style = 'scale3d('+ (transformation.scaleX || transformation.scale || 1) +','+ (transformation.scaleY || transformation.scale || 1) +','+ (transformation.scaleZ || 1) +')';
 
     if (keep) {
         element.style[prefix+'transform'] += style;
