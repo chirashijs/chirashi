@@ -1,6 +1,7 @@
 {
   "name": "chirashi",
-  "version": "3.0.0-dev",  "description": "Minimalist DOM and events manager focused on performances",
+  "version": "3.0.0-dev",
+  "description": "Minimalist DOM and events manager focused on performances",
   "main": "./src/index.js",
   "scripts": {
     "test": "karma start"
