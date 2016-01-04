@@ -1,16 +1,19 @@
 import { forElements } from '../core';
 import { on } from './on';
 import { resize } from './resize';
+import { width } from '../styles/width';
 
 export function drag(elements, move, begin, end) {
   let undragProperties = [];
 
-  let startPosition, width;
-
   forElements(elements, (element) => {
-    let undragProperty = {}, dragging = false;
+    let startPosition, elWidth, undragProperty = {}, dragging = false;
 
     undragProperty.element = element;
+
+    undragProperty.resize = () => elWidth = width(element)
+    resize(undragProperty.resize)
+    undragProperty.resize()
 
     undragProperty.begin = (e) => {
       e.preventDefault();
@@ -35,7 +38,7 @@ export function drag(elements, move, begin, end) {
       let currentPosition = { x: e.pageX, y: e.pageY }
 
       currentPosition.length = currentPosition.x - startPosition.x;
-      currentPosition.progress = currentPosition.length / width;
+      currentPosition.ratio = (currentPosition.length / elWidth) * 10;
 
       if (move) move(currentPosition);
     };
