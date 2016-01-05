@@ -16,3 +16,5 @@ export function translate (elements, transformation, keep) {
     else
       translate3d(elements, transformation, keep);
 }
+
+export default translate

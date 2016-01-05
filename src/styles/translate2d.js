@@ -19,3 +19,5 @@ export function translate2d (elements, transformation, keep) {
     else element.style[prefix+'transform'] = element.style.transform = style;
   });
 }
+
+export default translate2d
