@@ -1,5 +1,5 @@
-import { translate2d } from './translate2d';
-import { translate3d } from './translate3d';
+import translate2d from './translate2d';
+import translate3d from './translate3d';
 
 const prefix = '-'+(Array.prototype.slice
   .call(window.getComputedStyle(document.documentElement, ''))
