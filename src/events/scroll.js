@@ -19,7 +19,7 @@ export function scroll (userCallback) {
     }, {
       top: window.pageYOffset || document.documentElement.scrollTop,
       left: window.pageXOffset || document.documentElement.scrollLeft
-    });
+  }, event);
   };
 
   on(window, 'scroll mousewheel DOMMouseScroll', callback);
