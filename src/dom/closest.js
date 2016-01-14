@@ -5,7 +5,7 @@ export function closest (element, tested, level) {
 
   element = getElement(element);
 
-  return (!element ?
+  return ((!element || element === window || element === document) ?
             false
             : ((typeof tested == 'string' && element.matches(tested) || element == tested) ?
                 element
