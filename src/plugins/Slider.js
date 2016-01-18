@@ -307,6 +307,8 @@ export class Slider {
   slideTo(target, paused = false) {
     if (this.animating) return;
 
+    if (this.options.auto) clearTimeout(this.nextTimeout);
+
     this.animating = !paused;
 
     this.target = this.computeTarget(target);
