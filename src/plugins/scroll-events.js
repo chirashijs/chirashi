@@ -149,6 +149,11 @@ export class ScrollEvents {
 		this.event.y += this.event.deltaY;
 		this.event.originalEvent = e;
 
+		clearTimeout(this.triggerTimeout);
+		this.triggerTimeout = setTimeout(this.trigger.bind(this), 100)
+	}
+
+	trigger() {
 		forEach(this.listeners, (listener) => {
 			listener(this.event);
 		});
