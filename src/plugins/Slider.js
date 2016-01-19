@@ -178,6 +178,12 @@ export class Slider {
   }
 
   resize() {
+    if (this.animating) {
+        this.resizeAnimationCallback = true;
+
+        return;
+    }
+
     this.containerSize = {};
     size(this.container, {
       width: '',
@@ -284,6 +290,9 @@ export class Slider {
 
     this.current = this.target;
     this.updateActiveBullet(this.current);
+
+    if (this.resizeAnimationCallback)
+        this.resize();
 
     if (this.options.auto) {
         clearTimeout(this.nextTimeout);

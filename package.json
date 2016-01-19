@@ -1,6 +1,6 @@
 {
   "name": "chirashi",
-  "version": "2.2.9",
+  "version": "2.2.10",
   "description": "Minimalist DOM and events manager focused on performances",
   "main": "./src/index.js",
   "scripts": {
