@@ -1,5 +1,5 @@
-import resize from './events/resize'
-import unresize from './events/unresize'
+import resize from '../events/resize'
+import unresize from '../events/unresize'
 
 export class Breakpoint {
     _listeners = []
