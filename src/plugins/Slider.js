@@ -50,11 +50,21 @@ export class Slider {
 
     this.gutter = this.options.gutter
     this.halfGutter = this.gutter/2
-    this.onDrag = this.options.onDrag
-    this.onDragEnd = this.options.onDragEnd
-    this.swipeTime = this.options.swipeTime
-    this.animationTween = this.options.animationTween
-    this.initialize = this.options.initialize
+
+    if (this.options.onDrag)
+        this.onDrag = this.options.onDrag
+
+    if (this.options.onDragEnd)
+        this.onDragEnd = this.options.onDragEnd
+
+    if (this.options.swipeTime)
+        this.swipeTime = this.options.swipeTime
+
+    if (his.options.animationTween)
+        this.animationTween = this.options.animationTween
+
+    if (this.options.initialize)
+        this.initialize = this.options.initialize
 
     this.callbacks = this.options.callback ? [this.options.callback] : []
 
