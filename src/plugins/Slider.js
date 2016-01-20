@@ -66,6 +66,9 @@ export class Slider {
     if (this.options.initialize)
         this.initialize = this.options.initialize
 
+    if (this.options.clearAnimation)
+        this.clearAnimation = this.options.clearAnimation
+
     this.callbacks = this.options.callback ? [this.options.callback] : []
 
     this.coverManager = new Cover()
@@ -517,7 +520,7 @@ export class Slider {
       height: ''
     })
 
-    if (this.options.clearAnimation) this.options.clearAnimation(this)
+    if (this.clearAnimation) this.clearAnimation(this)
     if (this.nextTimeout) clearTimeout(this.nextTimeout)
 
     if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'))
