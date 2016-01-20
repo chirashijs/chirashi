@@ -1,4 +1,4 @@
-import { forElements } from '../core'
+import forElements from '../core/for-elements'
 
 const prefix = '-'+(Array.prototype.slice
   .call(window.getComputedStyle(document.documentElement, ''))

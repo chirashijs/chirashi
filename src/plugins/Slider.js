@@ -15,7 +15,6 @@ import size from '../styles/size'
 import height from '../styles/height'
 import width from '../styles/width'
 import style from '../styles/style'
-import transform from '../styles/transform'
 import screenPosition from '../styles/screen-position'
 
 import resize from '../events/resize'
