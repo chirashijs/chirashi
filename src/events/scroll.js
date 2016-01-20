@@ -1,17 +1,17 @@
-import on from './on';
+import on from './on'
 
 export function scroll (userCallback) {
   let callback = (event) => {
-    let deltaY;
+    let deltaY
 
     if (typeof event.deltaY !== 'undefined') {
-      deltaY = -event.deltaY;
+      deltaY = -event.deltaY
     }
     else if (typeof event.delta !== 'undefined') {
-      deltaY = event.delta;
+      deltaY = event.delta
     }
     else if (typeof event.detail !== 'undefined') {
-      deltaY = -event.detail;
+      deltaY = -event.detail
     }
 
     userCallback({
@@ -19,12 +19,12 @@ export function scroll (userCallback) {
     }, {
       top: window.pageYOffset || document.documentElement.scrollTop,
       left: window.pageXOffset || document.documentElement.scrollLeft
-  }, event);
-  };
+  }, event)
+  }
 
-  on(window, 'scroll mousewheel DOMMouseScroll', callback);
+  on(window, 'scroll mousewheel DOMMouseScroll', callback)
 
-  return callback;
+  return callback
 }
 
-export default scroll;
+export default scroll

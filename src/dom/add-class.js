@@ -1,14 +1,14 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 export function addClass (elements, classes) {
-  classes = classes.split(' ');
+  classes = classes.split(' ')
 
   forElements(elements, (element) => {
-    if (!element.classList) return;
+    if (!element.classList) return
 
-    let i = classes.length;
-    while(i--) element.classList.add(classes[i]);
-  });
+    let i = classes.length
+    while(i--) element.classList.add(classes[i])
+  })
 }
 
-export default addClass;
+export default addClass

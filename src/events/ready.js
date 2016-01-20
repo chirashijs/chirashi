@@ -1,5 +1,5 @@
 export function ready (callback) {
-  document.addEventListener('DOMContentLoaded', callback);
+  document.addEventListener('DOMContentLoaded', callback)
 }
 
-export default ready;
+export default ready

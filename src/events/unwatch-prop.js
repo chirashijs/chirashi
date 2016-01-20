@@ -1,5 +1,5 @@
 export function unwatchProp (watching) {
-  watching.value = false;
+  watching.value = false
 }
 
-export default unwatchProp;
+export default unwatchProp

@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function getProp (element, name) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element[name];
+  return element && element[name]
 }
 
-export default getProp;
+export default getProp

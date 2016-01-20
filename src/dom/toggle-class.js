@@ -1,14 +1,14 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 export function toggleClass (elements, classes) {
-  classes = classes.split(' ');
+  classes = classes.split(' ')
 
   forElements(elements, (element) => {
-    if (!element.classList) return;
+    if (!element.classList) return
 
-    let i = classes.length;
-    while(i--) element.classList.toggle(classes[i]);
-  });
+    let i = classes.length
+    while(i--) element.classList.toggle(classes[i])
+  })
 }
 
-export default toggleClass;
+export default toggleClass

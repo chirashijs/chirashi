@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function findOne (element, selector) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element.querySelector(selector);
+  return element && element.querySelector(selector)
 }
 
-export default findOne;
+export default findOne

@@ -1,32 +1,32 @@
-import forEach from '../core/for-each';
-import getElement from '../core/get-element';
-import getSelectorAll from '../core/get-selector-all';
+import forEach from '../core/for-each'
+import getElement from '../core/get-element'
+import getSelectorAll from '../core/get-selector-all'
 
-import createElement from '../dom/create-element';
-import remove from '../dom/remove';
-import append from '../dom/append';
-import find from '../dom/find';
-import parent from '../dom/parent';
-import indexInParent from '../dom/index-in-parent';
-import addClass from '../dom/add-class';
-import removeClass from '../dom/remove-class';
+import createElement from '../dom/create-element'
+import remove from '../dom/remove'
+import append from '../dom/append'
+import find from '../dom/find'
+import parent from '../dom/parent'
+import indexInParent from '../dom/index-in-parent'
+import addClass from '../dom/add-class'
+import removeClass from '../dom/remove-class'
 
-import size from '../styles/size';
-import height from '../styles/height';
-import width from '../styles/width';
-import style from '../styles/style';
-import transform from '../styles/transform';
-import screenPosition from '../styles/screen-position';
+import size from '../styles/size'
+import height from '../styles/height'
+import width from '../styles/width'
+import style from '../styles/style'
+import transform from '../styles/transform'
+import screenPosition from '../styles/screen-position'
 
-import resize from '../events/resize';
-import unresize from '../events/unresize';
-import load from '../events/load';
-import on from '../events/on';
-import off from '../events/off';
+import resize from '../events/resize'
+import unresize from '../events/unresize'
+import load from '../events/load'
+import on from '../events/on'
+import off from '../events/off'
 
-import defaultify from '../utils/defaultify';
+import defaultify from '../utils/defaultify'
 
-import Cover from './cover';
+import Cover from './cover'
 
 const defaults = {
   infinite: false,
@@ -43,474 +43,474 @@ const defaults = {
   reverse: false,
   touchEnabled: true,
   mouseEnabled: false
-};
+}
 
 export class Slider {
   constructor(options) {
-    this.options = defaultify(options, defaults);
+    this.options = defaultify(options, defaults)
 
-    this.gutter = this.options.gutter;
-    this.halfGutter = this.gutter/2;
-    this.onDrag = this.options.onDrag;
-    this.onDragEnd = this.options.onDragEnd;
-    this.swipeTime = this.options.swipeTime;
+    this.gutter = this.options.gutter
+    this.halfGutter = this.gutter/2
+    this.onDrag = this.options.onDrag
+    this.onDragEnd = this.options.onDragEnd
+    this.swipeTime = this.options.swipeTime
 
-    this.callbacks = this.options.callback ? [this.options.callback] : [];
+    this.callbacks = this.options.callback ? [this.options.callback] : []
 
-    this.coverManager = new Cover();
+    this.coverManager = new Cover()
 
-    this.current = 0;
-    this.animating = false;
+    this.current = 0
+    this.animating = false
 
     if (typeof this.options.size != 'object') {
       this.options.size = {
         width: this.options.size,
         height: this.options.size
-      };
+      }
     }
 
     if (this.options.bullets) {
-        this.bulletClickCallback = this.bulletClick.bind(this);
+        this.bulletClickCallback = this.bulletClick.bind(this)
         this.leftClickCallback = (e) => {
-            e.preventDefault();
+            e.preventDefault()
 
-            this.slideDown();
-        };
+            this.slideDown()
+        }
         this.rightClickCallback = (e) => {
-            e.preventDefault();
+            e.preventDefault()
 
-            this.slideUp();
-        };
+            this.slideUp()
+        }
     }
 
-    this.refresh();
-    this.resizeCallback = resize(this.resize.bind(this));
+    this.refresh()
+    this.resizeCallback = resize(this.resize.bind(this))
 
     if (this.options.touchEnabled) {
-      this.touchstartCallback = this.touchstart.bind(this);
-      on(this.container, 'touchstart', this.touchstartCallback);
-      this.touchmoveCallback = this.touchmove.bind(this);
-      on(this.container, 'touchmove', this.touchmoveCallback);
-      this.touchendCallback = this.touchend.bind(this);
-      on(this.container, 'touchend', this.touchendCallback);
+      this.touchstartCallback = this.touchstart.bind(this)
+      on(this.container, 'touchstart', this.touchstartCallback)
+      this.touchmoveCallback = this.touchmove.bind(this)
+      on(this.container, 'touchmove', this.touchmoveCallback)
+      this.touchendCallback = this.touchend.bind(this)
+      on(this.container, 'touchend', this.touchendCallback)
     }
 
     if (this.options.mouseEnabled) {
-      this.mousestartCallback = this.mousestart.bind(this);
-      on(this.container, 'mousedown', this.mousestartCallback);
-      this.mousemoveCallback = this.mousemove.bind(this);
-      on(this.container, 'mousemove', this.mousemoveCallback);
-      this.mouseendCallback = this.mouseend.bind(this);
-      on(this.container, 'mouseup', this.mouseendCallback);
+      this.mousestartCallback = this.mousestart.bind(this)
+      on(this.container, 'mousedown', this.mousestartCallback)
+      this.mousemoveCallback = this.mousemove.bind(this)
+      on(this.container, 'mousemove', this.mousemoveCallback)
+      this.mouseendCallback = this.mouseend.bind(this)
+      on(this.container, 'mouseup', this.mouseendCallback)
     }
 
-    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto)
   }
 
   refresh() {
-    this.container = getElement(this.options.container);
-    this.wrapper = find(this.container, this.options.wrapper);
-    this.slides = find(this.container, this.options.slides);
-    this.nbSlide = this.slides.length;
+    this.container = getElement(this.options.container)
+    this.wrapper = find(this.container, this.options.wrapper)
+    this.slides = find(this.container, this.options.slides)
+    this.nbSlide = this.slides.length
 
     if (this.options.direction == 'horizontal') {
         style(this.slides, {
           marginLeft: this.halfGutter+'px',
           marginRight: this.halfGutter+'px'
-        });
+        })
 
         style(this.wrapper, {
           marginLeft: -this.halfGutter+'px',
           marginRight: -this.halfGutter+'px'
-        });
+        })
     }
     else if (this.options.direction == 'vertical') {
         style(this.slides, {
           marginTop: this.halfGutter+'px',
           marginBottom: this.halfGutter+'px'
-        });
+        })
 
         style(this.wrapper, {
           marginTop: -this.halfGutter+'px',
           marginBottom: -this.halfGutter+'px'
-        });
+        })
     }
 
     if (this.options.cover) {
       this.coverManager.addElements({
           elements: find(this.container, '.cover'),
           mode: this.options.cover
-      });
+      })
     }
 
     if (this.options.reverse) {
-      let i = this.slides.length;
+      let i = this.slides.length
       while(i--) {
         style(this.slides[i], {
             'z-index': this.slides.length - i
-        });
+        })
       }
     }
 
     if (this.options.bullets) {
-        remove(find(this.container, '.'+this.options.bullets.wrapper));
+        remove(find(this.container, '.'+this.options.bullets.wrapper))
 
-        append(this.container, '<div class='+this.options.bullets.wrapper+'></div>');
+        append(this.container, '<div class='+this.options.bullets.wrapper+'></div>')
         let bulletsWrapper = find(this.container, '.'+this.options.bullets.wrapper),
-            i = -1;
+            i = -1
 
-        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' left" href="#">'+ this.options.bullets.arrows.element +'</a>');
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' left" href="#">'+ this.options.bullets.arrows.element +'</a>')
 
-        let bullets = createElement('<ul></ul>');
+        let bullets = createElement('<ul></ul>')
         while(++i < this.slides.length) {
-            append(bullets, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>');
+            append(bullets, '<li>'+this.options.bullets.element.replace('$index', i+1)+'</li>')
         }
-        append(bulletsWrapper, bullets);
+        append(bulletsWrapper, bullets)
 
-        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' right" href="#">'+ this.options.bullets.arrows.element +'</a>');
+        if (this.options.bullets.arrows) append(bulletsWrapper, '<a class="'+ this.options.bullets.arrows.class+' right" href="#">'+ this.options.bullets.arrows.element +'</a>')
 
-        addClass('.'+this.options.bullets.wrapper+' > ul > li:first-child', 'active');
+        addClass('.'+this.options.bullets.wrapper+' > ul > li:first-child', 'active')
 
-        on(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+        on(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback)
 
         if (this.options.bullets.arrows) {
-            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
-            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback)
+            on(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback)
         }
     }
 
     load(find(this.wrapper, 'img'), null, () => {
-        this.resize();
-        this.coverManager.resizeAll();
-        if (this.options.initialize) this.options.initialize(this);
-    });
+        this.resize()
+        this.coverManager.resizeAll()
+        if (this.options.initialize) this.options.initialize(this)
+    })
   }
 
   bulletClick(event) {
-      event.preventDefault();
+      event.preventDefault()
 
-      this.slideTo(indexInParent(event.currentTarget));
+      this.slideTo(indexInParent(event.currentTarget))
   }
 
   updateActiveBullet(index) {
-      if (!this.options.bullets) return;
+      if (!this.options.bullets) return
 
-      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > ul > li');
-      removeClass(bullets, 'active');
-      addClass(bullets[index], 'active');
+      let bullets = find(this.container, '.'+this.options.bullets.wrapper+' > ul > li')
+      removeClass(bullets, 'active')
+      addClass(bullets[index], 'active')
   }
 
   resize() {
-    this.containerSize = {};
+    this.containerSize = {}
     size(this.container, {
       width: '',
       height: ''
-    });
+    })
 
     if (this.options.size.width == 'container') {
-      this.containerSize.width = width(this.container);
+      this.containerSize.width = width(this.container)
     }
     else if (this.options.size.width == 'slide') {
-      this.containerSize.width = 0;
+      this.containerSize.width = 0
       forEach(this.slides, (slide) => {
-        this.containerSize.width = Math.max(this.containerSize.width, width(slide));
-      });
+        this.containerSize.width = Math.max(this.containerSize.width, width(slide))
+      })
     }
     else {
-      this.containerSize.width = parseInt(this.options.size.width, 10);
+      this.containerSize.width = parseInt(this.options.size.width, 10)
     }
 
     if (this.options.size.height == 'container') {
-      this.containerSize.height = height(this.container);
+      this.containerSize.height = height(this.container)
     }
     else if (this.options.size.height == 'slide') {
-      this.containerSize.height = 0;
+      this.containerSize.height = 0
       forEach(this.slides, (slide) => {
-        this.containerSize.height = Math.max(this.containerSize.height, height(slide));
-      });
+        this.containerSize.height = Math.max(this.containerSize.height, height(slide))
+      })
     }
     else {
-      this.containerSize.height = parseInt(this.options.size.height, 10);
+      this.containerSize.height = parseInt(this.options.size.height, 10)
     }
 
-    size(this.container, this.containerSize);
+    size(this.container, this.containerSize)
 
     this.slideSize = {
       width: null,
       height: null
-    };
-
-    if (typeof this.options.slideWidth == 'string' && this.options.slideWidth.indexOf('%') != -1)
-      this.slideSize.width = this.containerSize.width * parseInt(this.options.slideWidth, 10) / 100;
-    else
-      this.slideSize.width = parseInt(this.options.slideWidth, 10);
-
-    if (typeof this.options.slideHeight == 'string' && this.options.slideHeight.indexOf('%') != -1)
-      this.slideSize.height = this.containerSize.height * parseInt(this.options.slideHeight, 10) / 100;
-    else
-      this.slideSize.height = parseInt(this.options.slideHeight, 10);
-
-    size(this.slides, this.slideSize);
-
-    if (this.options.touchEnabled || this.options.mouseEnabled) {
-      let slideTouchSize = this.slideSize[(this.options.touchDirection == 'horizontal') ? 'width' : 'height'];
-
-      if (typeof this.options.touchThreshold == 'string' && this.options.touchThreshold.indexOf('%') != -1)
-        this.touchThreshold = slideTouchSize * parseInt(this.options.touchThreshold, 10) / 100;
-      else
-        this.touchThreshold = this.options.touchThreshold;
-
-      if (typeof this.options.swipeThreshold == 'string' && this.options.swipeThreshold.indexOf('%') != -1)
-        this.swipeThreshold = slideTouchSize * parseInt(this.options.swipeThreshold, 10) / 100;
-      else
-        this.swipeThreshold = this.options.swipeThreshold;
     }
 
-    let wrapperSize;
+    if (typeof this.options.slideWidth == 'string' && this.options.slideWidth.indexOf('%') != -1)
+      this.slideSize.width = this.containerSize.width * parseInt(this.options.slideWidth, 10) / 100
+    else
+      this.slideSize.width = parseInt(this.options.slideWidth, 10)
+
+    if (typeof this.options.slideHeight == 'string' && this.options.slideHeight.indexOf('%') != -1)
+      this.slideSize.height = this.containerSize.height * parseInt(this.options.slideHeight, 10) / 100
+    else
+      this.slideSize.height = parseInt(this.options.slideHeight, 10)
+
+    size(this.slides, this.slideSize)
+
+    if (this.options.touchEnabled || this.options.mouseEnabled) {
+      let slideTouchSize = this.slideSize[(this.options.touchDirection == 'horizontal') ? 'width' : 'height']
+
+      if (typeof this.options.touchThreshold == 'string' && this.options.touchThreshold.indexOf('%') != -1)
+        this.touchThreshold = slideTouchSize * parseInt(this.options.touchThreshold, 10) / 100
+      else
+        this.touchThreshold = this.options.touchThreshold
+
+      if (typeof this.options.swipeThreshold == 'string' && this.options.swipeThreshold.indexOf('%') != -1)
+        this.swipeThreshold = slideTouchSize * parseInt(this.options.swipeThreshold, 10) / 100
+      else
+        this.swipeThreshold = this.options.swipeThreshold
+    }
+
+    let wrapperSize
     switch (this.options.direction) {
       case 'horizontal':
         wrapperSize = {
           width: (this.slideSize.width + this.gutter) * this.nbSlide,
           height: this.containerSize.height
-        };
+        }
 
-        break;
+        break
 
       case 'vertical':
         wrapperSize = {
           width: this.containerSize.width,
           height: (this.slideSize.height + this.gutter) * this.nbSlide
-        };
+        }
 
-        break;
+        break
 
       default:
-        wrapperSize = this.containerSize;
+        wrapperSize = this.containerSize
     }
 
-    size(this.wrapper, wrapperSize);
+    size(this.wrapper, wrapperSize)
 
-    if (this.options.resize) this.options.resize(this);
+    if (this.options.resize) this.options.resize(this)
 
     if (this.options.auto) {
-        clearTimeout(this.nextTimeout);
-        this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+        clearTimeout(this.nextTimeout)
+        this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto)
     }
   }
 
   animationCallback() {
-    this.animating = false;
-    this.touchOrig = null;
+    this.animating = false
+    this.touchOrig = null
 
-    let i = this.callbacks.length;
-    while(i--) this.callbacks[i](this.target, this.current);
+    let i = this.callbacks.length
+    while(i--) this.callbacks[i](this.target, this.current)
 
-    this.current = this.target;
-    this.updateActiveBullet(this.current);
+    this.current = this.target
+    this.updateActiveBullet(this.current)
 
     if (this.options.auto) {
-        clearTimeout(this.nextTimeout);
-        this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+        clearTimeout(this.nextTimeout)
+        this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto)
     }
   }
 
   slideDown() {
-    this.slideTo(this.current-1);
+    this.slideTo(this.current-1)
   }
 
   slideUp() {
-    this.slideTo(this.current+1);
+    this.slideTo(this.current+1)
   }
 
   computeTarget(index) {
-    if (index < 0) index = this.nbSlide + index;
-    return index % this.nbSlide;
+    if (index < 0) index = this.nbSlide + index
+    return index % this.nbSlide
   }
 
   slideTo(target, paused = false) {
-    if (this.animating) return;
+    if (this.animating) return
 
-    this.animating = !paused;
+    this.animating = !paused
 
-    this.target = this.computeTarget(target);
+    this.target = this.computeTarget(target)
 
-    let tween = this.options.animationTween(this, this.animationCallback.bind(this));
+    let tween = this.options.animationTween(this, this.animationCallback.bind(this))
 
-    if (paused) tween.pause();
-    else this.updateActiveBullet(this.target);
+    if (paused) tween.pause()
+    else this.updateActiveBullet(this.target)
 
-    return tween;
+    return tween
   }
 
   touchstart(event) {
-    let touch = event.touches[0];
+    let touch = event.touches[0]
 
     this.dragStart({
       x: touch.pageX,
       y: touch.pageY
-    });
+    })
 
-    // event.stopPropagation();
+    // event.stopPropagation()
   }
 
   touchmove(event) {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig) return
 
-    let touch = event.touches[0];
+    let touch = event.touches[0]
 
     this.dragMove({
       x: touch.pageX,
       y: touch.pageY
-    });
+    })
 
-    // event.stopPropagation();
+    // event.stopPropagation()
   }
 
   touchend(event) {
-    this.dragEnd();
+    this.dragEnd()
 
-    // event.stopPropagation();
+    // event.stopPropagation()
   }
 
   mousestart(event) {
     this.dragStart({
       x: event.pageX,
       y: event.pageY
-    });
+    })
 
-    // event.preventDefault();
+    // event.preventDefault()
   }
 
   mousemove(event) {
-    if (!this.touchOrig) return;
+    if (!this.touchOrig) return
 
     this.dragMove({
       x: event.pageX,
       y: event.pageY
-    });
+    })
 
-    // event.preventDefault();
+    // event.preventDefault()
   }
 
   mouseend(event) {
-    this.dragEnd();
-    // event.preventDefault();
+    this.dragEnd()
+    // event.preventDefault()
   }
 
   dragStart(position) {
-    if (this.animating) return;
+    if (this.animating) return
 
-    if (this.options.auto) clearTimeout(this.nextTimeout);
+    if (this.options.auto) clearTimeout(this.nextTimeout)
 
-    this.touchOrig = position;
-    this.touchLength = 0;
+    this.touchOrig = position
+    this.touchLength = 0
 
-    this.swipeNext = null;
-    this.time = new Date().getTime();
+    this.swipeNext = null
+    this.time = new Date().getTime()
   }
 
   dragMove(position) {
-    if (!this.touchOrig || this.animating) return;
+    if (!this.touchOrig || this.animating) return
 
-    this.touchLength = this.options.touchDirection == 'horizontal' ? position.x - this.touchOrig.x : position.y - this.touchOrig.y;
-    let forward = this.touchLength < 0;
+    this.touchLength = this.options.touchDirection == 'horizontal' ? position.x - this.touchOrig.x : position.y - this.touchOrig.y
+    let forward = this.touchLength < 0
 
     if (this.swipeNext != forward) {
-      this.swipeNext = forward;
+      this.swipeNext = forward
 
-      this.target = this.computeTarget(this.current + (this.swipeNext ? 1 : -1));
+      this.target = this.computeTarget(this.current + (this.swipeNext ? 1 : -1))
     }
 
     if (this.onDrag) {
-      this.onDrag(this, this.touchLength);
+      this.onDrag(this, this.touchLength)
     }
     else {
-      let tween = this.slideTo(this.target, true);
+      let tween = this.slideTo(this.target, true)
 
       if (tween) {
-        tween.progress(Math.abs(this.touchLength) / this.slideWidth);
+        tween.progress(Math.abs(this.touchLength) / this.slideWidth)
       }
     }
   }
 
   dragEnd() {
     if (!this.touchOrig || this.animating) {
-        this.touchOrig = null;
+        this.touchOrig = null
 
-        return;
+        return
     }
 
-    let absLength = Math.abs(this.touchLength);
+    let absLength = Math.abs(this.touchLength)
     if (absLength > this.touchThreshold || new Date().getTime() - this.time < this.swipeTime && absLength > this.swipeThreshold) {
-      this.slideTo(this.target);
+      this.slideTo(this.target)
     }
     else {
-      this.target = this.current;
+      this.target = this.current
 
       if (this.onDragEnd) {
-        this.onDragEnd(this);
-        this.touchOrig = null;
+        this.onDragEnd(this)
+        this.touchOrig = null
       }
       else {
-        this.slideTo(this.current);
+        this.slideTo(this.current)
       }
     }
 
-    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto);
+    if (this.options.auto) this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto)
   }
 
   on(callback) {
-    this.callbacks.push(callback);
+    this.callbacks.push(callback)
   }
 
   off(callback) {
-    this.callbacks.splice(this.slide.indexOf(callback));
+    this.callbacks.splice(this.slide.indexOf(callback))
   }
 
   kill() {
-    unresize(this.resizeCallback);
+    unresize(this.resizeCallback)
 
     if (this.options.touchEnabled) {
-      off(this.container, 'touchstart', this.touchstartCallback);
-      off(this.container, 'touchmove', this.touchmoveCallback);
-      off(this.container, 'touchend', this.touchendCallback);
+      off(this.container, 'touchstart', this.touchstartCallback)
+      off(this.container, 'touchmove', this.touchmoveCallback)
+      off(this.container, 'touchend', this.touchendCallback)
     }
 
     if (this.options.mouseEnabled) {
-      off(this.container, 'mousedown', this.mousestartCallback);
-      off(this.container, 'mousemove', this.mousemoveCallback);
-      off(this.container, 'mouseup', this.mouseendCallback);
+      off(this.container, 'mousedown', this.mousestartCallback)
+      off(this.container, 'mousemove', this.mousemoveCallback)
+      off(this.container, 'mouseup', this.mouseendCallback)
     }
 
     if (this.options.bullets) {
-      off(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback);
+      off(find(this.container, '.'+this.options.bullets.wrapper+' > ul > li'), 'click touchstart', this.bulletClickCallback)
       if (this.options.bullets.arrows) {
-        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback);
-        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback);
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.left'), 'click touchstart', this.leftClickCallback)
+        off(find(this.container, '.'+this.options.bullets.wrapper+' > .' + this.options.bullets.arrows.class + '.right'), 'click touchstart', this.rightClickCallback)
       }
-      remove(find(this.container, '.'+this.options.bullets.wrapper));
+      remove(find(this.container, '.'+this.options.bullets.wrapper))
     }
 
     size(this.slides, {
       width: '',
       height: ''
-    });
+    })
 
     size(this.wrapper, {
       width: '',
       height: ''
-    });
+    })
 
     size(this.container, {
       width: '',
       height: ''
-    });
+    })
 
-    if (this.options.clearAnimation) this.options.clearAnimation(this);
-    if (this.nextTimeout) clearTimeout(this.nextTimeout);
+    if (this.options.clearAnimation) this.options.clearAnimation(this)
+    if (this.nextTimeout) clearTimeout(this.nextTimeout)
 
-    if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'));
+    if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'))
   }
 }
 
-export default Slider;
+export default Slider

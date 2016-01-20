@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function find (element, selector) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return !element ? [] : [].slice.call(element.querySelectorAll(selector));
+  return !element ? [] : [].slice.call(element.querySelectorAll(selector))
 }
 
-export default find;
+export default find

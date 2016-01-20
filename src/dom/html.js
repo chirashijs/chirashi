@@ -1,13 +1,13 @@
-import setHtml from './set-html';
-import getHtml from './get-html';
+import setHtml from './set-html'
+import getHtml from './get-html'
 
 export function html (elements, string) {
   if (typeof string == 'string') {
-    setHtml(elements, string);
+    setHtml(elements, string)
   }
   else {
-    return getHtml(elements);
+    return getHtml(elements)
   }
 }
 
-export default html;
+export default html

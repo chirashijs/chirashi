@@ -1,8 +1,8 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function screenPosition (element) {
-  element = getElement(element);
-  if (!element) return;
+  element = getElement(element)
+  if (!element) return
 
   let rect = element.getBoundingClientRect()
 
@@ -11,7 +11,7 @@ export function screenPosition (element) {
     right: rect.right,
     bottom: rect.bottom,
     left: rect.left
-  };
+  }
 }
 
-export default screenPosition;
+export default screenPosition

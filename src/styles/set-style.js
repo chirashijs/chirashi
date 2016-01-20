@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 var unitLessAttributes = [
   'z-index',
@@ -11,29 +11,29 @@ var unitLessAttributes = [
   'pitch-range',
   'richness',
   'opacity'
-];
+]
 
 export function setStyle (elements, options) {
-  let properties = Object.keys(options);
+  let properties = Object.keys(options)
 
-  let i = properties.length, property, value;
+  let i = properties.length, property, value
   while(i--) {
-      property = properties[i];
-      value = options[property];
+      property = properties[i]
+      value = options[property]
 
       if (typeof value == 'number' && unitLessAttributes.indexOf(property) == -1)
-        options[property] += 'px';
+        options[property] += 'px'
   }
 
   forElements(elements, (element) => {
-    if (!element.style) return;
+    if (!element.style) return
 
-    let i = properties.length, property, value;
+    let i = properties.length, property, value
     while(i--) {
-      property = properties[i];
-      element.style[property] = options[property];
+      property = properties[i]
+      element.style[property] = options[property]
     }
-  });
+  })
 }
 
-export default setStyle;
+export default setStyle

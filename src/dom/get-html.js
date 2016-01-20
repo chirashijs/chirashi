@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function getHtml (element) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element.innerHTML;
+  return element && element.innerHTML
 }
 
-export default getHtml;
+export default getHtml

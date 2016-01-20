@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function getWidth (element) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element.offsetWidth;
+  return element && element.offsetWidth
 }
 
-export default getWidth;
+export default getWidth

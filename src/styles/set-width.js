@@ -1,13 +1,13 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 export function setWidth (elements, width) {
-  if (typeof width == 'number') width += 'px';
+  if (typeof width == 'number') width += 'px'
 
   forElements(elements, (element) => {
-    if (!element.style) return;
+    if (!element.style) return
 
-    element.style.width = width;
-  });
+    element.style.width = width
+  })
 }
 
-export default setWidth;
+export default setWidth

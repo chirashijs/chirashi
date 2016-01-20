@@ -1,12 +1,12 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function position (element) {
-  element = getElement(element);
+  element = getElement(element)
 
   return element && {
     top: element.offsetTop,
     left: element.offsetLeft
-  };
+  }
 }
 
-export default position;
+export default position

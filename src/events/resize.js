@@ -1,16 +1,16 @@
-import on from './on';
+import on from './on'
 
 export function resize (userCallback) {
   let callback = () => {
     userCallback({
       width: window.innerWidth,
       height: window.innerHeight
-    });
-  };
+    })
+  }
 
-  on(window, 'resize', callback);
+  on(window, 'resize', callback)
 
-  return callback;
+  return callback
 }
 
-export default resize;
+export default resize

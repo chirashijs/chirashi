@@ -1,13 +1,13 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 export function setHeight (elements, height) {
-  if (typeof height == 'number') height += 'px';
+  if (typeof height == 'number') height += 'px'
 
   forElements(elements, (element) => {
-    if (!element.style) return;
+    if (!element.style) return
 
-    element.style.height = height;
-  });
+    element.style.height = height
+  })
 }
 
-export default setHeight;
+export default setHeight

@@ -1,7 +1,7 @@
 export function isWindows() {
-  let appVersion = 'navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || '';
+  let appVersion = 'navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || ''
 
-  return /win/i.test(appVersion);
+  return /win/i.test(appVersion)
 }
 
-export default isWindows;
+export default isWindows

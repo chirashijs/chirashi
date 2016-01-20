@@ -1,5 +1,5 @@
 export function getSelectorAll (selector) {
-  return [].slice.call(document.querySelectorAll(selector));
+  return [].slice.call(document.querySelectorAll(selector))
 }
 
-export default getSelectorAll;
+export default getSelectorAll

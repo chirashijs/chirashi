@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function prev (element) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element.previousElementSibling;
+  return element && element.previousElementSibling
 }
 
-export default prev;
+export default prev

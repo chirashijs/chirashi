@@ -1,5 +1,5 @@
 export function isWider(width) {
-  return window.innerWidth > width;
+  return window.innerWidth > width
 }
 
-export default isWider;
+export default isWider

@@ -1,9 +1,9 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function clone (element) {
-  element = getElement(element);
+  element = getElement(element)
 
-  return element && element.cloneNode(true);
+  return element && element.cloneNode(true)
 }
 
-export default clone;
+export default clone

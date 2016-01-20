@@ -1,14 +1,14 @@
-import forElements from '../core/for-elements';
+import forElements from '../core/for-elements'
 
 export function off (elements, events, callback) {
-  events = events.split(' ');
+  events = events.split(' ')
 
   forElements(elements, (element) => {
-    if (!element.removeEventListener) return;
+    if (!element.removeEventListener) return
 
     let i = events.length
-    while(i--) element.removeEventListener(events[i], callback);
-  });
+    while(i--) element.removeEventListener(events[i], callback)
+  })
 }
 
-export default off;
+export default off

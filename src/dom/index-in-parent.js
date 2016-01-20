@@ -1,19 +1,19 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function indexInParent (element) {
-  element = getElement(element);
-  if (!element) return;
+  element = getElement(element)
+  if (!element) return
 
   let currentElement = element,
       parent = element.parentNode,
-      i = 0;
+      i = 0
 
   while (currentElement.previousElementSibling) {
-      ++i;
-      currentElement = currentElement.previousElementSibling;
+      ++i
+      currentElement = currentElement.previousElementSibling
   }
 
-  return element === parent.children[i] ? i : -1;
+  return element === parent.children[i] ? i : -1
 }
 
-export default indexInParent;
+export default indexInParent

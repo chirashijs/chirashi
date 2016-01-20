@@ -1,7 +1,7 @@
-import setHtml from './set-html';
+import setHtml from './set-html'
 
 export function empty (elements) {
-  setHtml(elements, '');
+  setHtml(elements, '')
 }
 
-export default empty;
+export default empty

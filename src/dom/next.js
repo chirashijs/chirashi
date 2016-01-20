@@ -1,10 +1,10 @@
-import getElement from '../core/get-element';
+import getElement from '../core/get-element'
 
 export function next (element) {
-  element = getElement(element);
-  if (!element) return;
+  element = getElement(element)
+  if (!element) return
 
-  return element.nextElementSibling;
+  return element.nextElementSibling
 }
 
-export default next;
+export default next

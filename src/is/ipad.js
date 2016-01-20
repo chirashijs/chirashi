@@ -1,5 +1,5 @@
 export function isIPad() {
-  return /ipad/i.test(navigator.userAgent.toLowerCase());
+  return /ipad/i.test(navigator.userAgent.toLowerCase())
 }
 
-export default isIPad;
+export default isIPad

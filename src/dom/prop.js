@@ -1,13 +1,13 @@
-import setProp from './setProp';
-import getProp from './getProp';
+import setProp from './setProp'
+import getProp from './getProp'
 
 export function prop (elements, option) {
   if (typeof option == 'object') {
-    setProp(elements, option);
+    setProp(elements, option)
   }
   else {
-    return getProp(elements, option);
+    return getProp(elements, option)
   }
 }
 
-export default prop;
+export default prop
