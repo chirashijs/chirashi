@@ -3,7 +3,7 @@ import resize from '../events/resize'
 import unresize from '../events/unresize'
 
 export class BreakpointListener {
-    current      = ''
+    _current     = ''
     _listeners   = []
     _breakpoints = []
 
@@ -24,23 +24,31 @@ export class BreakpointListener {
         })
     }
 
+    set current(value) {
+        if (this._current == value) return
+
+        this._current = value
+
+        this.trigger()
+    }
+
+    get current() {
+        return this._current
+    }
+
+    trigger() {
+        for (let listener of this._listeners) {
+            listener(this._current)
+        }
+    }
+
     resize(size) {
         let width = size.width,
             i = this._breakpoints.length
 
         while(i-- && this._breakpoints[i].size > width){}
 
-        i = Math.max(i, 0)
-
-        let label = this._breakpoints[i].label
-
-        if (label != this.current) {
-            this.current = label
-
-            for (let listener of this._listeners) {
-                listener(label)
-            }
-        }
+        this.current = this._breakpoints[Math.max(i, 0)].label
     }
 
     on(callback) {
