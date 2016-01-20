@@ -221,8 +221,8 @@ export class ScrollEvents {
 		// e.preventDefault() // < This needs to be managed externally
 		var t = (e.targetTouches) ? e.targetTouches[0] : e
 
-		deltaX = (t.pageX - this.touchStartX) * this.options.touchMult
-		deltaY = (t.pageY - this.touchStartY) * this.options.touchMult
+		let deltaX = (t.pageX - this.touchStartX) * this.options.touchMult,
+			deltaY = (t.pageY - this.touchStartY) * this.options.touchMult
 
 		this.touchStartX = t.pageX
 		this.touchStartY = t.pageY
