@@ -60,7 +60,7 @@ export class Slider {
     if (this.options.swipeTime)
         this.swipeTime = this.options.swipeTime
 
-    if (his.options.animationTween)
+    if (this.options.animationTween)
         this.animationTween = this.options.animationTween
 
     if (this.options.initialize)
