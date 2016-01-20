@@ -53,6 +53,8 @@ export class Slider {
     this.onDrag = this.options.onDrag
     this.onDragEnd = this.options.onDragEnd
     this.swipeTime = this.options.swipeTime
+    this.animationTween = this.options.animationTween
+    this.initialize = this.options.initialize
 
     this.callbacks = this.options.callback ? [this.options.callback] : []
 
@@ -181,7 +183,7 @@ export class Slider {
     load(find(this.wrapper, 'img'), null, () => {
         this.resize()
         this.coverManager.resizeAll()
-        if (this.options.initialize) this.options.initialize(this)
+        if (this.initialize) this.initialize(this)
     })
   }
 
@@ -333,7 +335,7 @@ export class Slider {
 
     this.target = this.computeTarget(target)
 
-    let tween = this.options.animationTween(this, this.animationCallback.bind(this))
+    let tween = this.animationTween(this, this.animationCallback.bind(this))
 
     if (paused) tween.pause()
     else this.updateActiveBullet(this.target)
