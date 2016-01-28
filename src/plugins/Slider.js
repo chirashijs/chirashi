@@ -69,6 +69,11 @@ export class Slider {
     if (this.options.clearAnimation)
         this.clearAnimation = this.options.clearAnimation
 
+    if (this.options.aspectRatio) {
+        this.aspectRatio = this.options.aspectRatio.split(':')
+        this.aspectRatio = this.aspectRatio.map(Number)
+    }
+
     this.callbacks = this.options.callback ? [this.options.callback] : []
 
     this.coverManager = new Cover()
@@ -245,6 +250,10 @@ export class Slider {
     }
     else {
       this.containerSize.height = parseInt(this.options.size.height, 10)
+    }
+
+    if (this.aspectRatio) {
+        this.containerSize.height = this.containerSize.width / this.aspectRatio[0] * this.aspectRatio[1]
     }
 
     size(this.container, this.containerSize)
