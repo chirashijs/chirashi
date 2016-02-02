@@ -1,5 +1,5 @@
 import forEach from '../core/for-each'
-import forOf from '../core/for-of'
+import forIn from '../core/for-in'
 
 import BreakpointListener from './breakpoint-listener'
 
@@ -12,7 +12,7 @@ export class BreakpointManager extends BreakpointListener {
 
     trigger() {
         if (this._groups) {
-            forOf (this._groups, (group, behaviors) => {
+            forIn (this._groups, (group, behaviors) => {
                 let disabled = []
 
                 let i = behaviors.enabled.length
@@ -80,7 +80,7 @@ export class BreakpointManager extends BreakpointListener {
     }
 
     kill() {
-        forOf (this._groups, (group, behaviors) => {
+        forIn (this._groups, (group, behaviors) => {
             forEach(behaviors.enabled, behavior => behavior.disable())
         })
 

@@ -1,5 +1,5 @@
 import forElements from '../core/for-elements'
-import forOf from '../core/for-of'
+import forIn from '../core/for-in'
 
 export function setProp (elements, props) {
   let propsName = Object.keys(props)

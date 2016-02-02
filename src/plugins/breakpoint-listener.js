@@ -1,4 +1,4 @@
-import forOf from '../core/for-of'
+import forIn from '../core/for-in'
 import resize from '../events/resize'
 import unresize from '../events/unresize'
 
@@ -8,7 +8,7 @@ export class BreakpointListener {
     _breakpoints = []
 
     constructor(breakpoints) {
-        forOf(breakpoints, (key, value) => {
+        forIn(breakpoints, (key, value) => {
             this._breakpoints.push({
                 size: value,
                 label: key

@@ -1,5 +1,5 @@
 import forEach from '../core/for-each'
-import forOf from '../core/for-of'
+import forIn from '../core/for-in'
 import forElements from '../core/for-elements'
 import getElements from '../core/get-elements'
 
@@ -111,7 +111,7 @@ export class Parallax {
 
     this.layers = this.options.layers
 
-    forOf(this.layers, (key, value) => {
+    forIn(this.layers, (key, value) => {
       value = defaultify(value, layerDefaults)
 
       if (typeof value.translation == 'number') {
@@ -208,7 +208,7 @@ export class Parallax {
 
     ++this.frame
 
-    forOf(this.layers, (key, value) => {
+    forIn(this.layers, (key, value) => {
       let inertia = value.inertia(this.frame)
 
       let transformation = {
@@ -253,7 +253,7 @@ export class Parallax {
   reset() {
       this.pause()
 
-      forOf(this.layers, (key, value) => {
+      forIn(this.layers, (key, value) => {
         this.layers[key].currentTransformation = {
           x: 0,
           y: 0,
