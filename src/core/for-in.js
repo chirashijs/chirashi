@@ -2,7 +2,7 @@ export function forIn(object, callback, forceOrder = false) {
   let keys = Object.keys(object)
 
   if (!forceOrder) {
-    let i = elements.length
+    let i = keys.length
 
     while(i--) {
       let key = keys[i]
@@ -10,8 +10,8 @@ export function forIn(object, callback, forceOrder = false) {
     }
   }
   else {
-    let i = -1
-    while(++i < elements.length) {
+    let i = -1, len = keys.length
+    while(++i < len) {
       let key = keys[i]
       callback(key, object[key])
     }

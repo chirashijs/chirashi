@@ -14,8 +14,8 @@ export function forEach (elements, callback, forceOrder = false) {
         while(i--) callback(elements[i], i)
     }
     else {
-        let i = -1
-        while(++i < elements.length) callback(elements[i], i)
+        let i = -1, len = elements.length
+        while(++i < len) callback(elements[i], i)
     }
   }
 }
