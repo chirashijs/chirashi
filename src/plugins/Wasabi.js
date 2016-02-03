@@ -131,8 +131,6 @@ export class Wasabi {
 
       this.currentSnap = this.snaps[this.currentSnapIndex]
     }
-
-    console.log(this.zones)
   }
 
   addZone(zoneConfig, element) {
