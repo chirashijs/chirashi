@@ -17,10 +17,10 @@ import size from '../styles/size'
 import resize from '../events/resize'
 import unresize from '../events/unresize'
 import load from '../events/load'
+import scroll from '../events/scroll'
+import unscroll from '../events/unscroll'
 
 import defaultify from '../utils/defaultify'
-
-import ScrollEvents from './scroll-events'
 
 let defaults = {
   debug: false,
@@ -49,9 +49,7 @@ export class Wasabi {
       this.wrapper = document.body
       this.scrollTop = this.previousScrollTop = screenPosition(this.wrapper).top
 
-      this.scrollEventsManager = new ScrollEvents()
-      this.scrollEventsCallback = this.onScrollEvent.bind(this)
-      this.scrollEventsManager.on(this.scrollEventsCallback)
+      this.scrollEventsCallback = scroll(this.onScrollEvent.bind(this))
     }
     else {
         this.scroller = this.config.scroller
@@ -270,7 +268,7 @@ export class Wasabi {
       zone.forwardBottom = zone.bottom
     }
 
-    zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardBottom - zone.forwardTop)
+    zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardTop)
 
     if (handles.backward.top == 'middle') {
       zone.backwardTop = zone.top + this.halfHeight
@@ -333,7 +331,7 @@ export class Wasabi {
   }
 
   onScrollEvent(event) {
-    this.scrollTop = screenPosition(this.wrapper).top
+    this.scrollTop = -screenPosition(this.wrapper).top
   }
 
   update() {
@@ -346,6 +344,7 @@ export class Wasabi {
       let zone = this.zones[i], entered, progress
 
       progress = (this.scrollTop - zone[direction+'Top'])/zone[direction+'Size']
+
       entered = progress >= 0 && progress <= 1
 
       if (!zone.entered && entered) {
@@ -391,7 +390,7 @@ export class Wasabi {
     remove(this.debugWrapper)
 
     if (this.scrollEventsCallback) {
-      this.scrollEventsManager.off(this.scrollEventsCallback)
+      unscroll(this.scrollEventsCallback)
     }
     else if (this.scrollerCallback) {
       this.scroller.off('update', this.scrollerCallback)
