@@ -4,7 +4,7 @@ import forElements from '../core/for-elements'
 import remove from '../dom/remove'
 import data from '../dom/data'
 import find from '../dom/find'
-import createElement from '../dom/createElement'
+import createElement from '../../dom/create-element'
 import append from '../dom/append'
 import clone from '../dom/clone'
 
@@ -20,7 +20,7 @@ import load from '../events/load'
 
 import defaultify from '../utils/defaultify'
 
-import ScrollEvents from './ScrollEvents'
+import ScrollEvents from './scroll-events'
 
 let defaults = {
   debug: false,
