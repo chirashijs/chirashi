@@ -1,4 +1,4 @@
-import { getAttr } from './getAttr'
+import { getAttr } from './get-attr'
 
 export function getData (element, name) {
   return getAttr(element, 'data-'+name)
