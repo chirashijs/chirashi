@@ -3,11 +3,11 @@ import resize from '../events/resize'
 import unresize from '../events/unresize'
 
 export class BreakpointListener {
-    _current     = ''
-    _listeners   = []
-    _breakpoints = []
-
     constructor(breakpoints) {
+        this._current     = ''
+        this._listeners   = []
+        this._breakpoints = []
+
         forIn(breakpoints, (key, value) => {
             this._breakpoints.push({
                 size: value,
