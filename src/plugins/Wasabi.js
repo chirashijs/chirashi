@@ -131,6 +131,8 @@ export class Wasabi {
 
       this.currentSnap = this.snaps[this.currentSnapIndex]
     }
+
+    console.log(this.zones)
   }
 
   addZone(zoneConfig, element) {
@@ -249,7 +251,7 @@ export class Wasabi {
     }
 
     if (handles.forward.top == 'middle') {
-      zone.forwardTop = zone.top + this.halfHeight
+      zone.forwardTop = zone.top - this.halfHeight
     }
     else if (handles.forward.top == 'bottom') {
       zone.forwardTop = zone.top - this.windowHeight
@@ -259,7 +261,7 @@ export class Wasabi {
     }
 
     if (handles.forward.bottom == 'middle') {
-      zone.forwardBottom = zone.bottom + this.halfHeight
+      zone.forwardBottom = zone.bottom - this.halfHeight
     }
     else if (handles.forward.bottom == 'bottom') {
       zone.forwardBottom = zone.bottom - this.windowHeight
@@ -268,10 +270,10 @@ export class Wasabi {
       zone.forwardBottom = zone.bottom
     }
 
-    zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardTop)
+    zone.forwardSize = Math.max(this.config.stepMinSize, zone.forwardTop - zone.forwardBottom)
 
     if (handles.backward.top == 'middle') {
-      zone.backwardTop = zone.top + this.halfHeight
+      zone.backwardTop = zone.top - this.halfHeight
     }
     else if (handles.backward.top == 'bottom') {
       zone.backwardTop = zone.top - this.windowHeight
@@ -281,7 +283,7 @@ export class Wasabi {
     }
 
     if (handles.backward.bottom == 'middle') {
-      zone.backwardBottom = zone.bottom + this.halfHeight
+      zone.backwardBottom = zone.bottom - this.halfHeight
     }
     else if (handles.backward.bottom == 'bottom') {
       zone.backwardBottom = zone.bottom - this.windowHeight
