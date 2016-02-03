@@ -7,7 +7,6 @@ import find from '../dom/find'
 import createElement from '../dom/createElement'
 import append from '../dom/append'
 import clone from '../dom/clone'
-import clone from '../dom/clone'
 
 import style from '../styles/style'
 import screenPosition from '../styles/screen-position'
