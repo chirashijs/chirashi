@@ -4,7 +4,7 @@ import forElements from '../core/for-elements'
 import remove from '../dom/remove'
 import data from '../dom/data'
 import find from '../dom/find'
-import createElement from '../../dom/create-element'
+import createElement from '../dom/create-element'
 import append from '../dom/append'
 import clone from '../dom/clone'
 
