@@ -1,4 +1,6 @@
 export function forIn(object, callback, forceOrder = false) {
+  if (typeof object != 'object') return
+
   let keys = Object.keys(object)
 
   if (!forceOrder) {
