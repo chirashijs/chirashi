@@ -15,7 +15,7 @@ export class BreakpointListener {
             })
         })
 
-        this._breakpoints.sort((a, b) => a.size > b.size)
+        this._breakpoints.sort((a, b) => b.size - a.size)
 
         this.resizeCallback = resize(this.resize.bind(this))
 
@@ -44,9 +44,10 @@ export class BreakpointListener {
 
     resize(size) {
         let width = size.width,
-            i = this._breakpoints.length
+            len = this._breakpoints.length,
+            i = 0
 
-        while(i-- && this._breakpoints[i].size > width){}
+        while(i+1 < len && this._breakpoints[i+1].size > width) ++i
 
         this.current = this._breakpoints[Math.max(i, 0)].label
     }
