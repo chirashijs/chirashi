@@ -1,31 +1,56 @@
 {
-  "name": "chirashi",
-  "version": "3.0.0-dev",
-  "description": "Minimalist DOM and events manager focused on performances",
-  "main": "./src/index.js",
-  "scripts": {
-    "test": "karma start"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/AlexToudic/chirashi.git"
-  },
-  "keywords": [
-    "DOM",
-    "events"
+  "_args": [
+    [
+      "chirashi@git://github.com/AlexToudic/Chirashi.git#dev",
+      "/Users/alex/Dev/BigYouth/Lolita_Lempicka/lolita-lempicka-website/front"
+    ]
   ],
+  "_from": "git://github.com/AlexToudic/Chirashi.git#dev",
+  "_id": "chirashi@3.0.0-dev",
+  "_inCache": true,
+  "_installable": true,
+  "_location": "/chirashi",
+  "_phantomChildren": {},
+  "_requested": {
+    "hosted": {
+      "directUrl": "https://raw.githubusercontent.com/AlexToudic/Chirashi/dev/package.json",
+      "gitUrl": "git://github.com/AlexToudic/Chirashi.git#dev",
+      "httpsUrl": "git+https://github.com/AlexToudic/Chirashi.git#dev",
+      "shortcut": "github:AlexToudic/Chirashi#dev",
+      "ssh": "git@github.com:AlexToudic/Chirashi.git#dev",
+      "sshUrl": "git+ssh://git@github.com/AlexToudic/Chirashi.git#dev",
+      "type": "github"
+    },
+    "name": "chirashi",
+    "raw": "chirashi@git://github.com/AlexToudic/Chirashi.git#dev",
+    "rawSpec": "git://github.com/AlexToudic/Chirashi.git#dev",
+    "scope": null,
+    "spec": "git://github.com/AlexToudic/Chirashi.git#dev",
+    "type": "hosted"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git://github.com/AlexToudic/Chirashi.git#92cd142565a8644a33f9d2eaca6662e823e8d3ec",
+  "_shasum": "935bf8ffbf9863b2a3161d34894b4bac18e917eb",
+  "_shrinkwrap": null,
+  "_spec": "chirashi@git://github.com/AlexToudic/Chirashi.git#dev",
+  "_where": "/Users/alex/Dev/BigYouth/Lolita_Lempicka/lolita-lempicka-website/front",
   "author": {
     "name": "Alex Toudic @AlexToudic"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/AlexToudic/chirashi/issues"
   },
   "browserify": {
     "transform": [
       "babelify"
     ]
   },
+  "bugs": {
+    "url": "https://github.com/AlexToudic/chirashi/issues"
+  },
+  "dependencies": {
+    "raf": "^3.1.0"
+  },
+  "description": "Minimalist DOM and events manager focused on performances",
   "devDependencies": {
     "babel-core": "^5.8.25",
     "babel-loader": "^5.3.2",
@@ -37,5 +62,25 @@
     "mocha": "^2.3.3",
     "tape": "^4.2.1",
     "webpack": "^1.12.2"
-  }
+  },
+  "gitHead": "92cd142565a8644a33f9d2eaca6662e823e8d3ec",
+  "homepage": "https://github.com/AlexToudic/chirashi#readme",
+  "keywords": [
+    "DOM",
+    "events"
+  ],
+  "license": "MIT",
+  "main": "./src/index.js",
+  "name": "chirashi",
+  "optionalDependencies": {},
+  "readme": "# Chirashi\n\n## Getting Started\n\n### Prerequisites\n\nTo use Chirashi, you need to work with Webpack or Browserify and Babel (running on node_modules).\n\n### Installation\n\nInstall Chirashi using npm:\n\n```\nnpm install --save chirashi\n```\n\nNow you can import functions in your project:\n\n```js\nimport { ready } from 'chirashi'\n\nready(() => {\n  alert('Hello World!')\n})\n```\n\nThe main purpose of this library is to stay as lightweight so the best way to use it is by using a loader:\n\n```js\n// in chirashi-loader.js\n\nexport { ready, append } from 'chirashi'\n\n// in app.js\n\nimport * as chirashi from 'chirashi-loader'\n\nchirashi.ready(() => {\n  chirashi.append(document.body, '<h1>Hello World!</h1>')\n})\n```\n\n## What's included ?\n\n### Functions\n\n#### Core\n\n* `forEach (elements, callback)`: excecute `callback` on each element of `elements` from last to first.\n\n* `forElements (elements, callback)`: same as for but excecuting callback only for DOM elements.\n\n* `getElement (element)`: get a DOM element from `element`. Simply return `element` if it's a DOM element, the first element if it's an Array or NodeList or the first matching if selector.\n\n* `getSelector (selector)`: return the first element matching the `selector`.\n\n* `getSelectorAll (selector)`: return all elements matching the `selector`.\n\n* `isDomElement (element)`: return true if `element` is a HTMLElement, SVGElement, window or document.\n\n#### DOM\n\n* `addClass (elements, classes)`: add all `classes` to `elements`.\n\n* `removeClass (elements, classes)`: remove all `classes` from `elements`.\n\n* `toggleClass (elements, classes)`: toggle all `classes` from `elements`.\n\n* `removeClass (elements, classes)`: remove all `classes` from `elements`.\n\n* `createElement (string)`: return a DOM element created from `string` which has to be HTML.\n\n* `append (elements, node)`: append `node` to each element of `elements`. If `node` is a string it will be passed to `createElement`.\n\n* `insertBefore (elements, node)`: insert `node` before each element of `elements`. If `node` is a string it will be passed to `createElement`.\n\n* `insertAfter (elements, node)`: insert `node` after each element of `elements`. If `node` is a string it will be passed to `createElement`.\n\n* `clone (element)`: return a clone of `element`.\n\n* `closest (element, selector)`: return the first element matching the `selector` traveling up the DOM tree from `element` or `null`.\n\n* `setAttr (elements, attributes)`: set each attribute from the object `attributes` for each element of `elements`.\n\n* `getAttr (element, name)`: get attribute `name` from `element`.\n\n* `attr (elements, option)`: call `setAttr` if `option` is an object else call `getAttr`.\n\n* `removeAttr (elements, name)`: remove the attribute `name` from `elements`.\n\n* `setData (elements, attributes)`: set each data-attribute from the object `attributes` for each element of `elements`.\n\n* `getData (element, name)`: get data-attribute `name` from `element`.\n\n* `data (elements, option)`: call `setData` if `option` is an object else call `getData`.\n\n* `removeData (elements, name)`: remove the data-attribute `name` from `elements`.\n\n* `setProp (elements, props)`: set each property from the object `props` for each element of `elements`.\n\n* `getProp (element, name)`: get property `name` from `element`.\n\n* `prop (elements, option)`: call `setProp` if `option` is an object else call `getProp`.\n\n* `empty (elements)`: empty each element of `elements`.\n\n* `setHtml (elements, string)`: set `string` as `innerHTML` for each element of `elements`.\n\n* `getHtml (element)`: get `innerHTML` for `element`.\n\n* `html (elements, string)`: call `setHtml` if `string` is a string else call `getHtml`.\n\n* `find (element, selector)`: return all DOM elements matching `selector` in `element`'s children.\n\n* `indexInParent (element)`: return index of `element` in its parent.\n\n* `prev (element)`: return the element before `element`.\n\n* `next (element)`: return the element after `element`.\n\n* `parent (element)`: return the parent of `element`.\n\n* `remove (elements)`: remove all `elements` from DOM.\n\n#### Events\n\n* `on (elements, events, callback)`: call `callback` for each event of `events` on each element of `elements`.\n\n* `off (elements, events, callback)`: unbind events from `on`.\n\n* `trigger (elements, events)`: trigger all `events` passed as string on each element of `elements`.\n\n* `hover (elements, enter, leave)`: call `enter` when mouse enter an element of `elements` and `leave` when mouse leave.\n\n* `unhover (elements, enter, leave)`: unbind events from `hover`.\n\n* `load (elements, eachCallback, allCallback)`: call `eachCallback` when one element of `elements` is loaded and call `allCallback` when all `elements` are loaded.\n\n* `resize (callback)`: call `callback` on window resize. Return the real callback for unbind.\n\n* `unresize (callback)`: unbind resize callback.\n\n* `scroll (callback)`: call `callback` with an argument featuring top and left on scroll. Return the real callback for unbind.\n\n* `unscroll (callback)`: unbind scroll callback.\n\n* `ready (callback)`: call `callback` when DOM is ready.\n\n#### Styles\n\n* `getHeight (element)`: return `element`'s offset height.\n\n* `setHeight (elements, height)`: set `height` for all `elements`.\n\n* `height (elements, height)`: call `setHeight` if argument `height` is defined, else call `getHeight`.\n\n* `getWidth (element)`: return `element`'s offset height.\n\n* `setWidth (elements, width)`: set `width` for all `elements`.\n\n* `width (elements, width)`: call `setWidth` if argument `width` is defined, else call `getWidth`.\n\n* `getSize (element)`: return `element`'s width and height in an object.\n\n* `setSize (elements, width, height)`: set `width` and `height` for all `elements`.\n\n* `size (elements, width, height)`: call `setSize` if arguments `width` and `height` are defined, else call `getSize`.\n\n* `getStyle (element, property)`: return `element`'s value for CSS `property`.\n\n* `setStyle (elements, options)`: set CSS properties from `options` keys as respective values for each element of `elements`.\n\n* `style (elements, option)`: call `setStyle` if argument `option` is an object or `getStyle` if argument `option` is a string.\n\n* `hide (elements)`: set display property as none for each element of `elements`.\n\n* `show (elements)`: unset inline display property for each element of `elements`.\n\n* `offset (element)`: return top and left offsets of `element` as object.\n\n* `position (element)`: return `element`'s position relative to its parent as object.\n\n* `screenPosition (element)`: return `element`'s position relative to the screen as object.\n\n* `transform3d (elements, transformation)`: apply a 3D matrix on each element of `elements` for `transformation` described as object. Support: x, y, z, rotate (2D rotation in radiant), rotateX, rotateY, rotateZ, scale, scaleX, scaleY, scaleZ, skew, skewX and skewY.\nEach propertyAXIS value can be declared as:\n```js\nproperty: {\n    x: valueX,\n    y: valueY,\n    z: valueZ\n}\n```\n\n* `transform2d (elements, transformation)`: apply a 2d matrix on each element of `elements` for `transformation` described as object. Support: x, y, rotate (2D rotation in radiant), scale, scaleX, scaleY, skew, skewX and skewY.\nEach propertyAXIS value can be declared as:\n```js\nproperty: {\n    x: valueX,\n    y: valueY\n}\n```\n\n* `transform (elements, transformation)`: execute `transform3d` if 3D matrices are supported, else execute `transform2d`.\n\n#### Is tests\n\n* `isIE (version)`: return true if the navigator's user agent correspond to Internet Explorer of `version`. Return IE version or false if `version` is not defined.\n\n* `isLarger (width)`: return true if the window is larger than `width`.\n\n* `isAndroid()`, `isChrome()`, `isFirefox()`, `isIOS()`, `isIPad()`, `isIPod()`, `isSafari()`: all based on user agent.\n\n* `isDefined()`\n* `isObject()`\n\n#### Utils\n\n* `deepClone (object)`: return a deep clone of `object`.\n\n* `defaultify (options, defaults)`: return `defaults` applied on `options`.\n\n### Plugins - WIP\n\n#### Scroll60FPS\n\nTo use this plugin, just import it. It will disable pointer events while scrolling offering a smoother scroll. It also add the class `scrolling`.\n\n#### VirtualScroll\n\nVirtualScroll is not part of Chirashi but come from [drojdjou/bartekdrozdz.com](https://github.com/drojdjou/bartekdrozdz.com/blob/master/static/src/framework/VirtualScroll.js). Report issues [here](https://github.com/drojdjou/bartekdrozdz.com/issues).\nStill it is integrated in Chirashi to make it CommonJS complient and use it in other Chirashi's plugin. You can find how to use it [here](http://www.everyday3d.com/blog/index.php/2014/08/18/smooth-scrolling-with-virtualscroll/).\n\n#### SmootScroller\n\nSmootScroller disable native browser's scroll to use a transformation matrix. Thanks to this, scroll appears smoother and is easier to disable or force to value.\n\n```js\n    let scroller = new SmoothScroller({\n      direction: 'vertical' | 'horizontal' | 'auto',//default: 'auto'\n      ease: [numeric value],//default: 0.2\n      autoEase: [numeric value],//default: 0.08\n      fixed: [Array, selector, NodeList or DOMElement]// default: []\n    })\n```\n\nMethods:\n\n* `on(callback)`: execute `callback` on scroll event.\n\n* `off(callback)`: unbind `callback` for scroll event.\n\n* `scrollTo(target)`: scroll automatically to target define as `{ x: value, y: value }`.\n\n* `fixElement(element)`: reproduce `position: fixed` behaviour for `element`.\n\n* `unfixElement(element)`: reset `element` transformation.\n\n* `disable()`: disable scroll.\n\n* `enable()`: enable scroll.\n\n* `kill()`: reset all style changes induced by `SmootScroller`.\n\n<!-- #### Slider\n\nYou won't have animations or controls from this plugin. It's a choice, because I want different controls for each project and I don't want Chirashi to depends on GSAP or any other animation library. So what does this plugin ? It will set fixed sizes in pixels for each slide of a slider and his wrapper. It also call the provided animation and manage swipe and touch events.\n\n```js\nlet slider = new Slider({\n  container: [container selector],\n  wrapper: [wrapper selector relative to container],\n  slides: [slides selector relative to container],\n  infinite: [Boolean],//true if slider should loop. default: false\n  slideWidth: [numeric value or string with '%'],//default: '100%'\n  touchThreshold: [numeric value or string with '%'],//min touchmove size to slide. default: '50%',\n  swipeTime: [numeric value],//max touch time to be a swipe in ms. default: 300\n  swipeThreshold: [numeric value or string with '%'],//min swipe touchmove size to slide. default: 10,\n  gutter: [numeric value] //space between slides. default: 0\n})\n``` -->\n",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexToudic/chirashi.git"
+  },
+  "scripts": {
+    "test": "karma start"
+  },
+  "version": "3.0.0-dev"
 }

@@ -1,7 +1,10 @@
+import raf from 'raf'
+
 import forEach from '../core/for-each'
 import forIn from '../core/for-in'
 import forElements from '../core/for-elements'
 import getElements from '../core/get-elements'
+import getElement from '../core/get-element'
 
 import data from '../dom/data'
 import find from '../dom/find'
@@ -232,12 +235,12 @@ export class Parallax {
       transform(value.elements, this.layers[key].currentTransformation)
     })
 
-    this.updateRequest = requestAnimationFrame(this.update.bind(this))
+    this.updateRequest = raf(this.update.bind(this))
   }
 
   pause() {
       this.listen = this.playing = false
-      cancelAnimationFrame(this.updateRequest)
+      raf.cancel(this.updateRequest)
   }
 
   play() {
@@ -246,7 +249,7 @@ export class Parallax {
       }
       else {
           this.listen = this.playing = true
-          this.updateRequest = requestAnimationFrame(this.update.bind(this))
+          this.updateRequest = raf(this.update.bind(this))
       }
   }
 
@@ -269,7 +272,7 @@ export class Parallax {
 
   kill() {
     this.playing = false
-    cancelAnimationFrame(this.updateRequest)
+    raf.cancel(this.updateRequest)
 
     style(this.container, {
       perspective: ''

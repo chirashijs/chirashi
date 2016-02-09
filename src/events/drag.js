@@ -44,9 +44,9 @@ export function drag(elements, move, begin, end) {
       if (end) end({ x: e.pageX, y: e.pageY })
     }
 
-    on(element, 'touchstart, mousedown', undragProperty.begin)
-    on(document.body, 'touchmove, mousemove', undragProperty.move)
-    on(document.body, 'touchend, mouseup', undragProperty.end)
+    on(element, 'touchstart mousedown', undragProperty.begin)
+    on(document.body, 'touchmove mousemove', undragProperty.move)
+    on(document.body, 'touchend mouseup', undragProperty.end)
   })
 
   return undragProperties

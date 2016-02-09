@@ -1,3 +1,5 @@
+import raf from 'raf'
+
 import forEach from '../core/for-each'
 import on from '../events/on'
 import off from '../events/off'
@@ -149,8 +151,8 @@ export class ScrollEvents {
 		this.event.y += this.event.deltaY
 		this.event.originalEvent = e
 
-		clearTimeout(this.triggerTimeout)
-		this.triggerTimeout = setTimeout(this.trigger.bind(this), 100)
+		raf.cancel(this.triggerRaf)
+		this.triggerRaf = raf(this.trigger.bind(this))
 	}
 
 	trigger() {

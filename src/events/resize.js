@@ -1,10 +1,16 @@
+import raf from 'raf'
+
 import on from './on'
 
 export function resize (userCallback) {
+  let callbackRaf
   let callback = () => {
-    userCallback({
-      width: window.innerWidth,
-      height: window.innerHeight
+    raf.cancel(callbackRaf)
+    callbackRaf = raf(() => {
+        userCallback({
+          width: window.innerWidth,
+          height: window.innerHeight
+        })
     })
   }
 

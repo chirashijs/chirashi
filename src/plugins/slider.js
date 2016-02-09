@@ -331,10 +331,8 @@ export class Slider {
     this.current = this.target
     this.updateActiveBullet(this.current)
 
-    if (this.options.auto) {
-        clearTimeout(this.nextTimeout)
+    if (this.options.auto)
         this.nextTimeout = setTimeout(this.slideUp.bind(this), this.options.auto)
-    }
   }
 
   slideDown() {
@@ -352,6 +350,8 @@ export class Slider {
 
   slideTo(target, paused = false) {
     if (this.animating) return
+
+    if (this.options.auto) clearTimeout(this.nextTimeout)
 
     this.animating = !paused
 
@@ -530,7 +530,7 @@ export class Slider {
     })
 
     if (this.clearAnimation) this.clearAnimation(this)
-    if (this.nextTimeout) clearTimeout(this.nextTimeout)
+    if (this.options.auto) clearTimeout(this.nextTimeout)
 
     if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'))
   }

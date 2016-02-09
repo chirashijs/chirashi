@@ -1,3 +1,5 @@
+import raf from 'raf'
+
 import forEach from '../core/for-each'
 import forElements from '../core/for-elements'
 
@@ -16,7 +18,6 @@ import size from '../styles/size'
 
 import resize from '../events/resize'
 import unresize from '../events/unresize'
-import load from '../events/load'
 import scroll from '../events/scroll'
 import unscroll from '../events/unscroll'
 
@@ -50,6 +51,8 @@ export class Wasabi {
       this.scrollTop = this.previousScrollTop = screenPosition(this.wrapper).top
 
       this.scrollEventsCallback = scroll(this.onScrollEvent.bind(this))
+
+      this.resizeCallback = resize(this.refreshCallback.bind(this))
     }
     else {
         this.scroller = this.config.scroller
@@ -59,11 +62,10 @@ export class Wasabi {
 
         this.scrollerCallback = this.onScroller.bind(this)
         this.scroller.on('update', this.scrollerCallback)
-    }
 
-    this.resizeCallback = resize(() => {
-        requestAnimationFrame(this.refresh.bind(this))
-    })
+        this.resizeCallback = this.refreshCallback.bind(this)
+        this.scroller.on('resize', this.resizeCallback)
+    }
 
     if (this.config.debug) {
       this.debugWrapper = createElement('<div id="wasabi-debug"></div>')
@@ -83,8 +85,11 @@ export class Wasabi {
     this.running = true
     this.refresh()
     this.update()
+  }
 
-    load(find(this.wrapper, 'img'), this.refresh.bind(this))
+  refreshCallback() {
+    clearTimeout(this.refreshTimeout)
+    this.refreshTimeout = setTimeout(this.refresh.bind(this), 200)
   }
 
   refresh() {
@@ -298,7 +303,7 @@ export class Wasabi {
   }
 
   testSnapping(scrollTarget) {
-    if (this.scroller.scrollDisabled || !this.snaps.length) return
+    if (!this.scroller.scrollEnabled || !this.snaps.length) return
 
     let previous = this.snaps[this.currentSnapIndex-1],
         next = this.snaps[this.currentSnapIndex+1]
@@ -307,7 +312,6 @@ export class Wasabi {
       --this.currentSnapIndex
       this.currentSnap = previous
 
-      this.scroller.scrollTarget.y = this.currentSnap.top + this.currentSnap.offset.top
       this.scroller.scrollTo({
         x: 0,
         y: (previous.bottom - this.currentSnap.offset.bottom) - Math.min(previous.size, this.windowHeight)-1
@@ -317,7 +321,6 @@ export class Wasabi {
       ++this.currentSnapIndex
       this.currentSnap = next
 
-      this.scroller.scrollTarget.y = this.currentSnap.bottom - this.windowHeight - this.currentSnap.offset.bottom
       this.scroller.scrollTo({
         x: 0,
         y: (next.top + this.currentSnap.offset.top)+1
@@ -328,6 +331,7 @@ export class Wasabi {
   onScroller(scrollTarget) {
     this.scrollTop = this.scroller.scroll.y
     this.testSnapping(scrollTarget)
+    this.update()
   }
 
   onScrollEvent(event) {
@@ -335,8 +339,6 @@ export class Wasabi {
   }
 
   update() {
-    if (!this.running) return
-
     let i = this.zones.length,
         direction = this.previousScrollTop < this.scrollTop ? 'forward' : 'backward'
 
@@ -377,23 +379,18 @@ export class Wasabi {
     }
 
     this.previousScrollTop = this.scrollTop
-
-    this.updateRequest = requestAnimationFrame(this.update.bind(this))
   }
 
   kill() {
-    this.running = false
-
-    unresize(this.resizeCallback)
-    cancelAnimationFrame(this.updateRequest)
-
     remove(this.debugWrapper)
 
     if (this.scrollEventsCallback) {
       unscroll(this.scrollEventsCallback)
+      unresize(this.resizeCallback)
     }
     else if (this.scrollerCallback) {
       this.scroller.off('update', this.scrollerCallback)
+      this.scroller.off('resize', this.resizeCallback)
     }
 
     let i = this.zones.length
