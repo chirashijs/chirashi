@@ -1,14 +1,22 @@
-import { on } from './on';
+import raf from 'raf'
+
+import on from './on'
 
 export function resize (userCallback) {
+  let callbackRaf
   let callback = () => {
-    userCallback({
-      width: window.innerWidth,
-      height: window.innerHeight
-    });
-  };
+    raf.cancel(callbackRaf)
+    callbackRaf = raf(() => {
+        userCallback({
+          width: window.innerWidth,
+          height: window.innerHeight
+        })
+    })
+  }
 
-  on(window, 'resize', callback);
+  on(window, 'resize', callback)
 
-  return callback;
+  return callback
 }
+
+export default resize

@@ -17,11 +17,11 @@ npm install --save chirashi
 Now you can import functions in your project:
 
 ```js
-import { ready } from 'chirashi';
+import { ready } from 'chirashi'
 
 ready(() => {
-  alert('Hello World!');
-});
+  alert('Hello World!')
+})
 ```
 
 The main purpose of this library is to stay as lightweight so the best way to use it is by using a loader:
@@ -29,15 +29,15 @@ The main purpose of this library is to stay as lightweight so the best way to us
 ```js
 // in chirashi-loader.js
 
-export { ready, append } from 'chirashi';
+export { ready, append } from 'chirashi'
 
 // in app.js
 
-import * as chirashi from 'chirashi-loader';
+import * as chirashi from 'chirashi-loader'
 
 chirashi.ready(() => {
-  chirashi.append(document.body, '<h1>Hello World!</h1>');
-});
+  chirashi.append(document.body, '<h1>Hello World!</h1>')
+})
 ```
 
 ## What's included ?
@@ -241,7 +241,7 @@ SmootScroller disable native browser's scroll to use a transformation matrix. Th
       ease: [numeric value],//default: 0.2
       autoEase: [numeric value],//default: 0.08
       fixed: [Array, selector, NodeList or DOMElement]// default: []
-    });
+    })
 ```
 
 Methods:
@@ -277,5 +277,5 @@ let slider = new Slider({
   swipeTime: [numeric value],//max touch time to be a swipe in ms. default: 300
   swipeThreshold: [numeric value or string with '%'],//min swipe touchmove size to slide. default: 10,
   gutter: [numeric value] //space between slides. default: 0
-});
+})
 ``` -->

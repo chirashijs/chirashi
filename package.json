@@ -1,8 +1,7 @@
 {
   "name": "chirashi",
-  "version": "2.2.10",
+  "version": "3.0.0",
   "description": "Minimalist DOM and events manager focused on performances",
-  "main": "./src/index.js",
   "scripts": {
     "test": "karma start"
   },
@@ -10,21 +9,19 @@
     "type": "git",
     "url": "git+https://github.com/AlexToudic/chirashi.git"
   },
-  "keywords": [
-    "DOM",
-    "events"
-  ],
   "author": {
     "name": "Alex Toudic @AlexToudic"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/AlexToudic/chirashi/issues"
   },
   "browserify": {
     "transform": [
       "babelify"
     ]
+  },
+  "bugs": {
+    "url": "https://github.com/AlexToudic/chirashi/issues"
+  },
+  "dependencies": {
+    "raf": "^3.1.0"
   },
   "devDependencies": {
     "babel-core": "^5.8.25",
@@ -37,5 +34,11 @@
     "mocha": "^2.3.3",
     "tape": "^4.2.1",
     "webpack": "^1.12.2"
-  }
+  },
+  "homepage": "https://github.com/AlexToudic/chirashi#readme",
+  "keywords": [
+    "DOM",
+    "events"
+  ],
+  "license": "MIT"
 }

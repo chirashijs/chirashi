@@ -1,7 +1,9 @@
-import { getSelector } from '../core';
+import getElement from '../core/get-element'
 
 export function clone (element) {
-  if (typeof element == 'string') element = getSelector(element);
+  element = getElement(element)
 
-  return element && element.cloneNode(true);
+  return element && element.cloneNode(true)
 }
+
+export default clone
