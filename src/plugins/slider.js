@@ -491,7 +491,6 @@ export class Slider {
   }
 
   kill() {
-    clearTimeout(this.nextTimeout)
     unresize(this.resizeCallback)
 
     if (this.options.touchEnabled) {
@@ -531,6 +530,7 @@ export class Slider {
     })
 
     if (this.clearAnimation) this.clearAnimation(this)
+    if (this.options.auto) clearTimeout(this.nextTimeout)
 
     if (this.coverManager) this.coverManager.removeElements(find(this.container, '.cover'))
   }

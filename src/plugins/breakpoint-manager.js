@@ -74,6 +74,8 @@ export class BreakpointManager extends BreakpointListener {
     }
 
     removeGroup(group) {
+        if (!('group' in this._groups)) return
+
         forEach(this._groups[group].enabled, behavior => behavior.disable())
 
         delete this._groups[group]
