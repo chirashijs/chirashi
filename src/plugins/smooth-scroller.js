@@ -10,6 +10,7 @@ import remove from '../dom/remove'
 import addClass from '../dom/add-class'
 import removeClass from '../dom/remove-class'
 import parent from '../dom/parent'
+import find from '../dom/find'
 
 import style from '../styles/style'
 import height from '../styles/height'
