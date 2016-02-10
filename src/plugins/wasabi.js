@@ -1,5 +1,3 @@
-import raf from 'raf'
-
 import forEach from '../core/for-each'
 import forElements from '../core/for-elements'
 

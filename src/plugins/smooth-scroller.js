@@ -210,7 +210,7 @@ export class SmoothScroller {
 
       this.triggerCallbacks('update')
 
-      raf(this.update.bind(this))
+      this.updateRequest = raf(this.update.bind(this))
   }
 
   triggerCallbacks(type) {
