@@ -22,7 +22,7 @@ export function scroll (userCallback) {
   }, event)
   }
 
-  on(window, 'scroll mousewheel DOMMouseScroll', callback)
+  on(window, 'scroll', callback)
 
   return callback
 }
