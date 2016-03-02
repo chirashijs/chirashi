@@ -13,8 +13,10 @@ export function scale2d (elements, transformation, keep) {
     let style = 'scale('+ (transformation.scaleX || transformation.scale || 1) +','+ (transformation.scaleY || transformation.scale || 1) +')'
 
     if (keep) {
-        element.style[prefix+'transform'] += style
-        element.style.transform += style
+        let newStyle = element.style[prefix+'transform'] || element.style.transform
+        newStyle += ' ' + style
+        element.style[prefix+'transform'] = newStyle
+        element.style.transform = newStyle
     }
     else element.style[prefix+'transform'] = element.style.transform = style
   })
