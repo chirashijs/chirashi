@@ -1,5 +1,5 @@
-import setProp from './setProp'
-import getProp from './getProp'
+import setProp from './set-prop'
+import getProp from './get-prop'
 
 export function prop (elements, option) {
   if (typeof option == 'object') {
