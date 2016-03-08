@@ -3,21 +3,23 @@ import getElement from './get-element'
 import isDomElement from './is-dom-element'
 
 export function forEach (elements, callback, forceOrder = false) {
-  if (!elements) return
+    if (!elements) return
 
-  if (!(elements instanceof Array || elements instanceof NodeList)) {
-    callback(elements, 0)
-  }
-  else {
-    if (!forceOrder) {
-        let i = elements.length
-        while(i--) callback(elements[i], i)
+    if (!(elements instanceof Array || elements instanceof NodeList || elements instanceof HTMLCollection)) {
+        callback(elements, 0)
     }
     else {
-        let i = -1, len = elements.length
-        while(++i < len) callback(elements[i], i)
+        if (!forceOrder) {
+            let i = elements.length
+            while(i--) callback(elements[i], i)
+        }
+        else {
+            let i = -1, len = elements.length
+            while(++i < len) {
+                callback(elements[i], i)
+            }
+        }
     }
-  }
 }
 
 export default forEach
