@@ -1,3 +1,3 @@
 export default function isTouchable() {
-  return /touch/i.test(navigator.userAgent.toLowerCase())
+  return !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch)
 }
