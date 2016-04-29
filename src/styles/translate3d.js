@@ -7,7 +7,7 @@ const prefix = '-'+(Array.prototype.slice
 )[1]+'-'
 
 export function translate3d (elements, transformation, keep) {
-  forElements(elements, (element) => {
+  forElements(elements, element => {
     if (!element.style) return
 
     let style = 'translate3d('+ (transformation.x || 0) +'px,'+ (transformation.y || 0) +'px,'+ (transformation.z || 0) +'px)'

@@ -7,7 +7,7 @@ const prefix = '-'+(Array.prototype.slice
 )[1]+'-'
 
 export function scale2d (elements, transformation, keep) {
-  forElements(elements, (element) => {
+  forElements(elements, element => {
     if (!element.style) return
 
     let style = 'scale('+ (transformation.scaleX || transformation.scale || 1) +','+ (transformation.scaleY || transformation.scale || 1) +')'

@@ -25,7 +25,7 @@ export function setStyle (elements, options) {
         options[property] += 'px'
   }
 
-  forElements(elements, (element) => {
+  forElements(elements, element => {
     if (!element.style) return
 
     let i = properties.length, property, value

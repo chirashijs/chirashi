@@ -29,7 +29,7 @@ export function load (elements, eachCallback, allCallback) {
     if (!(--n.value) && allCallback) allCallback()
   }
 
-  forEach(elements, (element) => {
+  forEach(elements, element => {
     if (element.tagName == 'IMG' && !element.src) {
         callback(null, element, 'image without src')
     }

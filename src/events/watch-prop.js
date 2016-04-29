@@ -8,7 +8,7 @@ export function watchProp (elements, prop, handler) {
   }
 
   let watched = []
-  forElements(elements, (element) => {
+  forElements(elements, element => {
     watched.push({
         element: element,
         prop: prop,

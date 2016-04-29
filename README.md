@@ -271,7 +271,7 @@ let slider = new Slider({
   container: [container selector],
   wrapper: [wrapper selector relative to container],
   slides: [slides selector relative to container],
-  infinite: [Boolean],//true if slider should loop. default: false
+  infinite: [bool],//true if slider should loop. default: false
   slideWidth: [numeric value or string with '%'],//default: '100%'
   touchThreshold: [numeric value or string with '%'],//min touchmove size to slide. default: '50%',
   swipeTime: [numeric value],//max touch time to be a swipe in ms. default: 300

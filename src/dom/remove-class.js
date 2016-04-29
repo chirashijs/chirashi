@@ -1,14 +1,18 @@
 import forElements from '../core/for-elements'
 
-export function removeClass (elements, classes) {
-  classes = classes.split(' ')
+/**
+ * Remove all classes on each elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} classes - The classes seperated with spaces
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ */
+export default function removeClass (elements, classes) {
+    classes = classes.split(' ')
 
-  forElements(elements, (element) => {
-    if (!element.classList) return
+    return forElements(elements, element => {
+        if (!element.classList) return
 
-    let i = classes.length
-    while(i--) element.classList.remove(classes[i])
-  })
+        let i = classes.length
+        while(i--) element.classList.remove(classes[i])
+    })
 }
-
-export default removeClass

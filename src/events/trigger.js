@@ -14,7 +14,7 @@ export function trigger (elements, events, data) {
       event.initCustomEvent(event, true, true, data)
     }
 
-    forElements(elements, (element) => {
+    forElements(elements, element => {
       if (!element.dispatchEvent) return
 
       element.dispatchEvent(event)

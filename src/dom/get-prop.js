@@ -1,9 +1,13 @@
 import getElement from '../core/get-element'
 
-export function getProp (element, name) {
-  element = getElement(element)
+/**
+ * Get the value for the property name on the element.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @param {string} name - The name of the property
+ * @return {string} innerHTML - The inner html of the element
+ */
+export default function getProp (element, name) {
+    element = getElement(element)
 
-  return element && element[name]
+    return element && element[name]
 }
-
-export default getProp

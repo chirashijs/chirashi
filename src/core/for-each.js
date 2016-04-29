@@ -1,8 +1,15 @@
 import getSelectorAll from './get-selector-all'
-import getElement from './get-element'
-import isDomElement from './is-dom-element'
+import getElement     from './get-element'
+import isDomElement   from './is-dom-element'
 
-export function forEach (elements, callback, forceOrder = false) {
+/**
+ * Iterates over elements and apply callback on each one.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable
+ * @param {function} callback - The function to call for each iteratee
+ * @param {bool} [forceOrder=false] - Respect elements order
+ * @return {string | Array | NodeList | HTMLCollection} elements for chaining
+ */
+export default function forEach (elements, callback, forceOrder = false) {
     if (!elements) return
 
     if (!(elements instanceof Array || elements instanceof NodeList || elements instanceof HTMLCollection)) {
@@ -20,6 +27,6 @@ export function forEach (elements, callback, forceOrder = false) {
             }
         }
     }
-}
 
-export default forEach
+    return elements
+}

@@ -1,11 +1,14 @@
 import forElements from '../core/for-elements'
 
-export function remove (elements) {
-  forElements(elements, (element) => {
-    if (!element.parentNode) return
+/**
+ * Remove all elements from dom.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @return {string | Array | NodeList | HTMLCollection} elements - The removed elements
+ */
+export default function remove (elements) {
+    return forElements(elements, element => {
+        if (!element.parentNode) return
 
-    element.parentNode.removeChild(element)
-  })
+        element.parentNode.removeChild(element)
+    })
 }
-
-export default remove

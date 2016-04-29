@@ -82,7 +82,7 @@ export function matrix2d (elements, transformation) {
 
   matrix = 'matrix('+matrix.join(',')+')'
 
-  forElements(elements, (element) => {
+  forElements(elements, element => {
     if (!element.style) return
 
     element.style[prefix+'transform'] = element.style.transform = matrix
