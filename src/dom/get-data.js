@@ -1,4 +1,4 @@
-import { getAttr } from './get-attr'
+import getAttr from './get-attr'
 
 /**
  * Get value of the name date attribute on element.

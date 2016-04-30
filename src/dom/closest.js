@@ -4,7 +4,7 @@ import getElement from '../core/get-element'
  * Get closest element matching the tested value traveling up the DOM tree from element.
  * @param {string | HTMLElement | SVGElement} element - The dom element or selector
  * @param {string | HTMLElement | SVGElement} tested - The selector or dom element to match
- * @param {{value: number} =} level - The value is incremented for each parent tested
+ * @param {{value: number}} [level] - The value is incremented for each parent tested
  * @return {bool | HTMLElement | SVGElement} matchedElement - The matched element or false
  */
 export default function closest (element, tested, level) {
