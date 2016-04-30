@@ -2,9 +2,7 @@
 
 ## Getting Started
 
-### Prerequisites
-
-To use Chirashi, you need to work with Webpack or Browserify and Babel (running on node_modules).
+In all examples I will presume that your using ES2015 syntax with imports.
 
 ### Installation
 
@@ -17,7 +15,7 @@ npm install --save chirashi
 Now you can import functions in your project:
 
 ```js
-import { ready } from 'chirashi'
+import $ from 'chirashi'
 
 ready(() => {
   alert('Hello World!')
