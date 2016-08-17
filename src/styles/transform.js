@@ -2,19 +2,26 @@ import matrix from './matrix'
 import scale from './scale'
 import translate from './translate'
 
-export function transform (elements, transformation) {
-    if (transformation.skew || transformation.skewX || transformation.skewY || transformation.rotate || transformation.rotateX || transformation.rotateY || transformation.rotateZ) {
-        matrix(elements, transformation)
+/**
+ * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {object} [transformation] - The transformation as an object
+ * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
+ */
+ export default function transform (elements, transformation) {
+    // if skew or rotation use matrix
+    if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation ||
+        'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation)
+        {
+            return matrix(elements, transformation)
     }
     else {
-        let shouldKeep = false
+         let shouldKeep = false // don't crush translate property
 
-        if (shouldKeep = (transformation.x || transformation.y || transformation.z))
-            translate(elements, transformation)
+         if (shouldKeep = ('x' in transformation || 'y' in transformation || 'z' in transformation))
+            return translate(elements, transformation)
 
-        if (transformation.scale || transformation.scaleX || transformation.scaleY || transformation.scaleZ)
-            scale(elements, transformation, shouldKeep)
+         if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation)
+            return scale(elements, transformation, shouldKeep)
     }
 }
-
-export default transform

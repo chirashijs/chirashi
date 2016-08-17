@@ -1,20 +1,15 @@
-import translate2d from './translate2d'
-import translate3d from './translate3d'
+import support3D from '../browser/support-3d'
 
-const prefix = '-'+(Array.prototype.slice
-  .call(window.getComputedStyle(document.documentElement, ''))
-  .join('')
-  .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-)[1]+'-'
-document.documentElement.style[prefix+'transform'] = 'translate3d(0, 0, 0)'
-const use2d = !document.documentElement.style[prefix+'transform']
-document.documentElement.style[prefix+'transform'] = ''
+import translate2D from './translate2d'
+import translate3D from './translate3d'
 
-export function translate (elements, transformation, keep) {
-    if (use2d)
-      translate2d(elements, transformation, keep)
-    else
-      translate3d(elements, transformation, keep)
+/**
+* Apply the provided translate transformation (3d if supported) on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+export default function translate (elements, transformation, keep) {
+    return support3D ? translate3D(elements, transformation, keep) : translate2D(elements, transformation, keep)
 }
-
-export default translate

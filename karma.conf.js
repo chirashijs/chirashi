@@ -25,7 +25,7 @@ module.exports = function(config) {
                 loaders: [
                     {
                         test: /(\.js$)|(\.jsx$)/,
-                        exclude: /node_modules\/(?!chirashi).+/,
+                        exclude: /node_modules/,
                         loader: 'babel-loader'
                     }
                 ]

@@ -7,7 +7,7 @@ import on from './on'
  * @param {function} move - The move callback
  * @param {function} begin - The begin callback
  * @param {function} end - The end callback
- * @return {object} undragProperties - The object to pass to undrag for unbinding
+ * @return {object} offObject - An object with off method for unbinding
  */
 export default function drag(elements, move, begin, end) {
     let undragProperties = []
@@ -57,7 +57,17 @@ export default function drag(elements, move, begin, end) {
         on(element, 'touchstart mousedown', undragProperty.begin)
         on(document.body, 'touchmove mousemove', undragProperty.move)
         on(document.body, 'touchend mouseup', undragProperty.end)
+
+        undragProperties.push(undragProperty)
     })
 
-    return undragProperties
+    return {
+        off() {
+            forEach(undragProperties, (undragProperty) => {
+                off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin)
+                off(document.body, 'touchmove, mousemove', undragProperty.move)
+                off(document.body, 'touchend, mouseup', undragProperty.end)
+            })
+        }
+    }
 }

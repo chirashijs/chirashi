@@ -10,8 +10,7 @@ import getAttr from './get-attr'
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option attribute or elements for chaining
  */
 export default function attr (elements, option) {
-    if (typeof option == 'object')
-        return setAttr(elements, option)
-    else
-        return getAttr(elements, option)
+    return typeof option == 'object'
+         ? setAttr(elements, option)
+         : getAttr(elements, option)
 }

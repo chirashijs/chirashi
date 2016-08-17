@@ -9,8 +9,7 @@ import getProp from './get-prop'
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option property or elements for chaining
  */
 export default function prop (elements, option) {
-    if (typeof option == 'object')
-        return setProp(elements, option)
-    else
-        return getProp(elements, option)
+    return typeof option == 'object'
+         ? setProp(elements, option)
+         : getProp(elements, option)
 }

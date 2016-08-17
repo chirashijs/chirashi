@@ -8,5 +8,5 @@ import getElement from '../core/get-element'
 export default function clone (element) {
     element = getElement(element)
 
-    return element && element.cloneNode(true)
+    return !!element && element.cloneNode(true)
 }

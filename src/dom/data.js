@@ -10,8 +10,7 @@ import getData from './get-data'
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option data attribute or elements for chaining
  */
 export default function data (elements, option) {
-    if (typeof option == 'object')
-        return setData(elements, option)
-    else
-        return getData(elements, option)
+    return typeof option == 'object'
+         ? setData(elements, option)
+         : getData(elements, option)
 }

@@ -8,5 +8,5 @@ import getElement from '../core/get-element'
 export default function getHtml (element) {
     element = getElement(element)
 
-    return element && element.innerHTML
+    return !!element && element.innerHTML
 }

@@ -8,13 +8,5 @@ import forIn from '../core/for-in'
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 export default function setProp (elements, props) {
-    let propsName = Object.keys(props)
-
-    return forElements(elements, element => {
-        let i = propsName.length, propName
-        while(i--) {
-            propName = propsName[i]
-            element[propName] = props[propName]
-        }
-    })
+    return forElements(elements, element => Objec.assign(element, props))
 }

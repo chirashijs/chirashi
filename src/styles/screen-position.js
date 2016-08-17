@@ -1,17 +1,12 @@
 import getElement from '../core/get-element'
 
-export function screenPosition (element) {
-  element = getElement(element)
-  if (!element) return
+/**
+* Return the screen relative position of an element
+* @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+* @return {object} screenPosition
+*/
+export default function screenPosition (element) {
+    element = getElement(element)
 
-  let rect = element.getBoundingClientRect()
-
-  return {
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    left: rect.left
-  }
+    return !!element && element.getBoundingClientRect()
 }
-
-export default screenPosition

@@ -1,13 +1,17 @@
 import forElements from '../core/for-elements'
 
-export function setWidth (elements, width) {
-  if (typeof width == 'number') width += 'px'
+/**
+* Set the provided width to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {number} width - The width
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
+export default function setWidth (elements, width) {
+    if (typeof width == 'number') width += 'px'
 
-  forElements(elements, element => {
-    if (!element.style) return
+    return forElements(elements, element => {
+        if (!element.style) return
 
-    element.style.width = width
-  })
+        element.style.width = width
+    })
 }
-
-export default setWidth

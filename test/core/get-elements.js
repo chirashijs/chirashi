@@ -1,6 +1,5 @@
 import assert from 'assert'
-import getElements from '../../src/core/get-elements'
-import isDomElement from '../../src/core/is-dom-element'
+import $ from '../../src'
 
 Array.prototype.equals = function (array) {
     // if the other array is a falsy value, return
@@ -28,7 +27,7 @@ Array.prototype.equals = function (array) {
 
 describe('chirashi#getElements', () => {
   it('should return a function', () => {
-    assert.equal(typeof getElements, 'function')
+    assert.equal(typeof $.getElements, 'function')
   })
 
   it('should return element', () => {
@@ -50,13 +49,13 @@ describe('chirashi#getElements', () => {
     form.appendChild(document.createElement('input'))
     form.appendChild(document.createElement('input'))
 
-    assert.ok([div].equals(getElements(div)), 'should works for dom element')
-    assert.ok([div, div2].equals(getElements(document.querySelectorAll('.test'))), 'should works for nodelist')
-    assert.ok([div, div2, div3].equals(getElements('div')), 'should works for tag selector')
-    assert.ok([div, div2, div3].equals(getElements('.test, .test2')), 'should works for class selector')
-    assert.ok([div3, div2, div].equals(getElements([div, div2, '.test2', '.unknown'])), 'should extract dom elements from array')
-    assert.ok([form].equals(getElements(form)), 'shouldn\'t return forms children')
-    assert.equal(null, getElements(null), 'should return null for non dom element')
+    assert.ok([div].equals($.getElements(div)), 'should works for dom element')
+    assert.ok([div, div2].equals($.getElements(document.querySelectorAll('.test'))), 'should works for nodelist')
+    assert.ok([div, div2, div3].equals($.getElements('div')), 'should works for tag selector')
+    assert.ok([div, div2, div3].equals($.getElements('.test, .test2')), 'should works for class selector')
+    assert.ok([div3, div2, div].equals($.getElements([div, div2, '.test2', '.unknown'])), 'should extract dom elements from array')
+    assert.ok([form].equals($.getElements(form)), 'shouldn\'t return forms children')
+    assert.equal(null, $.getElements(null), 'should return null for non dom element')
 
     document.body.removeChild(div)
     document.body.removeChild(div2)

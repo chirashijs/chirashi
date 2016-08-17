@@ -5,9 +5,107 @@
  */
 'use strict';
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
+/**
+ * User Agent in lower case.
+ */
 
-var raf = _interopDefault(require('raf'));
+var ua$1 = navigator.userAgent.toLowerCase();
+
+/**
+ * Variable true if the device is running Android based on User Agent.
+ */
+var isAndroid = /android/i.test(ua$1);
+
+/**
+ * Variable true if the device is an Android Tablet based on User Agent.
+ */
+var isAndroidTablet = isAndroid && !/mobile/i.test(ua$1);
+
+/**
+ * Navigator's vendor in lower case.
+ */
+
+var vendor = navigator.vendor && navigator.vendor.toLowerCase();
+
+/**
+ * Variable true if the browser is Chrome or Chromium based on User Agent.
+ */
+var isChrome = /chrome|chromium/i.test(ua$1) && /google inc/.test(vendor);
+
+/**
+ * Variable true if the browser is Firefox based on User Agent.
+ */
+var isFirefox = /firefox/i.test(ua$1);
+
+/**
+ * Version number if the browser is Internet Explorer or false based on User Agent.
+ */
+var ie = ua$1.indexOf('msie') != -1 ? parseInt(ua$1.split('msie')[1], 10) : false;
+
+var isIE = version ? ie == version : ie;
+
+/**
+ * Variable true if the device is running iOS based on User Agent.
+ */
+var isIOS = /iphone|ipad|ipod/i.test(ua$1);
+
+/**
+ * Variable true if the device is an iPad based on User Agent.
+ */
+var isIPad = /ipad/i.test(ua$1);
+
+/**
+ * Variable true if the device is an iPhone based on User Agent.
+ */
+var isIPhone = /iphone/i.test(ua$1);
+
+/**
+ * Variable true if the device is an iPod based on User Agent.
+ */
+var isIPod = /ipod/i.test(ua$1);
+
+/**
+ * Variable true if the device is running Windows based on User Agent.
+ */
+
+var isWindows = /win/i.test('navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || '');
+
+/**
+ * Variable true if the device handle touches events.
+ */
+
+var isTouchable = !!('ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch);
+
+/**
+ * Variable true if the device is a mobile based on User Agent.
+ */
+var isMobile = isIOS || isAndroid || isWindows && isTouchable;
+
+/**
+ * Variable true if the browser is Safari based on User Agent.
+ */
+var isSafari = /safari/i.test(ua$1) && /apple computer/.test(vendor);
+
+/**
+ * Variable true if the device is a Windows Phone based on User Agent.
+ */
+var isWindowsPhone = isWindows && /phone/i.test(ua);
+
+/**
+ * Variable true if the device is a Windows Tablet based on User Agent.
+ */
+var isWindowsTablet = isWindows && !isWindowsPhone && isTouchable;
+
+/**
+ * Variable true if the device is a tablet based on User Agent.
+ */
+var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
+
+var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
+
+document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+var support3D = document.documentElement.style[prefix + 'matrix'];
+document.documentElement.style[prefix + 'matrix'] = '';
 
 /**
  * Get array of dom elements from selector.
@@ -178,25 +276,37 @@ function addClass(elements, classes) {
 /**
  * Create a dom element from an HTML string or tag.
  * @param {string | HTMLElement | SVGElement} string - The html string or tag
+ * @param {object} [attributes={}] - The object of attributes
  * @return {HTMLElement | SVGElement} element - The dom element created from the string
  */
 function createElement(string) {
-  if (string.indexOf('<') == -1) string = '<' + string + '></' + string + '>';
+    var attributes = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
-  var temp = document.createElement('div');
-  temp.innerHTML = string;
+    var strAttributes = "";
 
-  return temp.firstChild;
+    forIn(attributes, function (name, value) {
+        strAttributes += ' ' + name + '="' + value + '"';
+    });
+
+    if (string.indexOf('<') == -1) string = '<' + string + strAttributes + '></' + string + '>';
+
+    var temp = document.createElement('div');
+    temp.innerHTML = string;
+
+    return temp.firstChild;
 }
 
 /**
  * Append node to each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string | HTMLElement | SVGElement} node - Dom element or html string or tag to create it
+ * @param {object} [attributes={}] - The object of attributes, only used with node creation
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function append(elements, node) {
-    if (typeof node == 'string') node = createElement(node);else if (!isDomElement(node)) return elements;
+    var attributes = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+    if (typeof node == 'string') node = createElement(node, attributes);else if (!isDomElement(node)) return elements;
 
     return forElements(elements, function (element) {
         if (!element.appendChild) return;
@@ -238,7 +348,7 @@ function setAttr(elements, attributes) {
 function getAttr(element, name) {
   element = getElement(element);
 
-  return element && element.getAttribute && element.getAttribute(name);
+  return !!element && element.getAttribute && element.getAttribute(name);
 }
 
 /**
@@ -250,7 +360,7 @@ function getAttr(element, name) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option attribute or elements for chaining
  */
 function attr(elements, option) {
-    if (typeof option == 'object') return setAttr(elements, option);else return getAttr(elements, option);
+  return typeof option == 'object' ? setAttr(elements, option) : getAttr(elements, option);
 }
 
 /**
@@ -261,7 +371,7 @@ function attr(elements, option) {
 function clone(element) {
   element = getElement(element);
 
-  return element && element.cloneNode(true);
+  return !!element && element.cloneNode(true);
 }
 
 /**
@@ -321,7 +431,7 @@ function getData(element, name) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option data attribute or elements for chaining
  */
 function data(elements, option) {
-    if (typeof option == 'object') return setData(elements, option);else return getData(elements, option);
+  return typeof option == 'object' ? setData(elements, option) : getData(elements, option);
 }
 
 /**
@@ -369,7 +479,7 @@ function filter(elements, tested) {
 function findOne(element, selector) {
   element = getElement(element);
 
-  return element && element.querySelector(selector);
+  return !!element && element.querySelector(selector);
 }
 
 /**
@@ -392,7 +502,7 @@ function find(element, selector) {
 function getHtml(element) {
   element = getElement(element);
 
-  return element && element.innerHTML;
+  return !!element && element.innerHTML;
 }
 
 /**
@@ -404,7 +514,7 @@ function getHtml(element) {
 function getProp(element, name) {
   element = getElement(element);
 
-  return element && element[name];
+  return !!element && element[name];
 }
 
 /**
@@ -433,7 +543,7 @@ function hasClass(element, classes) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} innerHTML or elements - The inner html of the elements or elements for chaining
  */
 function html(elements, string) {
-    if (typeof string == 'string') return setHtml(elements, string);else return getHtml(elements);
+  return typeof string == 'string' ? setHtml(elements, string) : getHtml(elements);
 }
 
 /**
@@ -509,7 +619,7 @@ function next(element) {
 function parent(element) {
   element = getElement(element);
 
-  return element && element.parentNode;
+  return !!element && element.parentNode;
 }
 
 /**
@@ -520,7 +630,7 @@ function parent(element) {
 function prev(element) {
   element = getElement(element);
 
-  return element && element.previousElementSibling;
+  return !!element && element.previousElementSibling;
 }
 
 /**
@@ -530,16 +640,9 @@ function prev(element) {
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function setProp(elements, props) {
-    var propsName = Object.keys(props);
-
-    return forElements(elements, function (element) {
-        var i = propsName.length,
-            propName = void 0;
-        while (i--) {
-            propName = propsName[i];
-            element[propName] = props[propName];
-        }
-    });
+  return forElements(elements, function (element) {
+    return Objec.assign(element, props);
+  });
 }
 
 /**
@@ -550,7 +653,7 @@ function setProp(elements, props) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option property or elements for chaining
  */
 function prop(elements, option) {
-    if (typeof option == 'object') return setProp(elements, option);else return getProp(elements, option);
+  return typeof option == 'object' ? setProp(elements, option) : getProp(elements, option);
 }
 
 /**
@@ -604,17 +707,24 @@ function toggleClass(elements, classes) {
     });
 }
 
+/**
+ * Bind events listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} events - The events that should be bound seperated with spaces
+ * @param {function} callback - The callback used for event binding
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ */
 function on(elements, events, callback) {
-  events = events.split(' ');
+    events = events.split(' ');
 
-  forElements(elements, function (element) {
-    if (!element.addEventListener) return;
+    return forElements(elements, function (element) {
+        if (!element.addEventListener) return;
 
-    var i = events.length;
-    while (i--) {
-      element.addEventListener(events[i], callback);
-    }
-  });
+        var i = events.length;
+        while (i--) {
+            element.addEventListener(events[i], callback);
+        }
+    });
 }
 
 /**
@@ -623,7 +733,7 @@ function on(elements, events, callback) {
  * @param {function} move - The move callback
  * @param {function} begin - The begin callback
  * @param {function} end - The end callback
- * @return {object} undragProperties - The object to pass to undrag for unbinding
+ * @return {object} offObject - An object with off method for unbinding
  */
 function drag(elements, move, begin, end) {
     var undragProperties = [];
@@ -671,316 +781,190 @@ function drag(elements, move, begin, end) {
         on(element, 'touchstart mousedown', undragProperty.begin);
         on(document.body, 'touchmove mousemove', undragProperty.move);
         on(document.body, 'touchend mouseup', undragProperty.end);
+
+        undragProperties.push(undragProperty);
     });
 
-    return undragProperties;
+    return {
+        off: function () {
+            forEach(undragProperties, function (undragProperty) {
+                off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin);
+                off(document.body, 'touchmove, mousemove', undragProperty.move);
+                off(document.body, 'touchend, mouseup', undragProperty.end);
+            });
+        }
+    };
 }
 
+/**
+ * Bind hover listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {function} enter - The enter callback
+ * @param {function} leave - The leave callback
+ * @return {object} offObject - An object with off method for unbinding
+ */
 function hover(elements, enter, leave) {
-  forElements(elements, function (element) {
-    if (enter) on(element, 'mouseenter', enter);
-    if (leave) on(element, 'mouseleave', leave);
-  });
-}
-
-function off(elements, events, callback) {
-  events = events.split(' ');
-
-  forElements(elements, function (element) {
-    if (!element.removeEventListener) return;
-
-    var i = events.length;
-    while (i--) {
-      element.removeEventListener(events[i], callback);
-    }
-  });
-}
-
-function load(elements, eachCallback, allCallback) {
-  elements = getElements(elements);
-
-  if (!elements || elements.length == 0) {
-    if (allCallback) allCallback();
-
-    return;
-  }
-
-  var n = {
-    value: elements.length
-  };
-
-  var callback = function (event, element, error) {
-    if (event) {
-      element = event.target;
-      if (event.type == 'error') error = event;
-    }
-
-    off(element, 'load loadedmetadata error', callback);
-
-    if (eachCallback) eachCallback(element, error);
-
-    if (! --n.value && allCallback) allCallback();
-  };
-
-  forEach$1(elements, function (element) {
-    if (element.tagName == 'IMG' && !element.src) {
-      callback(null, element, 'image without src');
-    } else if (element.naturalWidth || element.loadedmetadata) {
-      callback(null, element, null);
-    } else {
-      on(element, 'load loadedmetadata error', callback);
-    }
-  });
-}
-
-function ready(callback) {
-  document.addEventListener('DOMContentLoaded', callback);
-}
-
-function resize(userCallback) {
-  var callbackRaf = void 0;
-  var callback = function () {
-    raf.cancel(callbackRaf);
-    callbackRaf = raf(function () {
-      userCallback({
-        width: window.innerWidth,
-        height: window.innerHeight
-      });
-    });
-  };
-
-  on(window, 'resize', callback);
-
-  return callback;
-}
-
-function scroll(userCallback) {
-  var callback = function (event) {
-    var deltaY = void 0;
-
-    if (typeof event.deltaY !== 'undefined') {
-      deltaY = -event.deltaY;
-    } else if (typeof event.delta !== 'undefined') {
-      deltaY = event.delta;
-    } else if (typeof event.detail !== 'undefined') {
-      deltaY = -event.detail;
-    }
-
-    userCallback({
-      top: deltaY
-    }, {
-      top: window.pageYOffset || document.documentElement.scrollTop,
-      left: window.pageXOffset || document.documentElement.scrollLeft
-    }, event);
-  };
-
-  on(window, 'scroll', callback);
-
-  return callback;
-}
-
-function trigger(elements, events, data) {
-  events = events.split(' ');
-  var i = events.length;
-
-  var _loop = function () {
-    var event = events[i];
-
-    if (window.CustomEvent) {
-      event = new CustomEvent(event, { detail: data });
-    } else {
-      event = document.createEvent('CustomEvent');
-      event.initCustomEvent(event, true, true, data);
-    }
-
     forElements(elements, function (element) {
-      if (!element.dispatchEvent) return;
-
-      element.dispatchEvent(event);
+        if (enter) on(element, 'mouseenter', enter);
+        if (leave) on(element, 'mouseleave', leave);
     });
-  };
 
-  while (i--) {
-    _loop();
-  }
+    return {
+        off: function () {
+            forElements(elements, function (element) {
+                if (enter) off(element, 'mouseenter', enter);
+                if (leave) off(element, 'mouseleave', leave);
+            });
+        }
+    };
 }
 
-function undrag(undragProperties) {
-  forEach$1(undragProperties, function (undragProperty) {
-    off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin);
-    off(document.body, 'touchmove, mousemove', undragProperty.move);
-    off(document.body, 'touchend, mouseup', undragProperty.end);
-  });
+/**
+ * Bind hover listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} events - The events that should be bound seperated with spaces
+ * @param {function} callback - The callback used for event binding
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ */
+function off$1(elements, events, callback) {
+    events = events.split(' ');
+
+    return forElements(elements, function (element) {
+        if (!element.removeEventListener) return;
+
+        var i = events.length;
+        while (i--) {
+            element.removeEventListener(events[i], callback);
+        }
+    });
 }
 
-function unhover(elements, enter, leave) {
-  forElements(elements, function (element) {
-    if (enter) off(element, 'mouseenter', enter);
-    if (leave) off(element, 'mouseleave', leave);
-  });
-}
+/**
+ * Bind hover listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {function} eachCallback - The callback on each load event
+ * @param {function} allCallback - The callback when all elements have been loaded
+ * @param {bool} [once] = true - Trigger only once for each media if true
+ * @param {bool} [testSrc] = true - If true callback will be called with error when an element doesn't have src
+ * @return {object} offObject - An object with off method for unbinding
+ */
+function load(elements, eachCallback, allCallback) {
+    var once = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+    var testSrc = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
 
-function unresize(callback) {
-  off(window, 'resize', callback);
-}
+    elements = getElements(elements);
 
-function unscroll(callback) {
-  off(window, 'scroll mousewheel DOMMouseScroll', callback);
-}
+    if (!elements || elements.length == 0) {
+        if (allCallback) allCallback();
 
-function unwatchProp(watching) {
-  watching.value = false;
-}
+        return;
+    }
 
-function watchProp(elements, prop, handler) {
-    var watching = {
-        value: true
+    var n = {
+        value: elements.length
     };
 
-    var watched = [];
-    forElements(elements, function (element) {
-        watched.push({
-            element: element,
-            prop: prop,
-            value: getProp(element, prop)
-        });
+    callback = function (event, element, error) {
+        if (event) {
+            element = event.target;
+            if (event.type == 'error') error = event;
+        }
+
+        if (once) off$1(element, 'load loadedmetadata error', callback);
+
+        if (eachCallback) eachCallback(element, error);
+
+        if (! --n.value && allCallback) allCallback();
+    };
+
+    forEach$1(elements, function (element) {
+        if (testSrc && !element.src) callback(null, element, 'image without src');else if (element.naturalWidth || element.loadedmetadata) callback(null, element, null);else on(element, 'load loadedmetadata error', callback);
     });
 
-    function update() {
-        if (!watching.value) return;
+    return {
+        off: function () {
+            forEach$1(elements, function (element) {
+                return off$1(element, 'load loadedmetadata error', callback);
+            });
+        }
+    };
+}
 
-        forEach(watched, function (item) {
-            var value = getProp(item.element, item.prop);
-            if (item.value != value) {
-                handler.call(item.element, item.prop, value);
-            }
+/**
+ * Execute callback when dom is ready.
+ * @param {function} callback - The callback
+ */
+function ready(callback) {
+  on(document, 'DOMContentLoaded', callback);
+}
+
+/**
+ * Trigger events on elements with data
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} events - The events that should be tiggered seperated with spaces
+ * @param {object} data - The events' data
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ */
+function trigger(elements, events, data) {
+    events = events.split(' ');
+    var i = events.length;
+
+    elements = getElements(elements);
+
+    var _loop = function () {
+        var event = events[i];
+
+        if (window.CustomEvent) {
+            event = new CustomEvent(event, { detail: data });
+        } else {
+            event = document.createEvent('CustomEvent');
+            event.initCustomEvent(event, true, true, data);
+        }
+
+        forEach(elements, function (element) {
+            if (!element.dispatchEvent) return;
+
+            element.dispatchEvent(event);
         });
+    };
 
-        requestAnimationFrame(update);
+    while (i--) {
+        _loop();
     }
 
-    update();
-
-    return watching;
+    return elements;
 }
 
-function isAndroidTablet() {
-  var ua = navigator.userAgent.toLowerCase();
-
-  return (/android/i.test(ua) && !/mobile/i.test(ua)
-  );
-}
-
-function isAndroid() {
-  return (/android/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isChrome() {
-  var ua = navigator.userAgent.toLowerCase(),
-      vendor = navigator.vendor && navigator.vendor.toLowerCase();
-
-  return (/chrome|chromium/i.test(ua) && /google inc/.test(vendor)
-  );
-}
-
-function isFirefox() {
-  return (/firefox/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isIE(version) {
-  var ua = navigator.userAgent.toLowerCase(),
-      ie = ua.indexOf('msie') != -1 ? parseInt(ua.split('msie')[1], 10) : false;
-
-  return version ? ie == version : ie;
-}
-
-function isIOS() {
-  return (/iphone|ipad|ipod/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isIPad() {
-  return (/ipad/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isIPhone() {
-  return (/iphone/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isIPod() {
-  return (/ipod/i.test(navigator.userAgent.toLowerCase())
-  );
-}
-
-function isWindows() {
-  var appVersion = 'navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || '';
-
-  return (/win/i.test(appVersion)
-  );
-}
-
-function isTouchable() {
-  return !!('ontouchstart' in window || window.DocumentTouch && document instanceof DocumentTouch);
-}
-
-function isMobile() {
-  return isIOS() || isAndroid() || isWindows() && isTouchable();
-}
-
-function isSafari() {
-  var ua = navigator.userAgent.toLowerCase(),
-      vendor = navigator.vendor && navigator.vendor.toLowerCase();
-
-  return (/safari/i.test(ua) && /apple computer/.test(vendor)
-  );
-}
-
-function isWindowsPhone() {
-  var ua = navigator.userAgent.toLowerCase();
-
-  return isWindows() && /phone/i.test(ua);
-}
-
-function isWindowsTablet() {
-  var ua = navigator.userAgent.toLowerCase(),
-      vendor = navigator.vendor && navigator.vendor.toLowerCase();
-
-  return isWindows() && !isWindowsPhone() && isTouchable();
-}
-
-function isTablet() {
-  return isIPad() || isAndroidTablet() || isWindowsTablet();
-}
-
-function isWider(width) {
-  return window.innerWidth > width;
-}
-
+/**
+ * Get height in pixels of element.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @return {number} height - The height in pixels
+ */
 function getHeight(element) {
   element = getElement(element);
 
-  return element && element.offsetHeight;
+  return !!element && element.offsetHeight;
 }
 
-function getWidth(element) {
-  element = getElement(element);
-
-  return element && element.offsetWidth;
-}
-
+/**
+ * Get size in pixels of element.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @return {number} size - The size in pixels
+ */
 function getSize(element) {
-  element = getElement(element);
+   element = getElement(element);
 
-  return element && {
-    width: element.offsetWidth,
-    height: element.offsetHeight
-  };
+   return !!element && {
+      width: element.offsetWidth,
+      height: element.offsetHeight
+   };
 }
 
+/**
+ * Get style property of element.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @return {number} value - The value for the property
+ */
 function getStyle(element, property) {
   element = getElement(element);
   if (!element) return;
@@ -990,490 +974,775 @@ function getStyle(element, property) {
   return ret.indexOf('px') == -1 ? ret : parseInt(ret, 10);
 }
 
+/**
+ * Get width in pixels of element.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @return {number} width - The width in pixels
+ */
+function getWidth(element) {
+  element = getElement(element);
+
+  return !!element && element.offsetWidth;
+}
+
+/**
+* Set the provided height to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {number} height - The height
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
 function setHeight(elements, height) {
-  if (typeof height == 'number') height += 'px';
+    if (typeof height == 'number') height += 'px';
 
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    return forElements(elements, function (element) {
+        if (!element.style) return;
 
-    element.style.height = height;
-  });
+        element.style.height = height;
+    });
 }
 
+/**
+ * Get height in pixels of element or first element of elements if height is undefined,
+ * else set height to all element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {number} [height] - The height
+ * @return {number | string | Array | NodeList | HTMLCollection} height | elements - The height in pixels | elements for chaining
+ */
 function height(elements, height) {
-  if (typeof height != 'undefined') {
-    setHeight(elements, height);
-  } else {
-    return getHeight(elements);
-  }
+  return typeof height != 'undefined' ? setHeight(elements, height) : getHeight(elements);
 }
 
+/**
+ * Hide each element of elements using visibility.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @return {string | Array | NodeList | HTMLCollection} elements for chaining
+ */
 function hide(elements) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    return forElements(elements, function (element) {
+        if (!element.style) return;
 
-    element.style.visibility = 'hidden';
-  });
+        element.style.visibility = 'hidden';
+    });
 }
-
-var prefix$1 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
 
 function applyPropertyToMatrix(property, value, matrix) {
-  switch (property) {
-    case 'x':
-      matrix[4] += value;
-      break;
+    switch (property) {
+        case 'x':
+            matrix[4] += value;
+            break;
 
-    case 'y':
-      matrix[5] += value;
-      break;
+        case 'y':
+            matrix[5] += value;
+            break;
 
-    case 'rotate':
-      var cosValue = Math.cos(value),
-          sinValue = Math.sin(value);
-      matrix[0] *= cosValue;
-      matrix[1] += sinValue;
-      matrix[2] -= sinValue;
-      matrix[3] *= cosValue;
-      break;
+        case 'rotate':
+            var cosValue = Math.cos(value),
+                sinValue = Math.sin(value);
+            matrix[0] *= cosValue;
+            matrix[1] += sinValue;
+            matrix[2] -= sinValue;
+            matrix[3] *= cosValue;
+            break;
 
-    case 'scale':
-      matrix[0] *= value;
-      matrix[2] *= value;
-      break;
+        case 'scale':
+            matrix[0] *= value;
+            matrix[2] *= value;
+            break;
 
-    case 'scaleX':
-      matrix[0] *= value;
-      break;
+        case 'scaleX':
+            matrix[0] *= value;
+            break;
 
-    case 'scaleY':
-      matrix[3] *= value;
-      break;
+        case 'scaleY':
+            matrix[3] *= value;
+            break;
 
-    case 'skew':
-      var tanValue = Math.tan(value);
-      matrix[2] += value;
-      matrix[1] += value;
-      break;
+        case 'skew':
+            var tanValue = Math.tan(value);
+            matrix[2] += tanValue;
+            matrix[1] += tanValue;
+            break;
 
-    case 'skewX':
-      matrix[2] += Math.tan(value);
-      break;
+        case 'skewX':
+            matrix[2] += Math.tan(value);
+            break;
 
-    case 'skewY':
-      matrix[1] += Math.tan(value);
-      break;
-  }
-}
-
-function matrix2d(elements, transformation) {
-  var properties = Object.keys(transformation),
-      i = properties.length,
-      matrix = [1, 0, 0, 1, 0, 0];
-  while (i--) {
-    var property = properties[i],
-        value = transformation[property];
-
-    if (typeof value == 'object') {
-      var subProperties = Object.keys(value),
-          j = subProperties.length;
-
-      while (j--) {
-        var subProperty = subProperties[j];
-        applyPropertyToMatrix(property + subProperty.toUpperCase(), value[subProperty], matrix);
-      }
-    } else {
-      applyPropertyToMatrix(property, value, matrix);
+        case 'skewY':
+            matrix[1] += Math.tan(value);
+            break;
     }
-  }
-
-  matrix = 'matrix(' + matrix.join(',') + ')';
-
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    element.style[prefix$1 + 'transform'] = element.style.transform = matrix;
-  });
 }
 
-var prefix$2 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
+/**
+ * Convert a transformation as object to a 2d matrix as object
+ * @param {object} transformation - The transformation object
+ * @return {Array} matrix - The 2d matrix
+ */
+function transformTo2DMatrix(transformation) {
+    var properties = Object.keys(transformation),
+        i = properties.length,
+        matrix = [1, 0, 0, 1, 0, 0];
+
+    while (i--) {
+        var property = properties[i],
+            value = transformation[property];
+
+        if (typeof value == 'object') {
+            var subProperties = Object.keys(value),
+                j = subProperties.length;
+
+            while (j--) {
+                var subProperty = subProperties[j];
+                applyPropertyToMatrix(property + subProperty.toUpperCase(), value[subProperty], matrix);
+            }
+        } else {
+            applyPropertyToMatrix(property, value, matrix);
+        }
+    }
+
+    return matrix;
+}
+
+/**
+* Apply the provided transformation as a 2D matrix on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function matrix2D$1(elements, transformation) {
+    var matrix = transformTo2DMatrix(transformation);
+
+    matrix = 'matrix(' + matrix.join(',') + ')';
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        element.style[prefix + 'transform'] = matrix;
+        element.style.transform = matrix;
+    });
+}
 
 function applyPropertyToMatrix$1(property, value, matrix) {
-  switch (property) {
-    case 'x':
-      matrix[12] += value;
-      break;
+    switch (property) {
+        case 'x':
+            matrix[12] += value;
+            break;
 
-    case 'y':
-      matrix[13] += value;
-      break;
+        case 'y':
+            matrix[13] += value;
+            break;
 
-    case 'z':
-      matrix[14] += value;
-      break;
+        case 'z':
+            matrix[14] += value;
+            break;
 
-    case 'rotate':
-      var cosValue = Math.cos(value),
-          sinValue = Math.sin(value);
-      matrix[0] *= cosValue;
-      matrix[1] += sinValue;
-      matrix[4] -= sinValue;
-      matrix[5] *= cosValue;
-      break;
+        case 'rotate':
+            var cosValue = Math.cos(value),
+                sinValue = Math.sin(value);
+            matrix[0] *= cosValue;
+            matrix[1] += sinValue;
+            matrix[4] -= sinValue;
+            matrix[5] *= cosValue;
+            break;
 
-    case 'rotateX':
-      var cosValue2 = Math.cos(value),
-          sinValue2 = Math.sin(value);
-      matrix[5] *= cosValue2;
-      matrix[6] += sinValue2;
-      matrix[9] -= sinValue2;
-      matrix[10] *= cosValue2;
-      break;
+        case 'rotateX':
+            var cosValue2 = Math.cos(value),
+                sinValue2 = Math.sin(value);
+            matrix[5] *= cosValue2;
+            matrix[6] += sinValue2;
+            matrix[9] -= sinValue2;
+            matrix[10] *= cosValue2;
+            break;
 
-    case 'rotateY':
-      var cosValue3 = Math.cos(value),
-          sinValue3 = Math.sin(value);
-      matrix[0] *= cosValue3;
-      matrix[2] -= sinValue3;
-      matrix[8] += sinValue3;
-      matrix[10] *= cosValue3;
-      break;
+        case 'rotateY':
+            var cosValue3 = Math.cos(value),
+                sinValue3 = Math.sin(value);
+            matrix[0] *= cosValue3;
+            matrix[2] -= sinValue3;
+            matrix[8] += sinValue3;
+            matrix[10] *= cosValue3;
+            break;
 
-    case 'rotateZ':
-      var cosValue4 = Math.cos(value),
-          sinValue4 = Math.sin(value);
-      matrix[0] *= cosValue4;
-      matrix[1] += sinValue4;
-      matrix[4] -= sinValue4;
-      matrix[5] *= cosValue4;
-      break;
+        case 'rotateZ':
+            var cosValue4 = Math.cos(value),
+                sinValue4 = Math.sin(value);
+            matrix[0] *= cosValue4;
+            matrix[1] += sinValue4;
+            matrix[4] -= sinValue4;
+            matrix[5] *= cosValue4;
+            break;
 
-    case 'scale':
-      matrix[0] *= value;
-      matrix[5] *= value;
-      break;
+        case 'scale':
+            matrix[0] *= value;
+            matrix[5] *= value;
+            break;
 
-    case 'scaleX':
-      matrix[0] *= value;
-      break;
+        case 'scaleX':
+            matrix[0] *= value;
+            break;
 
-    case 'scaleY':
-      matrix[5] *= value;
-      break;
+        case 'scaleY':
+            matrix[5] *= value;
+            break;
 
-    case 'scaleZ':
-      matrix[10] *= value;
-      break;
+        case 'scaleZ':
+            matrix[10] *= value;
+            break;
 
-    case 'skew':
-      var tanValue = Math.tan(value);
-      matrix[4] += value;
-      matrix[1] += value;
-      break;
+        case 'skew':
+            var tanValue = Math.tan(value);
+            matrix[4] += tanValue;
+            matrix[1] += tanValue;
+            break;
 
-    case 'skewX':
-      matrix[4] += Math.tan(value);
-      break;
+        case 'skewX':
+            matrix[4] += Math.tan(value);
+            break;
 
-    case 'skewY':
-      matrix[1] += Math.tan(value);
-      break;
-  }
-}
-
-function matrix3d(elements, transformation) {
-  var properties = Object.keys(transformation),
-      i = properties.length,
-      matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-  while (i--) {
-    var property = properties[i],
-        value = transformation[property];
-
-    if (typeof value == 'object') {
-      var subProperties = Object.keys(value),
-          j = subProperties.length;
-
-      while (j--) {
-        var subProperty = subProperties[j];
-        applyPropertyToMatrix$1(property + subProperty.toUpperCase(), value[subProperty], matrix);
-      }
-    } else {
-      applyPropertyToMatrix$1(property, value, matrix);
+        case 'skewY':
+            matrix[1] += Math.tan(value);
+            break;
     }
-  }
-
-  matrix = 'matrix3d(' + matrix.join(',') + ')';
-
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    element.style[prefix$2 + 'transform'] = element.style.transform = matrix;
-  });
 }
 
-var prefix = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
-document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
-var use2d = !document.documentElement.style[prefix + 'matrix'];
-document.documentElement.style[prefix + 'matrix'] = '';
+/**
+ * Convert a transformation as object to a 3d matrix as object
+ * @param {object} transformation - The transformation object
+ * @return {Array} matrix - The 3d matrix
+ */
+function transformTo3DMatrix(transformation) {
+    var properties = Object.keys(transformation),
+        i = properties.length,
+        matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
-function matrix(elements, transformation) {
-  if (use2d) matrix2d(elements, transformation);else matrix3d(elements, transformation);
-}
-
-function offset(element) {
-  element = getElement(element);
-  if (!element) return;
-
-  var rect = element.getBoundingClientRect();
-
-  return {
-    top: rect.top + (document.documentElement.scrollTop || document.body.scrollTop),
-    left: rect.left + (document.documentElement.scrollLeft || document.body.scrollLeft)
-  };
-}
-
-function position(element) {
-  element = getElement(element);
-
-  return element && {
-    top: element.offsetTop,
-    left: element.offsetLeft
-  };
-}
-
-var prefix$4 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
-
-function scale2d(elements, transformation, keep) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    var style = 'scale(' + (transformation.scaleX || transformation.scale || 1) + ',' + (transformation.scaleY || transformation.scale || 1) + ')';
-
-    if (keep) {
-      var newStyle = element.style[prefix$4 + 'transform'] || element.style.transform;
-      newStyle += ' ' + style;
-      element.style[prefix$4 + 'transform'] = newStyle;
-      element.style.transform = newStyle;
-    } else element.style[prefix$4 + 'transform'] = element.style.transform = style;
-  });
-}
-
-var prefix$5 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
-
-function scale3d(elements, transformation, keep) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    var style = 'scale3d(' + (transformation.scaleX || transformation.scale || 1) + ',' + (transformation.scaleY || transformation.scale || 1) + ',' + (transformation.scaleZ || 1) + ')';
-
-    if (keep) {
-      var newStyle = element.style[prefix$5 + 'transform'] || element.style.transform;
-      newStyle += ' ' + style;
-      element.style[prefix$5 + 'transform'] = newStyle;
-      element.style.transform = newStyle;
-    } else element.style[prefix$5 + 'transform'] = element.style.transform = style;
-  });
-}
-
-var prefix$3 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
-document.documentElement.style[prefix$3 + 'transform'] = 'scale3d(1, 1, 1)';
-var use2d$1 = !document.documentElement.style[prefix$3 + 'transform'];
-document.documentElement.style[prefix$3 + 'transform'] = '';
-
-function scale(elements, transformation, keep) {
-  if (use2d$1) scale2d(elements, transformation, keep);else scale3d(elements, transformation, keep);
-}
-
-function screenPosition(element) {
-  element = getElement(element);
-  if (!element) return;
-
-  var rect = element.getBoundingClientRect();
-
-  return {
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    left: rect.left
-  };
-}
-
-function setSize(elements, object) {
-  var width = object.width,
-      height = object.height;
-
-  if (typeof width == 'number') width += 'px';
-  if (typeof height == 'number') height += 'px';
-
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    element.style.width = width;
-    element.style.height = height;
-  });
-}
-
-var unitLessAttributes = ['z-index', 'font-weight', 'line-height', 'counter-reset', 'counter-increment', 'volume', 'stress', 'pitch-range', 'richness', 'opacity'];
-
-function setStyle(elements, options) {
-  var properties = Object.keys(options);
-
-  var i = properties.length,
-      property = void 0,
-      value = void 0;
-  while (i--) {
-    property = properties[i];
-    value = options[property];
-
-    if (typeof value == 'number' && unitLessAttributes.indexOf(property) == -1) options[property] += 'px';
-  }
-
-  forElements(elements, function (element) {
-    if (!element.style) return;
-
-    var i = properties.length,
-        property = void 0,
-        value = void 0;
     while (i--) {
-      property = properties[i];
-      element.style[property] = options[property];
+        var property = properties[i],
+            value = transformation[property];
+
+        if (typeof value == 'object') {
+            var subProperties = Object.keys(value),
+                j = subProperties.length;
+
+            while (j--) {
+                var subProperty = subProperties[j];
+                applyPropertyToMatrix$1(property + subProperty.toUpperCase(), value[subProperty], matrix);
+            }
+        } else {
+            applyPropertyToMatrix$1(property, value, matrix);
+        }
     }
-  });
+
+    return matrix;
 }
 
+/**
+* Apply the provided transformation as a 3D matrix on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function matrix3D$1(elements, transformation) {
+    var matrix = transformTo3DMatrix(transformation);
+
+    matrix = 'matrix3d(' + matrix.join(',') + ')';
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        element.style[prefix + 'transform'] = matrix;
+        element.style.transform = matrix;
+    });
+}
+
+/**
+* Apply the provided transformation as a matrix (3d if supported) on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function matrix(elements, transformation) {
+    return support3D ? matrix3D(elements, transformation) : matrix2D(elements, transformation);
+}
+
+/**
+* Return the top and left offset of an element. Offset is relative to web page
+* @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+* @return {object} offset
+*/
+function offset(element) {
+    element = getElement(element);
+    if (!element) return false;
+
+    var rect = element.getBoundingClientRect();
+
+    return {
+        top: rect.top + (document.documentElement.scrollTop || document.body.scrollTop),
+        left: rect.left + (document.documentElement.scrollLeft || document.body.scrollLeft)
+    };
+}
+
+/**
+* Return the top and left position of an element. Position is relative to parent
+* @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+* @return {object} position
+*/
+function position(element) {
+    element = getElement(element);
+
+    return !!element && {
+        top: element.offsetTop,
+        left: element.offsetLeft
+    };
+}
+
+/**
+* Apply the provided scale transformation on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function scale2D(elements, transformation, keep) {
+    var scaleX = 'scaleX' in transformation ? transformation.scaleX : 'scale' in transformation ? transformation.scale : 1,
+        scaleY = 'scaleY' in transformation ? transformation.scaleY : 'scale' in transformation ? transformation.scale : 1;
+
+    var style = 'scale(' + scaleX + ',' + scaleY + ')';
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        if (keep) {
+            element.style[prefix + 'transform'] += ' ' + style;
+            element.style.transform += ' ' + style;
+        } else {
+            element.style[prefix + 'transform'] = style;
+            element.style.transform = style;
+        }
+    });
+}
+
+/**
+* Apply the provided 3D scale transformation on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function scale3D(elements, transformation, keep) {
+    var scaleX = 'scaleX' in transformation ? transformation.scaleX : 'scale' in transformation ? transformation.scale : 1,
+        scaleY = 'scaleY' in transformation ? transformation.scaleY : 'scale' in transformation ? transformation.scale : 1,
+        scaleZ = 'scaleZ' in transformation ? transformation.scaleZ : 1;
+
+    var style = 'scale3d(' + scaleX + ',' + scaleY + ',' + scaleZ + ')';
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        if (keep) {
+            element.style[prefix + 'transform'] += ' ' + style;
+            element.style.transform += ' ' + style;
+        } else {
+            element.style[prefix + 'transform'] = style;
+            element.style.transform = style;
+        }
+    });
+}
+
+/**
+* Apply the provided scale transformation (3d if supported) on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function scale(elements, transformation, keep) {
+    return support3D ? scale3D(elements, transformation, keep) : scale2D(elements, transformation, keep);
+}
+
+/**
+* Return the screen relative position of an element
+* @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+* @return {object} screenPosition
+*/
+function screenPosition(element) {
+    element = getElement(element);
+
+    return !!element && element.getBoundingClientRect();
+}
+
+/**
+* Set the provided size to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} size - The size as an object with width and height
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
+function setSize(elements, size) {
+    var width = size.width,
+        height = size.height;
+
+    if (typeof width == 'number') width += 'px';
+    if (typeof height == 'number') height += 'px';
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        Object.assign(element.style, { width: width, height: height });
+    });
+}
+
+var unitLessAttributes = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset', 'counter-increment', 'volume', 'stress', 'pitch-range', 'richness', 'opacity'];
+
+/**
+* Set the provided style to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} style - The style options as object linking value to property
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
+function setStyle(elements, style) {
+    var properties = Object.keys(style);
+
+    var i = properties.length;
+    while (i--) {
+        var property = properties[i];
+
+        if (unitLessAttributes.indexOf(property) != -1) {
+            var value = style[property];
+
+            if (typeof value == 'number') style[property] += 'px';
+        }
+    }
+
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        Object.assign(element.style, style);
+    });
+}
+
+/**
+* Set the provided width to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {number} width - The width
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
 function setWidth(elements, width) {
-  if (typeof width == 'number') width += 'px';
+    if (typeof width == 'number') width += 'px';
 
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    return forElements(elements, function (element) {
+        if (!element.style) return;
 
-    element.style.width = width;
-  });
+        element.style.width = width;
+    });
 }
 
+/**
+* Reset visibility style attribute for elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
 function show(elements) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    return forElements(elements, function (element) {
+        if (!element.style) return;
 
-    element.style.visibility = '';
-  });
+        element.style.visibility = '';
+    });
 }
 
-function size(elements, object) {
-  if (typeof object != 'object') {
-    return getSize(elements);
-  } else {
-    setSize(elements, object);
-  }
+/**
+ * Get size in pixels of element or first element of elements if size is undefined,
+ * else set size to all element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {object} [size] - The size as an object with width and height
+ * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
+ */
+function size(elements, size) {
+    if (typeof object != 'object') return getSize(elements);else return setSize(elements, object);
 }
 
 function style(elements, option) {
   if (typeof option == 'object') {
-    setStyle(elements, option);
+    return setStyle(elements, option);
   } else if (typeof option == 'string') {
     return getStyle(elements, option);
   }
 }
 
-var prefix$7 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
+/**
+* Apply the provided translate transformation on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function translate2D(elements, transformation, keep) {
+    var x = 'x' in transformation ? transformation.x : 0,
+        y = 'y' in transformation ? transformation.y : 0;
 
-function translate2d(elements, transformation, keep) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    if (typeof x == 'number') x += 'px';
+    if (typeof y == 'number') y += 'px';
 
-    var style = 'translate(' + transformation.x || 0 + 'px,' + transformation.y || 0 + 'px)';
+    var style = 'translate(' + x + ',' + y + ')';
 
-    if (keep) {
-      element.style[prefix$7 + 'transform'] += style;
-      element.style.transform += style;
-    } else element.style[prefix$7 + 'transform'] = element.style.transform = style;
-  });
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        if (keep) {
+            element.style[prefix + 'transform'] += ' ' + style;
+            element.style.transform += ' ' + style;
+        } else {
+            element.style[prefix + 'transform'] = style;
+            element.style.transform = style;
+        }
+    });
 }
 
-var prefix$8 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
+/**
+* Apply the provided 3D translate transformation on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+function translate3D(elements, transformation, keep) {
+    var x = 'x' in transformation ? transformation.x : 0,
+        y = 'y' in transformation ? transformation.y : 0,
+        z = 'z' in transformation ? transformation.z : 0;
 
-function translate3d(elements, transformation, keep) {
-  forElements(elements, function (element) {
-    if (!element.style) return;
+    if (typeof x == 'number') x += 'px';
+    if (typeof y == 'number') y += 'px';
+    if (typeof z == 'number') z += 'px';
 
-    var style = 'translate3d(' + (transformation.x || 0) + 'px,' + (transformation.y || 0) + 'px,' + (transformation.z || 0) + 'px)';
+    var style = 'translate3d(' + x + ',' + y + ',' + z + ')';
 
-    if (keep) {
-      element.style[prefix$8 + 'transform'] += style;
-      element.style.transform += style;
-    } else element.style[prefix$8 + 'transform'] = element.style.transform = style;
-  });
+    return forElements(elements, function (element) {
+        if (!element.style) return;
+
+        if (keep) {
+            element.style[prefix + 'transform'] += ' ' + style;
+            element.style.transform += ' ' + style;
+        } else {
+            element.style[prefix + 'transform'] = style;
+            element.style.transform = style;
+        }
+    });
 }
 
-var prefix$6 = '-' + (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1] + '-';
-document.documentElement.style[prefix$6 + 'transform'] = 'translate3d(0, 0, 0)';
-var use2d$2 = !document.documentElement.style[prefix$6 + 'transform'];
-document.documentElement.style[prefix$6 + 'transform'] = '';
-
+/**
+* Apply the provided translate transformation (3d if supported) on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
 function translate(elements, transformation, keep) {
-  if (use2d$2) translate2d(elements, transformation, keep);else translate3d(elements, transformation, keep);
+    return support3D ? translate3D(elements, transformation, keep) : translate2D(elements, transformation, keep);
 }
 
+/**
+ * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {object} [transformation] - The transformation as an object
+ * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
+ */
 function transform(elements, transformation) {
-    if (transformation.skew || transformation.skewX || transformation.skewY || transformation.rotate || transformation.rotateX || transformation.rotateY || transformation.rotateZ) {
-        matrix(elements, transformation);
-    } else {
-        var shouldKeep = false;
+   // if skew or rotation use matrix
+   if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation || 'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation) {
+      return matrix(elements, transformation);
+   } else {
+      var shouldKeep = false; // don't crush translate property
 
-        if (shouldKeep = transformation.x || transformation.y || transformation.z) translate(elements, transformation);
+      if (shouldKeep = 'x' in transformation || 'y' in transformation || 'z' in transformation) return translate(elements, transformation);
 
-        if (transformation.scale || transformation.scaleX || transformation.scaleY || transformation.scaleZ) scale(elements, transformation, shouldKeep);
-    }
+      if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation) return scale(elements, transformation, shouldKeep);
+   }
 }
 
+/**
+ * Get width in pixels of element or first element of elements if width is undefined,
+ * else set width to all element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {number} [width] - The width
+ * @return {number | string | Array | NodeList | HTMLCollection} width | elements - The width in pixels | elements for chaining
+ */
 function width(elements, width) {
-  if (typeof width != 'undefined') {
-    setWidth(elements, width);
-  } else {
-    return getWidth(elements);
-  }
+  return typeof width != 'undefined' ? setWidth(elements, width) : getWidth(elements);
 }
 
-function between(max) {
-    var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+/**
+ * Execute callback once for all fired during a waiting time.
+ * @param {function} callback - The callback function
+ * @param {number} wait - The waiting time in milliseconds
+ * @param {bool} [immediate=false] - Execute callback on first trigger
+ * @return {function} debounced - The debounced callback with cancel method
+ */
+function debounce(callback, wait) {
+    var immediate = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+    var canCall = immediate,
+        timeout = void 0;
+
+    var applyCallback = function () {
+        canCall = false;
+        callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
+
+        timeout = setTimeout(function () {
+            canCall = immediate;
+        }, wait);
+    };
+
+    var debounced = function () {
+        clearTimeout(timeout);
+
+        if (canCall) applyCallback.call.apply(applyCallback, [this].concat(Array.prototype.slice.call(arguments)));else timeout = setTimeout(applyCallback.bind(this, arguments), wait);
+
+        debounced.cancel = function () {
+            clearTimeout(timeout);
+            canCall = true;
+            timeout = null;
+        };
+    };
+
+    return debounced;
 }
 
+/**
+ * Return a deep clone of object.
+ * @param {object} object - The object to clone
+ * @return {object} clone - The clone of the object
+ */
 function deepClone(object) {
-  if (object == null || typeof object !== 'object') return object;
+    if (object == null || typeof object !== 'object') return object;
 
-  var copy = object.constructor();
-  for (var attr in object) {
-    if (object.hasOwnProperty(attr)) copy[attr] = object[attr];
-  }
-
-  return copy;
+    var clone = object.constructor();
+    for (var attr in object) {
+        if (object.hasOwnProperty(attr)) clone[attr] = object[attr];
+    }return clone;
 }
 
+/**
+ * Copy all defaults properties to options.
+ * @param {object} options - The received options
+ * @param {object} defaults - The default values
+ * @return {object} merge - The merged options
+ */
 function defaultify(options, defaults) {
-  if (typeof options == 'undefined' || options == null) return defaults;
-
-  var keys = Object.keys(defaults),
-      newOptions = deepClone(options);
-
-  for (var i = keys.length - 1; i >= 0; --i) {
-    var key = keys[i];
-
-    if (typeof options[key] === 'undefined') newOptions[key] = defaults[key];
-  }
-
-  return newOptions;
+  return Object.assign(options, defaults);
 }
 
-function range(value) {
+/**
+ * Cache callbacks result for arguments and return cached results when called with the same ones
+ * @param {function} callback - The function to call
+ * @return {function} memoized - The memoized callback
+ */
+function memoize(callback) {
+    var cache = {};
+
+    return function () {
+        var args = JSON.stringify(arguments);
+
+        return args in cache ? cache[args] : cache[args] = callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
+    };
+}
+
+/**
+ * Return a random number between two values
+ * @param {number} max - The maximum value
+ * @param {number} [min=0] - The minimum value
+ * @return {function} value - A random value between min and max
+ */
+function randomBetween(max) {
   var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-  var max = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+
+  return Math.random() * (max - min + 1) + min;
+}
+
+/**
+ * Return a random integer between two integers
+ * @param {number} max - The maximum integer
+ * @param {number} [min=0] - The minimum integer
+ * @return {function} value - A random interger between min and max
+ */
+function randomIntBetween(max) {
+  var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+
+  return ~ ~(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Return value if in the range, max if greater, min if lower
+ * @param {number} value - The tested value
+ * @param {number} [max=1] - The maximum value
+ * @param {number} [min=0] - The minimum value
+ * @return {function} value - A random interger between min and max or max if value isn't a number
+ */
+function range(value) {
+  var max = arguments.length <= 1 || arguments[1] === undefined ? 1 : arguments[1];
+  var min = arguments.length <= 2 || arguments[2] === undefined ? 0 : arguments[2];
 
   return isNaN(value) ? max : Math.min(Math.max(value, min), max);
 }
 
+/**
+ * Execute callback at most once in wait time.
+ * @param {function} callback - The callback function
+ * @param {number} wait - The waiting time in milliseconds
+ * @param {bool} [leading=false] - Execute callback on first trigger
+ * @param {bool} [trailing=false] - Execute callback wait time after last execution
+ * @return {function} throttled - The throttled callback with cancel method
+ */
+function throttle(callback, wait) {
+    var leading = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
+    var trailing = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+
+    var last = 0,
+        timeout = void 0;
+
+    var applyCallback = function () {
+        timeout = null;
+        last = leading ? performance.now() : 0;
+        callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
+    };
+
+    var throttled = function () {
+        var now = performance.now();
+
+        if (!last && !leading) last = now;
+
+        var remaining = wait - (now - last);
+
+        if (remaining < 0 || remaining > wait) applyCallback.call.apply(applyCallback, [this].concat(Array.prototype.slice.call(arguments)));else if (trailing && !timeout) timeout = setTimeout(applyCallback.bind(this, arguments), remaining);
+
+        throttled.cancel = function () {
+            clearTimeout(timeout);
+            last = 0;
+            timeout = null;
+        };
+    };
+
+    return throttled;
+}
+
 var index = {
+    isAndroidTablet: isAndroidTablet,
+    isAndroid: isAndroid,
+    isChrome: isChrome,
+    isFirefox: isFirefox,
+    isIe: isIE,
+    isIos: isIOS,
+    isIpad: isIPad,
+    isIphone: isIPhone,
+    isIpod: isIPod,
+    isMobile: isMobile,
+    isSafari: isSafari,
+    isTablet: isTablet,
+    isTouchable: isTouchable,
+    isWindowsPhone: isWindowsPhone,
+    isWindowsTablet: isWindowsTablet,
+    isWindows: isWindows,
+    prefix: prefix,
+    support3D: support3D,
+    ua: ua$1,
+    vendor: vendor,
     forEach: forEach$1,
     forElements: forElements,
     forIn: forIn,
@@ -1516,35 +1785,10 @@ var index = {
     drag: drag,
     hover: hover,
     load: load,
-    off: off,
+    off: off$1,
     on: on,
     ready: ready,
-    resize: resize,
-    scroll: scroll,
     trigger: trigger,
-    undrag: undrag,
-    unhover: unhover,
-    unresize: unresize,
-    unscroll: unscroll,
-    unwatchProp: unwatchProp,
-    watchProp: watchProp,
-    androidTablet: isAndroidTablet,
-    android: isAndroid,
-    chrome: isChrome,
-    firefox: isFirefox,
-    ie: isIE,
-    ios: isIOS,
-    ipad: isIPad,
-    iphone: isIPhone,
-    ipod: isIPod,
-    mobile: isMobile,
-    safari: isSafari,
-    tablet: isTablet,
-    touchable: isTouchable,
-    wider: isWider,
-    windowsPhone: isWindowsPhone,
-    windowsTablet: isWindowsTablet,
-    windows: isWindows,
     getHeight: getHeight,
     getSize: getSize,
     getStyle: getStyle,
@@ -1552,13 +1796,13 @@ var index = {
     height: height,
     hide: hide,
     matrix: matrix,
-    matrix2d: matrix2d,
-    matrix3d: matrix3d,
+    matrix2D: matrix2D$1,
+    matrix3D: matrix3D$1,
     offset: offset,
     position: position,
     scale: scale,
-    scale2d: scale2d,
-    scale3d: scale3d,
+    scale2D: scale2D,
+    scale3D: scale3D,
     screenPosition: screenPosition,
     setHeight: setHeight,
     setSize: setSize,
@@ -1569,13 +1813,19 @@ var index = {
     style: style,
     transform: transform,
     translate: translate,
-    translate2d: translate2d,
-    translate3d: translate3d,
+    translate2D: translate2D,
+    translate3D: translate3D,
     width: width,
-    between: between,
+    debounce: debounce,
     deepClone: deepClone,
     defaultify: defaultify,
-    range: range
+    memoize: memoize,
+    randomBetween: randomBetween,
+    randomIntBetween: randomIntBetween,
+    range: range,
+    throttle: throttle,
+    transformTo2DMatrix: transformTo2DMatrix,
+    transformTo3DMatrix: transformTo3DMatrix
 };
 
 module.exports = index;

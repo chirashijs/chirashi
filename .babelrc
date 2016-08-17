@@ -1,3 +1,4 @@
 {
-    "presets": ["es2015-loose-rollup"]
+    "presets": ["es2015-loose-rollup"],
+    "plugins": ["transform-object-rest-spread"]
 }

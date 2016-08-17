@@ -8,5 +8,5 @@ import getElement from '../core/get-element'
 export default function parent (element) {
     element = getElement(element)
 
-    return element && element.parentNode
+    return !!element && element.parentNode
 }

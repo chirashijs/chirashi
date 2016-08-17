@@ -1,5 +1,9 @@
-export function ready (callback) {
-  document.addEventListener('DOMContentLoaded', callback)
-}
+import on from './on'
 
-export default ready
+/**
+ * Execute callback when dom is ready.
+ * @param {function} callback - The callback
+ */
+export default function ready (callback) {
+    on(document, 'DOMContentLoaded', callback)
+}

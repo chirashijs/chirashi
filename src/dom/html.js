@@ -8,8 +8,7 @@ import getHtml from './get-html'
  * @return {string | Array | HTMLElement | window | document | SVGElement} innerHTML or elements - The inner html of the elements or elements for chaining
  */
 export default function html (elements, string) {
-    if (typeof string == 'string')
-        return setHtml(elements, string)
-    else
-        return getHtml(elements)
+    return typeof string == 'string'
+         ? setHtml(elements, string)
+         : getHtml(elements)
 }

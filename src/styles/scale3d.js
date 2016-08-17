@@ -1,25 +1,30 @@
 import forElements from '../core/for-elements'
+import prefix      from '../browser/prefix'
 
-const prefix = '-'+(Array.prototype.slice
-  .call(window.getComputedStyle(document.documentElement, ''))
-  .join('')
-  .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
-)[1]+'-'
+/**
+* Apply the provided 3D scale transformation on each element of elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} transformation - The transformation object
+* @param {bool} [keep] - Preserve previous transformation
+* @return {string | Array | NodeList | HTMLCollection} elements for chaining
+*/
+export default function scale3D (elements, transformation, keep) {
+    let scaleX = 'scaleX' in transformation ? transformation.scaleX : ('scale' in transformation ? transformation.scale : 1),
+        scaleY = 'scaleY' in transformation ? transformation.scaleY : ('scale' in transformation ? transformation.scale : 1),
+        scaleZ = 'scaleZ' in transformation ? transformation.scaleZ : 1
 
-export function scale3d (elements, transformation, keep) {
-  forElements(elements, element => {
-    if (!element.style) return
+    let style = `scale3d(${scaleX},${scaleY},${scaleZ})`
 
-    let style = 'scale3d('+ (transformation.scaleX || transformation.scale || 1) +','+ (transformation.scaleY || transformation.scale || 1) +','+ (transformation.scaleZ || 1) +')'
+    return forElements(elements, element => {
+        if (!element.style) return
 
-    if (keep) {
-        let newStyle = element.style[prefix+'transform'] || element.style.transform
-        newStyle += ' ' + style
-        element.style[prefix+'transform'] = newStyle
-        element.style.transform = newStyle
-    }
-    else element.style[prefix+'transform'] = element.style.transform = style
-  })
+        if (keep) {
+            element.style[`${prefix}transform`] += ` ${style}`
+            element.style.transform             += ` ${style}`
+        }
+        else {
+            element.style[`${prefix}transform`] = style
+            element.style.transform             = style
+        }
+    })
 }
-
-export default scale3d

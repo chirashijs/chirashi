@@ -1,8 +1,0 @@
-import isIOS       from './ios'
-import isAndroid   from './android'
-import isWindows   from './windows'
-import isTouchable from './touchable'
-
-export default function isMobile() {
-  return isIOS() || isAndroid() || (isWindows() && isTouchable())
-}

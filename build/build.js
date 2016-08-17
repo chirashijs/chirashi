@@ -30,6 +30,9 @@ rollup.rollup({
 })
 .then(function (bundle) {
   return write('dist/chirashi.common.js', bundle.generate({
+    globals: {
+      raf: 'raf'
+    },
     format: 'cjs',
     banner: banner
   }).code)
@@ -47,6 +50,9 @@ rollup.rollup({
   })
   .then(function (bundle) {
     return write('dist/chirashi.js', bundle.generate({
+      globals: {
+        raf: 'raf'
+      },
       format: 'umd',
       banner: banner,
       moduleName: 'Chirashi'
@@ -66,6 +72,9 @@ rollup.rollup({
   })
   .then(function (bundle) {
     var code = bundle.generate({
+      globals: {
+        raf: 'raf'
+      },
       format: 'umd',
       moduleName: 'Chirashi'
     }).code

@@ -9,5 +9,5 @@ import getElement from '../core/get-element'
 export default function findOne (element, selector) {
     element = getElement(element)
 
-    return element && element.querySelector(selector)
+    return !!element && element.querySelector(selector)
 }

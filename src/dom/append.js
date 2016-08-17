@@ -6,10 +6,11 @@ import createElement from './create-element'
  * Append node to each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string | HTMLElement | SVGElement} node - Dom element or html string or tag to create it
+ * @param {object} [attributes={}] - The object of attributes, only used with node creation
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-export default function append (elements, node) {
-    if (typeof node == 'string') node = createElement(node)
+export default function append (elements, node, attributes={}) {
+    if (typeof node == 'string') node = createElement(node, attributes)
     else if (!isDomElement(node)) return elements
 
     return forElements(elements, element => {

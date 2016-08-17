@@ -8,5 +8,5 @@ import getElement from '../core/get-element'
 export default function prev (element) {
     element = getElement(element)
 
-    return element && element.previousElementSibling
+    return !!element && element.previousElementSibling
 }

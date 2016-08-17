@@ -9,5 +9,5 @@ import getElement from '../core/get-element'
 export default function getProp (element, name) {
     element = getElement(element)
 
-    return element && element[name]
+    return !!element && element[name]
 }
