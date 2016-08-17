@@ -2,6 +2,7 @@
   "name": "chirashi",
   "version": "4.0.0",
   "description": "Minimalist DOM and events manager focused on performances",
+  "main": "./dist/chirashi.common.js",
   "scripts": {
     "build": "node build/build.js",
     "test": "karma start",
