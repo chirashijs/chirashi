@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v4.0.0
+ * Chirashi.js v4.0.2
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
