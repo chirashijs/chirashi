@@ -26,7 +26,11 @@ module.exports = function(config) {
                     {
                         test: /(\.js$)|(\.jsx$)/,
                         exclude: /node_modules/,
-                        loader: 'babel-loader'
+                        loader: 'babel',
+                        query: {
+                            presets: ['es2015'],
+                            plugins: ['transform-runtime', 'transform-object-rest-spread']
+                        }
                     }
                 ]
             }

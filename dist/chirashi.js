@@ -44,9 +44,7 @@
    /**
     * Version number if the browser is Internet Explorer or false based on User Agent.
     */
-   var ie = ua$1.indexOf('msie') != -1 ? parseInt(ua$1.split('msie')[1], 10) : false;
-
-   var isIE = version ? ie == version : ie;
+   var isIE = ua$1.indexOf('msie') != -1 ? parseInt(ua$1.split('msie')[1], 10) : false;
 
    /**
     * Variable true if the device is running iOS based on User Agent.
@@ -1409,7 +1407,7 @@
        while (i--) {
            var property = properties[i];
 
-           if (unitLessAttributes.indexOf(property) != -1) {
+           if (unitLessAttributes.indexOf(property) == -1) {
                var value = style[property];
 
                if (typeof value == 'number') style[property] += 'px';

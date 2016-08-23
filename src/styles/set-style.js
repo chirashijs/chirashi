@@ -27,7 +27,7 @@ export default function setStyle (elements, style) {
     while(i--) {
         let property = properties[i]
 
-        if (unitLessAttributes.indexOf(property) != -1) {
+        if (unitLessAttributes.indexOf(property) == -1) {
             let value = style[property]
 
             if (typeof value == 'number')
