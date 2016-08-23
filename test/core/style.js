@@ -14,8 +14,6 @@ describe('chirashi#Style', () => {
             marginTop: 10
         })
 
-        console.log(div.style.marginTop)
-
         assert.equal(div.style.marginTop, '10px')
     })
 })
