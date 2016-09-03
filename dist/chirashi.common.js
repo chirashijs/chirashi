@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v4.0.2
+ * Chirashi.js v4.1.0
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -99,12 +99,6 @@ var isWindowsTablet = isWindows && !isWindowsPhone && isTouchable;
  */
 var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
 
-var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
-
-document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
-var support3D = document.documentElement.style[prefix + 'matrix'];
-document.documentElement.style[prefix + 'matrix'] = '';
-
 /**
  * Get array of dom elements from selector.
  * @param {string} selector - The query selector
@@ -119,8 +113,8 @@ function getSelectorAll(selector) {
  * @param {HTMLElement | window | document | SVGElement} element - If element doesn't match of this types false will be returned
  * @return {bool} isDomElement - true if element is a dom element, false otherwise
  */
-function isDomElement(element) {
-  return element instanceof HTMLElement || element === window || element === document || element instanceof SVGElement;
+function isDomElement$1(element) {
+  return element instanceof HTMLElement || element === window || element === document || element instanceof SVGElement || element instanceof Text;
 }
 
 /**
@@ -142,7 +136,7 @@ function getElement(element) {
 
   if (element instanceof Array) return getElement(element[0]);
 
-  return isDomElement(element) ? element : null;
+  return isDomElement$1(element) ? element : null;
 }
 
 /**
@@ -177,33 +171,39 @@ function forEach$1(elements, callback) {
     return elements;
 }
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+};
+
 /**
- * Get Dom Element from iterable or selector.
- * @param {string | Array | HTMLElement | window | document | SVGElement} elements - The iterable or selector
- * @return {HTMLElement | window | document | SVGElement} domElements - The dom elements from elements
- */
+* Get Dom Element from iterable or selector.
+* @param {string | Array | HTMLElement | window | document | SVGElement} elements - The iterable or selector
+* @return {HTMLElement | window | document | SVGElement} domElements - The dom elements from elements
+*/
 function getElements(elements) {
-  if (typeof elements == 'string') return getSelectorAll(elements);
+    if (typeof elements == 'string') return getSelectorAll(elements);
 
-  if (elements instanceof Array) {
-    var _ret = function () {
-      var parsedElements = [];
-      forEach$1(elements, function (element) {
-        var newElements = getElements(element);
-        if (newElements) parsedElements = parsedElements.concat(newElements);
-      });
+    if (elements instanceof Array) {
+        var _ret = function () {
+            var parsedElements = [];
+            forEach$1(elements, function (element) {
+                var newElements = getElements(element);
+                if (newElements) parsedElements = parsedElements.concat(newElements);
+            });
 
-      return {
-        v: parsedElements
-      };
-    }();
+            return {
+                v: parsedElements
+            };
+        }();
 
-    if (typeof _ret === "object") return _ret.v;
-  }
+        if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    }
 
-  if (elements instanceof NodeList) return [].slice.call(elements);
+    if (elements instanceof NodeList) return [].slice.call(elements);
 
-  return isDomElement(elements) ? [elements] : null;
+    return isDomElement$1(elements) ? [elements] : null;
 }
 
 /**
@@ -229,7 +229,7 @@ function forElements(elements, callback) {
 function forIn(object, callback) {
     var forceOrder = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
 
-    if (typeof object != 'object') return;
+    if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) != 'object') return;
 
     var keys = Object.keys(object);
 
@@ -297,19 +297,26 @@ function createElement(string) {
 /**
  * Append node to each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string | HTMLElement | SVGElement} node - Dom element or html string or tag to create it
- * @param {object} [attributes={}] - The object of attributes, only used with node creation
+ * @param {string | Array | NodeList | HTMLCollection} nodes - Array of DOM elements or html strings or tags to create it
+ * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation and length should match elements one )
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-function append(elements, node) {
-    var attributes = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+function append(elements, nodes) {
+    var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
-    if (typeof node == 'string') node = createElement(node, attributes);else if (!isDomElement(node)) return elements;
+    var parsedNodes = [];
+    forEach$1(nodes, function (node, index) {
+        if (typeof node == 'string') node = createElement(node, attributes[index] || {});
 
-    return forElements(elements, function (element) {
+        if (isDomElement$1(node)) parsedNodes.push(node);
+    });
+
+    return forElements(elements, function (element, index) {
         if (!element.appendChild) return;
 
-        element.appendChild(node);
+        forEach$1(parsedNodes, function (node) {
+            element.appendChild(node);
+        });
     });
 }
 
@@ -358,7 +365,7 @@ function getAttr(element, name) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option attribute or elements for chaining
  */
 function attr(elements, option) {
-  return typeof option == 'object' ? setAttr(elements, option) : getAttr(elements, option);
+  return (typeof option === 'undefined' ? 'undefined' : _typeof(option)) == 'object' ? setAttr(elements, option) : getAttr(elements, option);
 }
 
 /**
@@ -429,7 +436,7 @@ function getData(element, name) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option data attribute or elements for chaining
  */
 function data(elements, option) {
-  return typeof option == 'object' ? setData(elements, option) : getData(elements, option);
+  return (typeof option === 'undefined' ? 'undefined' : _typeof(option)) == 'object' ? setData(elements, option) : getData(elements, option);
 }
 
 /**
@@ -481,15 +488,19 @@ function findOne(element, selector) {
 }
 
 /**
- * Find the element's children matching the selector.
- * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * Find the elements' children matching the selector.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} selector - The selector
- * @return {Array} elements - The children of element matching the selector
+ * @return {Array} elements - The elements' children matching the selector
  */
-function find(element, selector) {
-  element = getElement(element);
+function find(elements, selector) {
+    var found = [];
 
-  return !element ? [] : [].slice.call(element.querySelectorAll(selector));
+    forElements(elements, function (element) {
+        found = found.concat([].slice.call(element.querySelectorAll(selector)));
+    });
+
+    return found;
 }
 
 /**
@@ -566,34 +577,54 @@ function indexInParent(element) {
 }
 
 /**
- * Insert node to each element's parent of elements after element.
+ * Insert nodes to each element's parent of elements after element.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string | HTMLElement | SVGElement} node - Dom element or html string or tag to create it
+ * @param {string | Array | NodeList | HTMLCollection} nodes - Array of DOM elements or html strings or tags to create it
+ * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation and length should match elements one )
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-function insertAfter(elements, node) {
-    if (typeof node == 'string') node = createElement(node);
+function insertAfter(elements, nodes) {
+    var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
-    return forElements(elements, function (element) {
-        if (!element.parentNode) return;
+    var parsedNodes = [];
+    forEach(nodes, function (node, index) {
+        if (typeof node == 'string') node = createElement(node, attributes[index] || {});
 
-        element.parentNode.insertBefore(node, element.nextElementSibling);
+        if (isDomElement(node)) parsedNodes.push(node);
+    });
+
+    return forElements(elements, function (element, index) {
+        if (!element.parentNode || !element.parentNode.insertBefore) return;
+
+        forEach(parsedNodes, function (node) {
+            element.parentNode.insertBefore(node, element.nextElementSibling);
+        });
     });
 }
 
 /**
- * Insert node to each element's parent of elements after element.
+ * Insert nodes to each element's parent of elements before element.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string | HTMLElement | SVGElement} node - Dom element or html string or tag to create it
+ * @param {string | Array | NodeList | HTMLCollection} nodes - Array of DOM elements or html strings or tags to create it
+ * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation and length should match elements one )
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-function insertBefore(elements, node) {
-    if (typeof node == 'string') node = createElement(node);
+function insertBefore(elements, nodes) {
+    var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
 
-    return forElements(elements, function (element) {
-        if (!element.parentNode) return;
+    var parsedNodes = [];
+    forEach$1(nodes, function (node, index) {
+        if (typeof node == 'string') node = createElement(node, attributes[index] || {});
 
-        element.parentNode.insertBefore(node, element);
+        if (isDomElement(node)) parsedNodes.push(node);
+    });
+
+    return forElements(elements, function (element, index) {
+        if (!element.parentNode || !element.parentNode.insertBefore) return;
+
+        forEach$1(parsedNodes, function (node) {
+            element.parentNode.insertBefore(node, element);
+        });
     });
 }
 
@@ -651,7 +682,7 @@ function setProp(elements, props) {
  * @return {string | Array | HTMLElement | window | document | SVGElement} value or elements - Value for option property or elements for chaining
  */
 function prop(elements, option) {
-  return typeof option == 'object' ? setProp(elements, option) : getProp(elements, option);
+  return (typeof option === 'undefined' ? 'undefined' : _typeof(option)) == 'object' ? setProp(elements, option) : getProp(elements, option);
 }
 
 /**
@@ -733,7 +764,7 @@ function on(elements, events, callback) {
  * @param {function} end - The end callback
  * @return {object} offObject - An object with off method for unbinding
  */
-function drag(elements, move, begin, end) {
+function drag(elements, _move, _begin, _end) {
     var undragProperties = [];
 
     forElements(elements, function (element) {
@@ -742,7 +773,7 @@ function drag(elements, move, begin, end) {
         var undragProperty = {
             element: element,
 
-            begin: function (e) {
+            begin: function begin(e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -750,9 +781,9 @@ function drag(elements, move, begin, end) {
 
                 dragging = true;
 
-                if (begin) begin({ x: e.pageX, y: e.pageY });
+                if (_begin) _begin({ x: e.pageX, y: e.pageY });
             },
-            move: function (e) {
+            move: function move(e) {
                 if (!dragging) return;
 
                 e.preventDefault();
@@ -760,9 +791,9 @@ function drag(elements, move, begin, end) {
 
                 if ('touches' in e && e.touches.length) e = e.touches[0];
 
-                if (move) move({ x: e.pageX, y: e.pageY });
+                if (_move) _move({ x: e.pageX, y: e.pageY });
             },
-            end: function (e) {
+            end: function end(e) {
                 if (!dragging) return;
 
                 e.preventDefault();
@@ -772,7 +803,7 @@ function drag(elements, move, begin, end) {
 
                 dragging = false;
 
-                if (end) end({ x: e.pageX, y: e.pageY });
+                if (_end) _end({ x: e.pageX, y: e.pageY });
             }
         };
 
@@ -784,13 +815,23 @@ function drag(elements, move, begin, end) {
     });
 
     return {
-        off: function () {
+        off: function (_off) {
+            function off() {
+                return _off.apply(this, arguments);
+            }
+
+            off.toString = function () {
+                return _off.toString();
+            };
+
+            return off;
+        }(function () {
             forEach(undragProperties, function (undragProperty) {
                 off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin);
                 off(document.body, 'touchmove, mousemove', undragProperty.move);
                 off(document.body, 'touchend, mouseup', undragProperty.end);
             });
-        }
+        })
     };
 }
 
@@ -808,12 +849,22 @@ function hover(elements, enter, leave) {
     });
 
     return {
-        off: function () {
+        off: function (_off) {
+            function off() {
+                return _off.apply(this, arguments);
+            }
+
+            off.toString = function () {
+                return _off.toString();
+            };
+
+            return off;
+        }(function () {
             forElements(elements, function (element) {
                 if (enter) off(element, 'mouseenter', enter);
                 if (leave) off(element, 'mouseleave', leave);
             });
-        }
+        })
     };
 }
 
@@ -862,7 +913,17 @@ function load(elements, eachCallback, allCallback) {
         value: elements.length
     };
 
-    callback = function (event, element, error) {
+    callback = function (_callback) {
+        function callback(_x3, _x4, _x5) {
+            return _callback.apply(this, arguments);
+        }
+
+        callback.toString = function () {
+            return _callback.toString();
+        };
+
+        return callback;
+    }(function (event, element, error) {
         if (event) {
             element = event.target;
             if (event.type == 'error') error = event;
@@ -873,14 +934,14 @@ function load(elements, eachCallback, allCallback) {
         if (eachCallback) eachCallback(element, error);
 
         if (! --n.value && allCallback) allCallback();
-    };
+    });
 
     forEach$1(elements, function (element) {
         if (testSrc && !element.src) callback(null, element, 'image without src');else if (element.naturalWidth || element.loadedmetadata) callback(null, element, null);else on(element, 'load loadedmetadata error', callback);
     });
 
     return {
-        off: function () {
+        off: function off() {
             forEach$1(elements, function (element) {
                 return off$1(element, 'load loadedmetadata error', callback);
             });
@@ -909,7 +970,7 @@ function trigger(elements, events, data) {
 
     elements = getElements(elements);
 
-    var _loop = function () {
+    var _loop = function _loop() {
         var event = events[i];
 
         if (window.CustomEvent) {
@@ -1023,6 +1084,12 @@ function hide(elements) {
     });
 }
 
+var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
+
+document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+var support3D = document.documentElement.style[prefix + 'matrix'];
+document.documentElement.style[prefix + 'matrix'] = '';
+
 function applyPropertyToMatrix(property, value, matrix) {
     switch (property) {
         case 'x':
@@ -1085,7 +1152,7 @@ function transformTo2DMatrix(transformation) {
         var property = properties[i],
             value = transformation[property];
 
-        if (typeof value == 'object') {
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') {
             var subProperties = Object.keys(value),
                 j = subProperties.length;
 
@@ -1217,7 +1284,7 @@ function transformTo3DMatrix(transformation) {
         var property = properties[i],
             value = transformation[property];
 
-        if (typeof value == 'object') {
+        if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) == 'object') {
             var subProperties = Object.keys(value),
                 j = subProperties.length;
 
@@ -1454,15 +1521,7 @@ function show(elements) {
  * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
  */
 function size(elements, size) {
-    if (typeof object != 'object') return getSize(elements);else return setSize(elements, object);
-}
-
-function style(elements, option) {
-  if (typeof option == 'object') {
-    return setStyle(elements, option);
-  } else if (typeof option == 'string') {
-    return getStyle(elements, option);
-  }
+    if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) != 'object') return getSize(elements);else return setSize(elements, object);
 }
 
 /**
@@ -1579,7 +1638,7 @@ function debounce(callback, wait) {
     var canCall = immediate,
         timeout = void 0;
 
-    var applyCallback = function () {
+    var applyCallback = function applyCallback() {
         canCall = false;
         callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
 
@@ -1588,7 +1647,7 @@ function debounce(callback, wait) {
         }, wait);
     };
 
-    var debounced = function () {
+    var debounced = function debounced() {
         clearTimeout(timeout);
 
         if (canCall) applyCallback.call.apply(applyCallback, [this].concat(Array.prototype.slice.call(arguments)));else timeout = setTimeout(applyCallback.bind(this, arguments), wait);
@@ -1609,7 +1668,7 @@ function debounce(callback, wait) {
  * @return {object} clone - The clone of the object
  */
 function deepClone(object) {
-    if (object == null || typeof object !== 'object') return object;
+    if (object == null || (typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') return object;
 
     var clone = object.constructor();
     for (var attr in object) {
@@ -1663,7 +1722,7 @@ function randomBetween(max) {
 function randomIntBetween(max) {
   var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
-  return ~ ~(Math.random() * (max - min + 1)) + min;
+  return ~~(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -1695,13 +1754,13 @@ function throttle(callback, wait) {
     var last = 0,
         timeout = void 0;
 
-    var applyCallback = function () {
+    var applyCallback = function applyCallback() {
         timeout = null;
         last = leading ? performance.now() : 0;
         callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
     };
 
-    var throttled = function () {
+    var throttled = function throttled() {
         var now = performance.now();
 
         if (!last && !leading) last = now;
@@ -1737,8 +1796,6 @@ var index = {
     isWindowsPhone: isWindowsPhone,
     isWindowsTablet: isWindowsTablet,
     isWindows: isWindows,
-    prefix: prefix,
-    support3D: support3D,
     ua: ua$1,
     vendor: vendor,
     forEach: forEach$1,
@@ -1748,7 +1805,7 @@ var index = {
     getElements: getElements,
     getSelectorAll: getSelectorAll,
     getSelector: getSelector,
-    isDomElement: isDomElement,
+    isDomElement: isDomElement$1,
     addClass: addClass,
     append: append,
     attr: attr,
@@ -1808,7 +1865,6 @@ var index = {
     setWidth: setWidth,
     show: show,
     size: size,
-    style: style,
     transform: transform,
     translate: translate,
     translate2D: translate2D,

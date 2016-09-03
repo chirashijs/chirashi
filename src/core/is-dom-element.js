@@ -4,5 +4,5 @@
  * @return {bool} isDomElement - true if element is a dom element, false otherwise
  */
 export default function isDomElement(element) {
-    return element instanceof HTMLElement || element === window || element === document || element instanceof SVGElement
+    return element instanceof HTMLElement || element === window || element === document || element instanceof SVGElement || element instanceof Text
 }

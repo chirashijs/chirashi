@@ -1,13 +1,17 @@
-import getElement from '../core/get-element'
+import forElements from '../core/for-elements'
 
 /**
- * Find the element's children matching the selector.
- * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * Find the elements' children matching the selector.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} selector - The selector
- * @return {Array} elements - The children of element matching the selector
+ * @return {Array} elements - The elements' children matching the selector
  */
-export default function find (element, selector) {
-    element = getElement(element)
+export default function find (elements, selector) {
+    let found = []
 
-    return !element ? [] : [].slice.call(element.querySelectorAll(selector))
+    forElements(elements, element => {
+        found = found.concat([].slice.call(element.querySelectorAll(selector)))
+    })
+
+    return found
 }

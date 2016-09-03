@@ -15,17 +15,25 @@ var banner =
 
 // update main file
 var main = fs
-  .readFileSync('src/index.js', 'utf-8')
+  .readFileSync('index.js', 'utf-8')
   .replace(/Chirashi\.version = '[\d\.]+'/, "Chirashi.version = '" + version + "'")
-fs.writeFileSync('src/index.js', main)
+fs.writeFileSync('index.js', main)
 
 // CommonJS build.
 // this is used as the "main" field in package.json
 // and used by bundlers like Webpack and Browserify.
 rollup.rollup({
-  entry: 'src/index.js',
+  entry: 'index.js',
   plugins: [
-    babel()
+    babel({
+      runtimeHelpers: true,
+      presets: [
+        [
+            'es2015-rollup'
+          ]
+        ],
+      plugins: ['transform-object-rest-spread']
+    })
   ]
 })
 .then(function (bundle) {
@@ -40,12 +48,20 @@ rollup.rollup({
 // Standalone Dev Build
 .then(function () {
   return rollup.rollup({
-    entry: 'src/index.js',
+    entry: 'index.js',
     plugins: [
       replace({
         'process.env.NODE_ENV': "'development'"
       }),
-      babel()
+      babel({
+        runtimeHelpers: true,
+        presets: [
+          [
+            'es2015-rollup'
+          ]
+        ],
+        plugins: ['transform-object-rest-spread']
+      })
     ]
   })
   .then(function (bundle) {
@@ -62,19 +78,24 @@ rollup.rollup({
 .then(function () {
   // Standalone Production Build
   return rollup.rollup({
-    entry: 'src/index.js',
+    entry: 'index.js',
     plugins: [
       replace({
         'process.env.NODE_ENV': "'production'"
       }),
-      babel()
+      babel({
+        runtimeHelpers: true,
+        presets: [
+          [
+            'es2015-rollup'
+          ]
+        ],
+        plugins: ['transform-object-rest-spread']
+      })
     ]
   })
   .then(function (bundle) {
     var code = bundle.generate({
-      globals: {
-        raf: 'raf'
-      },
       format: 'umd',
       moduleName: 'Chirashi'
     }).code
