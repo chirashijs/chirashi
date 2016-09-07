@@ -6,7 +6,7 @@ import translate from './translate'
  * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {object} [transformation] - The transformation as an object
- * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
  export default function transform (elements, transformation) {
     // if skew or rotation use matrix

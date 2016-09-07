@@ -1,13 +1,13 @@
 /*!
- * Chirashi.js v4.1.0
+ * Chirashi.js v4.1.1
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
 (function (global, factory) {
-   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-   typeof define === 'function' && define.amd ? define(factory) :
-   (global.Chirashi = factory());
-}(this, (function () { 'use strict';
+   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+   typeof define === 'function' && define.amd ? define(['exports'], factory) :
+   (factory((global.Chirashi = global.Chirashi || {})));
+}(this, (function (exports) { 'use strict';
 
 /**
  * User Agent in lower case.
@@ -102,6 +102,12 @@ var isWindowsTablet = isWindows && !isWindowsPhone && isTouchable;
  * Variable true if the device is a tablet based on User Agent.
  */
 var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
+
+var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
+
+document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+var support3D = document.documentElement.style[prefix + 'matrix'];
+document.documentElement.style[prefix + 'matrix'] = '';
 
 /**
  * Get array of dom elements from selector.
@@ -1088,12 +1094,6 @@ function hide(elements) {
     });
 }
 
-var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
-
-document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
-var support3D = document.documentElement.style[prefix + 'matrix'];
-document.documentElement.style[prefix + 'matrix'] = '';
-
 function applyPropertyToMatrix(property, value, matrix) {
     switch (property) {
         case 'x':
@@ -1529,6 +1529,21 @@ function size(elements, size) {
 }
 
 /**
+ * Get style value for option property of element or first element of elements if option is a string,
+ * set style values for properties to all element of elements if option is an object.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string | object} option - The css property name or an object | property-value pairs
+ * @return {object | string | Array | NodeList | HTMLCollection} value | elements - The css value for the property | elements for chaining
+ */
+function style(elements, option) {
+  if ((typeof option === 'undefined' ? 'undefined' : _typeof(option)) == 'object') {
+    return setStyle(elements, option);
+  } else if (typeof option == 'string') {
+    return getStyle(elements, option);
+  }
+}
+
+/**
 * Apply the provided translate transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
@@ -1603,7 +1618,7 @@ function translate(elements, transformation, keep) {
  * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {object} [transformation] - The transformation as an object
- * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function transform(elements, transformation) {
    // if skew or rotation use matrix
@@ -1783,109 +1798,110 @@ function throttle(callback, wait) {
     return throttled;
 }
 
-var index = {
-    isAndroidTablet: isAndroidTablet,
-    isAndroid: isAndroid,
-    isChrome: isChrome,
-    isFirefox: isFirefox,
-    isIe: isIE,
-    isIos: isIOS,
-    isIpad: isIPad,
-    isIphone: isIPhone,
-    isIpod: isIPod,
-    isMobile: isMobile,
-    isSafari: isSafari,
-    isTablet: isTablet,
-    isTouchable: isTouchable,
-    isWindowsPhone: isWindowsPhone,
-    isWindowsTablet: isWindowsTablet,
-    isWindows: isWindows,
-    ua: ua$1,
-    vendor: vendor,
-    forEach: forEach$1,
-    forElements: forElements,
-    forIn: forIn,
-    getElement: getElement,
-    getElements: getElements,
-    getSelectorAll: getSelectorAll,
-    getSelector: getSelector,
-    isDomElement: isDomElement$1,
-    addClass: addClass,
-    append: append,
-    attr: attr,
-    clone: clone,
-    closest: closest,
-    createElement: createElement,
-    data: data,
-    empty: empty,
-    filter: filter,
-    findOne: findOne,
-    find: find,
-    getAttr: getAttr,
-    getData: getData,
-    getHtml: getHtml,
-    getProp: getProp,
-    hasClass: hasClass,
-    html: html,
-    indexInParent: indexInParent,
-    insertAfter: insertAfter,
-    insertBefore: insertBefore,
-    next: next,
-    parent: parent,
-    prev: prev,
-    prop: prop,
-    removeClass: removeClass,
-    remove: remove,
-    setAttr: setAttr,
-    setData: setData,
-    setHtml: setHtml,
-    setProp: setProp,
-    toggleClass: toggleClass,
-    drag: drag,
-    hover: hover,
-    load: load,
-    off: off$1,
-    on: on,
-    ready: ready,
-    trigger: trigger,
-    getHeight: getHeight,
-    getSize: getSize,
-    getStyle: getStyle,
-    getWidth: getWidth,
-    height: height,
-    hide: hide,
-    matrix: matrix,
-    matrix2D: matrix2D$1,
-    matrix3D: matrix3D$1,
-    offset: offset,
-    position: position,
-    scale: scale,
-    scale2D: scale2D,
-    scale3D: scale3D,
-    screenPosition: screenPosition,
-    setHeight: setHeight,
-    setSize: setSize,
-    setStyle: setStyle,
-    setWidth: setWidth,
-    show: show,
-    size: size,
-    transform: transform,
-    translate: translate,
-    translate2D: translate2D,
-    translate3D: translate3D,
-    width: width,
-    debounce: debounce,
-    deepClone: deepClone,
-    defaultify: defaultify,
-    memoize: memoize,
-    randomBetween: randomBetween,
-    randomIntBetween: randomIntBetween,
-    range: range,
-    throttle: throttle,
-    transformTo2DMatrix: transformTo2DMatrix,
-    transformTo3DMatrix: transformTo3DMatrix
-};
+exports.isAndroidTablet = isAndroidTablet;
+exports.isAndroid = isAndroid;
+exports.isChrome = isChrome;
+exports.isFirefox = isFirefox;
+exports.isIe = isIE;
+exports.isIos = isIOS;
+exports.isIpad = isIPad;
+exports.isIphone = isIPhone;
+exports.isIpod = isIPod;
+exports.isMobile = isMobile;
+exports.isSafari = isSafari;
+exports.isTablet = isTablet;
+exports.isTouchable = isTouchable;
+exports.isWindowsPhone = isWindowsPhone;
+exports.isWindowsTablet = isWindowsTablet;
+exports.isWindows = isWindows;
+exports.prefix = prefix;
+exports.support3D = support3D;
+exports.ua = ua$1;
+exports.vendor = vendor;
+exports.forEach = forEach$1;
+exports.forElements = forElements;
+exports.forIn = forIn;
+exports.getElement = getElement;
+exports.getElements = getElements;
+exports.getSelectorAll = getSelectorAll;
+exports.getSelector = getSelector;
+exports.isDomElement = isDomElement$1;
+exports.addClass = addClass;
+exports.append = append;
+exports.attr = attr;
+exports.clone = clone;
+exports.closest = closest;
+exports.createElement = createElement;
+exports.data = data;
+exports.empty = empty;
+exports.filter = filter;
+exports.findOne = findOne;
+exports.find = find;
+exports.getAttr = getAttr;
+exports.getData = getData;
+exports.getHtml = getHtml;
+exports.getProp = getProp;
+exports.hasClass = hasClass;
+exports.html = html;
+exports.indexInParent = indexInParent;
+exports.insertAfter = insertAfter;
+exports.insertBefore = insertBefore;
+exports.next = next;
+exports.parent = parent;
+exports.prev = prev;
+exports.prop = prop;
+exports.removeClass = removeClass;
+exports.remove = remove;
+exports.setAttr = setAttr;
+exports.setData = setData;
+exports.setHtml = setHtml;
+exports.setProp = setProp;
+exports.toggleClass = toggleClass;
+exports.drag = drag;
+exports.hover = hover;
+exports.load = load;
+exports.off = off$1;
+exports.on = on;
+exports.ready = ready;
+exports.trigger = trigger;
+exports.getHeight = getHeight;
+exports.getSize = getSize;
+exports.getStyle = getStyle;
+exports.getWidth = getWidth;
+exports.height = height;
+exports.hide = hide;
+exports.matrix = matrix;
+exports.matrix2D = matrix2D$1;
+exports.matrix3D = matrix3D$1;
+exports.offset = offset;
+exports.position = position;
+exports.scale = scale;
+exports.scale2D = scale2D;
+exports.scale3D = scale3D;
+exports.screenPosition = screenPosition;
+exports.setHeight = setHeight;
+exports.setSize = setSize;
+exports.setStyle = setStyle;
+exports.setWidth = setWidth;
+exports.show = show;
+exports.size = size;
+exports.style = style;
+exports.transform = transform;
+exports.translate = translate;
+exports.translate2D = translate2D;
+exports.translate3D = translate3D;
+exports.width = width;
+exports.debounce = debounce;
+exports.deepClone = deepClone;
+exports.defaultify = defaultify;
+exports.memoize = memoize;
+exports.randomBetween = randomBetween;
+exports.randomIntBetween = randomIntBetween;
+exports.range = range;
+exports.throttle = throttle;
+exports.transformTo2DMatrix = transformTo2DMatrix;
+exports.transformTo3DMatrix = transformTo3DMatrix;
 
-return index;
+Object.defineProperty(exports, '__esModule', { value: true });
 
 })));

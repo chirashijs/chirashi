@@ -15,15 +15,15 @@ var banner =
 
 // update main file
 var main = fs
-  .readFileSync('index.js', 'utf-8')
+  .readFileSync('src/index.js', 'utf-8')
   .replace(/Chirashi\.version = '[\d\.]+'/, "Chirashi.version = '" + version + "'")
-fs.writeFileSync('index.js', main)
+fs.writeFileSync('src/index.js', main)
 
 // CommonJS build.
 // this is used as the "main" field in package.json
 // and used by bundlers like Webpack and Browserify.
 rollup.rollup({
-  entry: 'index.js',
+  entry: 'src/index.js',
   plugins: [
     babel({
       runtimeHelpers: true,
@@ -48,7 +48,7 @@ rollup.rollup({
 // Standalone Dev Build
 .then(function () {
   return rollup.rollup({
-    entry: 'index.js',
+    entry: 'src/index.js',
     plugins: [
       replace({
         'process.env.NODE_ENV': "'development'"
@@ -78,7 +78,7 @@ rollup.rollup({
 .then(function () {
   // Standalone Production Build
   return rollup.rollup({
-    entry: 'index.js',
+    entry: 'src/index.js',
     plugins: [
       replace({
         'process.env.NODE_ENV': "'production'"
