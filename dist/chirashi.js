@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v4.1.1
+ * Chirashi.js v4.1.3
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -1446,16 +1446,13 @@ function screenPosition(element) {
 * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
 */
 function setSize(elements, size) {
-    var width = size.width,
-        height = size.height;
-
-    if (typeof width == 'number') width += 'px';
-    if (typeof height == 'number') height += 'px';
+    if (typeof size.width == 'number') size.width += 'px';
+    if (typeof size.height == 'number') size.height += 'px';
 
     return forElements(elements, function (element) {
         if (!element.style) return;
 
-        Object.assign(element.style, { width: width, height: height });
+        Object.assign(element.style, size);
     });
 }
 
@@ -1525,7 +1522,7 @@ function show(elements) {
  * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
  */
 function size(elements, size) {
-    if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) != 'object') return getSize(elements);else return setSize(elements, object);
+    if ((typeof size === 'undefined' ? 'undefined' : _typeof(size)) != 'object') return getSize(elements);else return setSize(elements, size);
 }
 
 /**
