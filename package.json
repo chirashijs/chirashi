@@ -1,6 +1,6 @@
 {
   "name": "chirashi",
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "Minimalist DOM and events manager focused on performances",
   "main": "./dist/chirashi.common.js",
   "scripts": {

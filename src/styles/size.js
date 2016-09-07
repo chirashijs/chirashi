@@ -9,8 +9,8 @@ import getSize from './get-size'
  * @return {object | string | Array | NodeList | HTMLCollection} size | elements - The size as an object with width and height in pixels | elements for chaining
  */
 export default function size (elements, size) {
-    if (typeof object != 'object')
+    if (typeof size != 'object')
         return getSize(elements)
     else
-        return setSize(elements, object)
+        return setSize(elements, size)
 }
