@@ -1,10 +1,10 @@
-import support3D from '../browser/support-3d'
+import support3D from '../browser/support3D'
 
-import matrix2d from './matrix2d'
-import matrix3d from './matrix3d'
+import matrix2D from './matrix2D'
+import matrix3D from './matrix3D'
 
 /**
-* Apply the provided transformation as a matrix (3d if supported) on each element of elements
+* Apply the provided transformation as a matrix (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining

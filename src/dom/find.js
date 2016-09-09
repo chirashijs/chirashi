@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements'
+import forElements from '../core/forElements'
 
 /**
  * Find the elements' children matching the selector.

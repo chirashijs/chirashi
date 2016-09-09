@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements'
+import forElements from '../core/forElements'
 import prefix      from '../browser/prefix'
 
 /**
@@ -13,7 +13,7 @@ export default function scale3D (elements, transformation, keep) {
         scaleY = 'scaleY' in transformation ? transformation.scaleY : ('scale' in transformation ? transformation.scale : 1),
         scaleZ = 'scaleZ' in transformation ? transformation.scaleZ : 1
 
-    let style = `scale3d(${scaleX},${scaleY},${scaleZ})`
+    let style = `scale3D(${scaleX},${scaleY},${scaleZ})`
 
     return forElements(elements, element => {
         if (!element.style) return

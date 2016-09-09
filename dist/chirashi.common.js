@@ -1,11 +1,9 @@
 /*!
- * Chirashi.js v4.1.3
+ * Chirashi.js v4.2.0
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
 'use strict';
-
-Object.defineProperty(exports, '__esModule', { value: true });
 
 /**
  * User Agent in lower case.
@@ -103,7 +101,7 @@ var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
 
 var prefix = (Array.prototype.slice.call(window.getComputedStyle(document.documentElement, '')).join('').match(/-(moz|webkit|ms)-/) || styles.OLink === '' && ['', 'o'])[1];
 
-document.documentElement.style[prefix + 'matrix'] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+document.documentElement.style[prefix + 'matrix'] = 'matrix3D(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
 var support3D = document.documentElement.style[prefix + 'matrix'];
 document.documentElement.style[prefix + 'matrix'] = '';
 
@@ -484,18 +482,6 @@ function filter(elements, tested) {
 }
 
 /**
- * Find the first element's child matching the selector.
- * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
- * @param {string} selector - The selector
- * @return {HTMLElement | SVGElement} element - The first child of element matching the selector
- */
-function findOne(element, selector) {
-  element = getElement(element);
-
-  return !!element && element.querySelector(selector);
-}
-
-/**
  * Find the elements' children matching the selector.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} selector - The selector
@@ -509,6 +495,18 @@ function find(elements, selector) {
     });
 
     return found;
+}
+
+/**
+ * Find the first element's child matching the selector.
+ * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @param {string} selector - The selector
+ * @return {HTMLElement | SVGElement} element - The first child of element matching the selector
+ */
+function findOne(element, selector) {
+  element = getElement(element);
+
+  return !!element && element.querySelector(selector);
 }
 
 /**
@@ -694,6 +692,19 @@ function prop(elements, option) {
 }
 
 /**
+ * Remove all elements from dom.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @return {string | Array | NodeList | HTMLCollection} elements - The removed elements
+ */
+function remove(elements) {
+    return forElements(elements, function (element) {
+        if (!element.parentNode) return;
+
+        element.parentNode.removeChild(element);
+    });
+}
+
+/**
  * Remove all classes on each elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} classes - The classes seperated with spaces
@@ -709,19 +720,6 @@ function removeClass(elements, classes) {
         while (i--) {
             element.classList.remove(classes[i]);
         }
-    });
-}
-
-/**
- * Remove all elements from dom.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @return {string | Array | NodeList | HTMLCollection} elements - The removed elements
- */
-function remove(elements) {
-    return forElements(elements, function (element) {
-        if (!element.parentNode) return;
-
-        element.parentNode.removeChild(element);
     });
 }
 
@@ -1141,9 +1139,9 @@ function applyPropertyToMatrix(property, value, matrix) {
 }
 
 /**
- * Convert a transformation as object to a 2d matrix as object
+ * Convert a transformation as object to a 2D matrix as object
  * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 2d matrix
+ * @return {Array} matrix - The 2D matrix
  */
 function transformTo2DMatrix(transformation) {
     var properties = Object.keys(transformation),
@@ -1176,7 +1174,7 @@ function transformTo2DMatrix(transformation) {
 * @param {object} transformation - The transformation object
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function matrix2D$1(elements, transformation) {
+function matrix2D(elements, transformation) {
     var matrix = transformTo2DMatrix(transformation);
 
     matrix = 'matrix(' + matrix.join(',') + ')';
@@ -1273,9 +1271,9 @@ function applyPropertyToMatrix$1(property, value, matrix) {
 }
 
 /**
- * Convert a transformation as object to a 3d matrix as object
+ * Convert a transformation as object to a 3D matrix as object
  * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 3d matrix
+ * @return {Array} matrix - The 3D matrix
  */
 function transformTo3DMatrix(transformation) {
     var properties = Object.keys(transformation),
@@ -1308,10 +1306,10 @@ function transformTo3DMatrix(transformation) {
 * @param {object} transformation - The transformation object
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function matrix3D$1(elements, transformation) {
+function matrix3D(elements, transformation) {
     var matrix = transformTo3DMatrix(transformation);
 
-    matrix = 'matrix3d(' + matrix.join(',') + ')';
+    matrix = 'matrix3D(' + matrix.join(',') + ')';
 
     return forElements(elements, function (element) {
         if (!element.style) return;
@@ -1322,7 +1320,7 @@ function matrix3D$1(elements, transformation) {
 }
 
 /**
-* Apply the provided transformation as a matrix (3d if supported) on each element of elements
+* Apply the provided transformation as a matrix (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
@@ -1400,7 +1398,7 @@ function scale3D(elements, transformation, keep) {
         scaleY = 'scaleY' in transformation ? transformation.scaleY : 'scale' in transformation ? transformation.scale : 1,
         scaleZ = 'scaleZ' in transformation ? transformation.scaleZ : 1;
 
-    var style = 'scale3d(' + scaleX + ',' + scaleY + ',' + scaleZ + ')';
+    var style = 'scale3D(' + scaleX + ',' + scaleY + ',' + scaleZ + ')';
 
     return forElements(elements, function (element) {
         if (!element.style) return;
@@ -1416,7 +1414,7 @@ function scale3D(elements, transformation, keep) {
 }
 
 /**
-* Apply the provided scale transformation (3d if supported) on each element of elements
+* Apply the provided scale transformation (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {bool} [keep] - Preserve previous transformation
@@ -1454,7 +1452,7 @@ function setSize(elements, size) {
     });
 }
 
-var unitLessAttributes = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset', 'counter-increment', 'volume', 'stress', 'pitch-range', 'richness', 'opacity'];
+var unitLessAttributes = ['zindex', 'zoom', 'fontweight', 'lineheight', 'counterreset', 'counterincrement', 'volume', 'stress', 'pitchRange', 'richness', 'opacity'];
 
 /**
 * Set the provided style to elements
@@ -1469,7 +1467,7 @@ function setStyle(elements, style) {
     while (i--) {
         var property = properties[i];
 
-        if (unitLessAttributes.indexOf(property) == -1) {
+        if (unitLessAttributes.indexOf(property.replace(/-/g, ' ').toLowerCase()) == -1) {
             var value = style[property];
 
             if (typeof value == 'number') style[property] += 'px';
@@ -1583,7 +1581,7 @@ function translate3D(elements, transformation, keep) {
     if (typeof y == 'number') y += 'px';
     if (typeof z == 'number') z += 'px';
 
-    var style = 'translate3d(' + x + ',' + y + ',' + z + ')';
+    var style = 'translate3D(' + x + ',' + y + ',' + z + ')';
 
     return forElements(elements, function (element) {
         if (!element.style) return;
@@ -1599,7 +1597,7 @@ function translate3D(elements, transformation, keep) {
 }
 
 /**
-* Apply the provided translate transformation (3d if supported) on each element of elements
+* Apply the provided translate transformation (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {bool} [keep] - Preserve previous transformation
@@ -1793,106 +1791,110 @@ function throttle(callback, wait) {
     return throttled;
 }
 
-exports.isAndroidTablet = isAndroidTablet;
-exports.isAndroid = isAndroid;
-exports.isChrome = isChrome;
-exports.isFirefox = isFirefox;
-exports.isIe = isIE;
-exports.isIos = isIOS;
-exports.isIpad = isIPad;
-exports.isIphone = isIPhone;
-exports.isIpod = isIPod;
-exports.isMobile = isMobile;
-exports.isSafari = isSafari;
-exports.isTablet = isTablet;
-exports.isTouchable = isTouchable;
-exports.isWindowsPhone = isWindowsPhone;
-exports.isWindowsTablet = isWindowsTablet;
-exports.isWindows = isWindows;
-exports.prefix = prefix;
-exports.support3D = support3D;
-exports.ua = ua$1;
-exports.vendor = vendor;
-exports.forEach = forEach$1;
-exports.forElements = forElements;
-exports.forIn = forIn;
-exports.getElement = getElement;
-exports.getElements = getElements;
-exports.getSelectorAll = getSelectorAll;
-exports.getSelector = getSelector;
-exports.isDomElement = isDomElement$1;
-exports.addClass = addClass;
-exports.append = append;
-exports.attr = attr;
-exports.clone = clone;
-exports.closest = closest;
-exports.createElement = createElement;
-exports.data = data;
-exports.empty = empty;
-exports.filter = filter;
-exports.findOne = findOne;
-exports.find = find;
-exports.getAttr = getAttr;
-exports.getData = getData;
-exports.getHtml = getHtml;
-exports.getProp = getProp;
-exports.hasClass = hasClass;
-exports.html = html;
-exports.indexInParent = indexInParent;
-exports.insertAfter = insertAfter;
-exports.insertBefore = insertBefore;
-exports.next = next;
-exports.parent = parent;
-exports.prev = prev;
-exports.prop = prop;
-exports.removeClass = removeClass;
-exports.remove = remove;
-exports.setAttr = setAttr;
-exports.setData = setData;
-exports.setHtml = setHtml;
-exports.setProp = setProp;
-exports.toggleClass = toggleClass;
-exports.drag = drag;
-exports.hover = hover;
-exports.load = load;
-exports.off = off$1;
-exports.on = on;
-exports.ready = ready;
-exports.trigger = trigger;
-exports.getHeight = getHeight;
-exports.getSize = getSize;
-exports.getStyle = getStyle;
-exports.getWidth = getWidth;
-exports.height = height;
-exports.hide = hide;
-exports.matrix = matrix;
-exports.matrix2D = matrix2D$1;
-exports.matrix3D = matrix3D$1;
-exports.offset = offset;
-exports.position = position;
-exports.scale = scale;
-exports.scale2D = scale2D;
-exports.scale3D = scale3D;
-exports.screenPosition = screenPosition;
-exports.setHeight = setHeight;
-exports.setSize = setSize;
-exports.setStyle = setStyle;
-exports.setWidth = setWidth;
-exports.show = show;
-exports.size = size;
-exports.style = style;
-exports.transform = transform;
-exports.translate = translate;
-exports.translate2D = translate2D;
-exports.translate3D = translate3D;
-exports.width = width;
-exports.debounce = debounce;
-exports.deepClone = deepClone;
-exports.defaultify = defaultify;
-exports.memoize = memoize;
-exports.randomBetween = randomBetween;
-exports.randomIntBetween = randomIntBetween;
-exports.range = range;
-exports.throttle = throttle;
-exports.transformTo2DMatrix = transformTo2DMatrix;
-exports.transformTo3DMatrix = transformTo3DMatrix;
+var index = {
+    isAndroid: isAndroid,
+    isAndroidTablet: isAndroidTablet,
+    isChrome: isChrome,
+    isFirefox: isFirefox,
+    isIE: isIE,
+    isIOS: isIOS,
+    isIPad: isIPad,
+    isIPhone: isIPhone,
+    isIPod: isIPod,
+    isMobile: isMobile,
+    isSafari: isSafari,
+    isTablet: isTablet,
+    isTouchable: isTouchable,
+    isWindows: isWindows,
+    isWindowsPhone: isWindowsPhone,
+    isWindowsTablet: isWindowsTablet,
+    prefix: prefix,
+    support3D: support3D,
+    ua: ua$1,
+    vendor: vendor,
+    forEach: forEach$1,
+    forElements: forElements,
+    forIn: forIn,
+    getElement: getElement,
+    getElements: getElements,
+    getSelector: getSelector,
+    getSelectorAll: getSelectorAll,
+    isDomElement: isDomElement$1,
+    addClass: addClass,
+    append: append,
+    attr: attr,
+    clone: clone,
+    closest: closest,
+    createElement: createElement,
+    data: data,
+    empty: empty,
+    filter: filter,
+    find: find,
+    findOne: findOne,
+    getAttr: getAttr,
+    getData: getData,
+    getHtml: getHtml,
+    getProp: getProp,
+    hasClass: hasClass,
+    html: html,
+    indexInParent: indexInParent,
+    insertAfter: insertAfter,
+    insertBefore: insertBefore,
+    next: next,
+    parent: parent,
+    prev: prev,
+    prop: prop,
+    remove: remove,
+    removeClass: removeClass,
+    setAttr: setAttr,
+    setData: setData,
+    setHtml: setHtml,
+    setProp: setProp,
+    toggleClass: toggleClass,
+    drag: drag,
+    hover: hover,
+    load: load,
+    off: off$1,
+    on: on,
+    ready: ready,
+    trigger: trigger,
+    getHeight: getHeight,
+    getSize: getSize,
+    getStyle: getStyle,
+    getWidth: getWidth,
+    height: height,
+    hide: hide,
+    matrix: matrix,
+    matrix2D: matrix2D,
+    matrix3D: matrix3D,
+    offset: offset,
+    position: position,
+    scale: scale,
+    scale2D: scale2D,
+    scale3D: scale3D,
+    screenPosition: screenPosition,
+    setHeight: setHeight,
+    setSize: setSize,
+    setStyle: setStyle,
+    setWidth: setWidth,
+    show: show,
+    size: size,
+    style: style,
+    transform: transform,
+    translate: translate,
+    translate2D: translate2D,
+    translate3D: translate3D,
+    width: width,
+    debounce: debounce,
+    deepClone: deepClone,
+    defaultify: defaultify,
+    memoize: memoize,
+    randomBetween: randomBetween,
+    randomIntBetween: randomIntBetween,
+    range: range,
+    throttle: throttle,
+    transformTo2DMatrix: transformTo2DMatrix,
+    transformTo3DMatrix: transformTo3DMatrix
+};
+
+module.exports = index;

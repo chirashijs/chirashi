@@ -1,4 +1,4 @@
-import getElement from '../core/get-element'
+import getElement from '../core/getElement'
 
 /**
  * Get the next sibling of element.

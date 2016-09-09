@@ -1,5 +1,5 @@
-import setProp from './set-prop'
-import getProp from './get-prop'
+import setProp from './setProp'
+import getProp from './getProp'
 
 /**
  * Get property option from element if option is a string,

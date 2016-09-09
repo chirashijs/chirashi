@@ -1,4 +1,4 @@
-import getElement from '../core/get-element'
+import getElement from '../core/getElement'
 
 /**
  * Get closest element matching the tested value traveling up the DOM tree from element.

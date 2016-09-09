@@ -1,6 +1,6 @@
-import forElements         from '../core/for-elements'
+import forElements         from '../core/forElements'
 import prefix              from '../browser/prefix'
-import transformTo2DMatrix from '../utils/transform-to-2d-matrix.js'
+import transformTo2DMatrix from '../utils/transformTo2DMatrix'
 
 /**
 * Apply the provided transformation as a 2D matrix on each element of elements

@@ -1,4 +1,4 @@
-import getElement from '../core/get-element'
+import getElement from '../core/getElement'
 
 /**
  * Clone element.

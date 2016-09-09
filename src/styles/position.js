@@ -1,4 +1,4 @@
-import getElement from '../core/get-element'
+import getElement from '../core/getElement'
 
 /**
 * Return the top and left position of an element. Position is relative to parent

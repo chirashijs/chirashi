@@ -1,5 +1,5 @@
-import forElements from '../core/for-elements'
-import getElements from '../core/get-elements'
+import forElements from '../core/forElements'
+import getElements from '../core/getElements'
 
 /**
  * Trigger events on elements with data

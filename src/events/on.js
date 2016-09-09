@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements'
+import forElements from '../core/forElements'
 
 /**
  * Bind events listener on each element of elements.

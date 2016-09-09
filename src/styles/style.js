@@ -1,5 +1,5 @@
-import setStyle from './set-style'
-import getStyle from './get-style'
+import setStyle from './setStyle'
+import getStyle from './getStyle'
 
 /**
  * Get style value for option property of element or first element of elements if option is a string,

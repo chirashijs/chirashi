@@ -1,5 +1,5 @@
-import setWidth from './set-width'
-import getWidth from './get-width'
+import setWidth from './setWidth'
+import getWidth from './getWidth'
 
 /**
  * Get width in pixels of element or first element of elements if width is undefined,

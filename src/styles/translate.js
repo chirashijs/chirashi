@@ -1,10 +1,10 @@
-import support3D from '../browser/support-3d'
+import support3D from '../browser/support3D'
 
-import translate2D from './translate2d'
-import translate3D from './translate3d'
+import translate2D from './translate2D'
+import translate3D from './translate3D'
 
 /**
-* Apply the provided translate transformation (3d if supported) on each element of elements
+* Apply the provided translate transformation (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {bool} [keep] - Preserve previous transformation

@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements'
+import forElements from '../core/forElements'
 import prefix      from '../browser/prefix'
 
 /**

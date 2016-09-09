@@ -1,6 +1,6 @@
-import forElements         from '../core/for-elements'
+import forElements         from '../core/forElements'
 import prefix              from '../browser/prefix'
-import transformTo3DMatrix from '../utils/transform-to-3d-matrix.js'
+import transformTo3DMatrix from '../utils/transformTo3DMatrix'
 
 /**
 * Apply the provided transformation as a 3D matrix on each element of elements
@@ -11,7 +11,7 @@ import transformTo3DMatrix from '../utils/transform-to-3d-matrix.js'
 export default function matrix3D (elements, transformation) {
     let matrix = transformTo3DMatrix(transformation)
 
-    matrix = `matrix3d(${matrix.join(',')})`
+    matrix = `matrix3D(${matrix.join(',')})`
 
     return forElements(elements, element => {
         if (!element.style) return

@@ -1,4 +1,4 @@
-import forElements from '../core/for-elements'
+import forElements from '../core/forElements'
 import prefix      from '../browser/prefix'
 
 /**
@@ -17,7 +17,7 @@ export default function translate3D (elements, transformation, keep) {
     if (typeof y == 'number') y += 'px'
     if (typeof z == 'number') z += 'px'
 
-    let style = `translate3d(${x},${y},${z})`
+    let style = `translate3D(${x},${y},${z})`
 
     return forElements(elements, element => {
         if (!element.style) return

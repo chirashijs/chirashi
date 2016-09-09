@@ -1,5 +1,5 @@
-import setAttr from './set-attr'
-import getAttr from './get-attr'
+import setAttr from './setAttr'
+import getAttr from './getAttr'
 
 /**
  * Get attribute option from element if option is a string,

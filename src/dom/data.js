@@ -1,5 +1,5 @@
-import setData from './set-data'
-import getData from './get-data'
+import setData from './setData'
+import getData from './getData'
 
 /**
  * Get data attribute option from element if option is a string,

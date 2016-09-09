@@ -1,4 +1,4 @@
-import setHtml from './set-html'
+import setHtml from './setHtml'
 
 /**
  * Remove children of provided dom elements.

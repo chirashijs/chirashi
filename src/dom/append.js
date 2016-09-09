@@ -1,7 +1,7 @@
-import forEach       from '../core/for-each'
-import forElements   from '../core/for-elements'
-import isDomElement  from '../core/is-dom-element'
-import createElement from './create-element'
+import forEach       from '../core/forEach'
+import forElements   from '../core/forElements'
+import isDomElement  from '../core/isDomElement'
+import createElement from './createElement'
 
 /**
  * Append node to each element of elements.

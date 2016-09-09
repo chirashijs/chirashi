@@ -1,5 +1,5 @@
-import setSize from './set-size'
-import getSize from './get-size'
+import setSize from './setSize'
+import getSize from './getSize'
 
 /**
  * Get size in pixels of element or first element of elements if size is undefined,

@@ -1,5 +1,5 @@
-import setHeight from './set-height'
-import getHeight from './get-height'
+import setHeight from './setHeight'
+import getHeight from './getHeight'
 
 /**
  * Get height in pixels of element or first element of elements if height is undefined,

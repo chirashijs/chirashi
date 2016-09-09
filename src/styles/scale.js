@@ -1,10 +1,10 @@
-import support3D from '../browser/support-3d'
+import support3D from '../browser/support3D'
 
-import scale2D from './scale2d'
-import scale3D from './scale3d'
+import scale2D from './scale2D'
+import scale3D from './scale3D'
 
 /**
-* Apply the provided scale transformation (3d if supported) on each element of elements
+* Apply the provided scale transformation (3D if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {bool} [keep] - Preserve previous transformation

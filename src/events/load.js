@@ -1,5 +1,5 @@
-import forEach     from '../core/for-each'
-import getElements from '../core/get-elements'
+import forEach     from '../core/forEach'
+import getElements from '../core/getElements'
 import on          from './on'
 import off         from './off'
 

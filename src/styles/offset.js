@@ -1,4 +1,4 @@
-import getElement from '../core/get-element'
+import getElement from '../core/getElement'
 
 /**
 * Return the top and left offset of an element. Offset is relative to web page

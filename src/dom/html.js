@@ -1,5 +1,5 @@
-import setHtml from './set-html'
-import getHtml from './get-html'
+import setHtml from './setHtml'
+import getHtml from './getHtml'
 
 /**
  * Set inner html of elements if string is provided, get it otherwise.
