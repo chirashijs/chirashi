@@ -1,3 +1,4 @@
+import ua        from './ua'
 import isWindows from './isWindows'
 
 /**
