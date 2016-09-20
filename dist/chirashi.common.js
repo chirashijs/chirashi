@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v4.2.0
+ * Chirashi.js v4.2.1
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -9,17 +9,17 @@
  * User Agent in lower case.
  */
 
-var ua$1 = navigator.userAgent.toLowerCase();
+var ua = navigator.userAgent.toLowerCase();
 
 /**
  * Variable true if the device is running Android based on User Agent.
  */
-var isAndroid = /android/i.test(ua$1);
+var isAndroid = /android/i.test(ua);
 
 /**
  * Variable true if the device is an Android Tablet based on User Agent.
  */
-var isAndroidTablet = isAndroid && !/mobile/i.test(ua$1);
+var isAndroidTablet = isAndroid && !/mobile/i.test(ua);
 
 /**
  * Navigator's vendor in lower case.
@@ -30,43 +30,43 @@ var vendor = navigator.vendor && navigator.vendor.toLowerCase();
 /**
  * Variable true if the browser is Chrome or Chromium based on User Agent.
  */
-var isChrome = /chrome|chromium/i.test(ua$1) && /google inc/.test(vendor);
+var isChrome = /chrome|chromium/i.test(ua) && /google inc/.test(vendor);
 
 /**
  * Variable true if the browser is Firefox based on User Agent.
  */
-var isFirefox = /firefox/i.test(ua$1);
+var isFirefox = /firefox/i.test(ua);
 
 /**
  * Version number if the browser is Internet Explorer or false based on User Agent.
  */
-var isIE = ua$1.indexOf('msie') != -1 ? parseInt(ua$1.split('msie')[1], 10) : false;
+var isIE = ua.indexOf('msie') != -1 ? parseInt(ua.split('msie')[1], 10) : false;
 
 /**
  * Variable true if the device is running iOS based on User Agent.
  */
-var isIOS = /iphone|ipad|ipod/i.test(ua$1);
+var isIOS = /iphone|ipad|ipod/i.test(ua);
 
 /**
  * Variable true if the device is an iPad based on User Agent.
  */
-var isIPad = /ipad/i.test(ua$1);
+var isIPad = /ipad/i.test(ua);
 
 /**
  * Variable true if the device is an iPhone based on User Agent.
  */
-var isIPhone = /iphone/i.test(ua$1);
+var isIPhone = /iphone/i.test(ua);
 
 /**
  * Variable true if the device is an iPod based on User Agent.
  */
-var isIPod = /ipod/i.test(ua$1);
+var isIPod = /ipod/i.test(ua);
 
 /**
  * Variable true if the device is running Windows based on User Agent.
  */
 
-var isWindows = /win/i.test('navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || '');
+var isWindows = /win/i.test('navigator' in window && 'appVersion' in window.navigator && window.navigator.appVersion.toLowerCase() || '');
 
 /**
  * Variable true if the device handle touches events.
@@ -82,7 +82,7 @@ var isMobile = isIOS || isAndroid || isWindows && isTouchable;
 /**
  * Variable true if the browser is Safari based on User Agent.
  */
-var isSafari = /safari/i.test(ua$1) && /apple computer/.test(vendor);
+var isSafari = /safari/i.test(ua) && /apple computer/.test(vendor);
 
 /**
  * Variable true if the device is a Windows Phone based on User Agent.
@@ -1810,7 +1810,7 @@ var index = {
     isWindowsTablet: isWindowsTablet,
     prefix: prefix,
     support3D: support3D,
-    ua: ua$1,
+    ua: ua,
     vendor: vendor,
     forEach: forEach$1,
     forElements: forElements,
