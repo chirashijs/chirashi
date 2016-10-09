@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v4.2.1
+ * Chirashi.js v4.3.0
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -753,6 +753,7 @@ function toggleClass(elements, classes) {
  * @param {function} callback - The callback used for event binding
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
+
 function on(elements, events, callback) {
     events = events.split(' ');
 
@@ -760,8 +761,43 @@ function on(elements, events, callback) {
         if (!element.addEventListener) return;
 
         var i = events.length;
+
+        var _loop = function _loop() {
+            var event = events[i];
+
+            if (!('_cs-events' in element)) {
+                element['_cs-events'] = {};
+            }
+
+            if (!(event in element['_cs-events'])) {
+                element['_cs-callback'] = function (e) {
+                    var pool = element['_cs-events'][event];
+
+                    var i = pool.length;
+
+                    var _loop2 = function _loop2() {
+                        var poolCallback = pool[i];
+
+                        setTimeout(function () {
+                            poolCallback(e);
+                        });
+                    };
+
+                    while (i--) {
+                        _loop2();
+                    }
+                };
+
+                element.addEventListener(event, element['_cs-callback']);
+
+                element['_cs-events'][event] = [];
+            }
+
+            element['_cs-events'][event].push(callback);
+        };
+
         while (i--) {
-            element.addEventListener(events[i], callback);
+            _loop();
         }
     });
 }
@@ -885,17 +921,57 @@ function hover(elements, enter, leave) {
  * @param {function} callback - The callback used for event binding
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
+
+function unbindEvents(element, events) {
+    if (!element.removeEventListener || !('_cs-events' in element)) {
+        return;
+    }
+
+    events = events ? events.split(' ') : Object.keys(element['_cs-events']);
+
+    var i = events.length;
+    while (i--) {
+        var event = events[i];
+
+        if (event in element['_cs-events']) unbindEvent(element, event);
+    }
+}
+
+function unbindEvent(element, event) {
+    element.removeEventListener(event, element['_cs-callback']);
+
+    delete element['_cs-events'][event];
+}
+
 function off$1(elements, events, callback) {
-    events = events.split(' ');
+    var traitment = void 0;
 
-    return forElements(elements, function (element) {
-        if (!element.removeEventListener) return;
+    if (events && callback) {
+        events = events.split(' ');
 
-        var i = events.length;
-        while (i--) {
-            element.removeEventListener(events[i], callback);
-        }
-    });
+        traitment = function traitment(element) {
+            if (!element.removeEventListener || !('_cs-events' in element)) {
+                return;
+            }
+
+            var i = events.length;
+            while (i--) {
+                var event = events[i];
+
+                if (event in element['_cs-events']) {
+                    element['_cs-events'][event].splice(element['_cs-events'][event].indexOf(callback), 1);
+
+                    if (!element['_cs-events'][event].length) unbindEvent(element, event);
+                }
+            }
+        };
+    } else {
+        traitment = function traitment(element) {
+            unbindEvents(element, events);
+        };
+    }
+
+    return forElements(elements, traitment);
 }
 
 /**
