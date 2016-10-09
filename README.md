@@ -2,7 +2,7 @@
 
 ## Get started
 
-Find API documentation, guide and more on [chirashijs.github.io](http://chirashijs.github.io).
+Find API documentation, guide and more on [chirashijs.org](http://chirashijs.org).
 
 ## Quick view
 
@@ -28,7 +28,7 @@ For advanced usage see [chirashi-loader](https://github.com/chirashijs/chirashi-
 
 #### Standalone
 
-You can also load [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/4.3/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/4.3/chirashi.min.js) using a script tag. It'll create an intance of Chirashi on your window. Then use as following example
+You can also load [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/4.3.0/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/4.3.0/chirashi.min.js) using a script tag. It'll create an intance of Chirashi on your window. Then use as following example
 
 ```js
 Chirashi.ready(function () {
