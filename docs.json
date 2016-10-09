@@ -1241,11 +1241,11 @@
         },
         "end": {
           "line": 5,
-          "column": 123
+          "column": 137
         }
       },
       "file": "/Users/alex/Dev/Chirashi/chirashi/src/browser/isWindows.js",
-      "code": "/**\n * Variable true if the device is running Windows based on User Agent.\n */\n\nvar isWindows = /win/i.test('navigator' in window && 'appVersion' in navigator && navigator.appVersion.toLowerCase() || '')\n\nexport default isWindows\n"
+      "code": "/**\n * Variable true if the device is running Windows based on User Agent.\n */\n\nvar isWindows = /win/i.test('navigator' in window && 'appVersion' in window.navigator && window.navigator.appVersion.toLowerCase() || '')\n\nexport default isWindows\n"
     },
     "name": "isWindows",
     "members": {
@@ -1315,27 +1315,27 @@
     "tags": [],
     "loc": {
       "start": {
-        "line": 3,
+        "line": 4,
         "column": 0
       },
       "end": {
-        "line": 5,
+        "line": 6,
         "column": 3
       }
     },
     "context": {
       "loc": {
         "start": {
-          "line": 6,
+          "line": 7,
           "column": 0
         },
         "end": {
-          "line": 6,
+          "line": 7,
           "column": 51
         }
       },
       "file": "/Users/alex/Dev/Chirashi/chirashi/src/browser/isWindowsPhone.js",
-      "code": "import isWindows from './isWindows'\n\n/**\n * Variable true if the device is a Windows Phone based on User Agent.\n */\nvar isWindowsPhone = isWindows && /phone/i.test(ua)\n\nexport default isWindowsPhone\n"
+      "code": "import ua        from './ua'\nimport isWindows from './isWindows'\n\n/**\n * Variable true if the device is a Windows Phone based on User Agent.\n */\nvar isWindowsPhone = isWindows && /phone/i.test(ua)\n\nexport default isWindowsPhone\n"
     },
     "name": "isWindowsPhone",
     "members": {
@@ -15386,6 +15386,378 @@
           "children": [
             {
               "type": "text",
+              "value": "Bind events listener on body and execute callback when target match selector.",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 78,
+                  "offset": 77
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 78,
+              "offset": 77
+            },
+            "indent": []
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 78,
+          "offset": 77
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "param",
+        "description": "The selector to match",
+        "lineNumber": 2,
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        },
+        "name": "selector"
+      },
+      {
+        "title": "param",
+        "description": "The events that should be bound seperated with spaces",
+        "lineNumber": 3,
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        },
+        "name": "events"
+      },
+      {
+        "title": "param",
+        "description": "The callback used for event binding",
+        "lineNumber": 4,
+        "type": {
+          "type": "NameExpression",
+          "name": "function"
+        },
+        "name": "callback"
+      },
+      {
+        "title": "return",
+        "description": "unbindObject - An object with unbind method for unbinding",
+        "lineNumber": 5,
+        "type": {
+          "type": "NameExpression",
+          "name": "object"
+        }
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 5,
+        "column": 0
+      },
+      "end": {
+        "line": 11,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 0
+        },
+        "end": {
+          "line": 26,
+          "column": 1
+        }
+      },
+      "file": "/Users/alex/Dev/Chirashi/chirashi/src/events/bind.js",
+      "code": "import on      from './on'\nimport off     from './off'\nimport closest from '../dom/closest'\n\n/**\n * Bind events listener on body and execute callback when target match selector.\n * @param {string} selector - The selector to match\n * @param {string} events - The events that should be bound seperated with spaces\n * @param {function} callback - The callback used for event binding\n * @return {object} unbindObject - An object with unbind method for unbinding\n */\nexport default function bind (selector, events, callback) {\n    const innerCallback = (event) => {\n        let target = closest(event.target, selector)\n        if (!!target)\n            callback(event, target)\n    }\n\n    on(document.body, events, innerCallback)\n\n    return {\n        unbind() {\n            off(document.body, events, innerCallback)\n        }\n    }\n}\n"
+    },
+    "params": [
+      {
+        "name": "selector",
+        "lineNumber": 2,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The selector to match",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 22,
+                      "offset": 21
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 22,
+                  "offset": 21
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 22,
+              "offset": 21
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        }
+      },
+      {
+        "name": "events",
+        "lineNumber": 3,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The events that should be bound seperated with spaces",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 54,
+                      "offset": 53
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 54,
+                  "offset": 53
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 54,
+              "offset": 53
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        }
+      },
+      {
+        "name": "callback",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The callback used for event binding",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 36,
+                      "offset": 35
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 36,
+                  "offset": 35
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 36,
+              "offset": 35
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "function"
+        }
+      }
+    ],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "unbindObject - An object with unbind method for unbinding",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 58,
+                      "offset": 57
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 58,
+                  "offset": 57
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 58,
+              "offset": 57
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "object"
+        }
+      }
+    ],
+    "name": "bind",
+    "members": {
+      "instance": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "bind"
+      }
+    ],
+    "namespace": "bind"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
               "value": "Bind drag listener on each element of elements.",
               "position": {
                 "start": {
@@ -17696,6 +18068,412 @@
       }
     ],
     "namespace": "on"
+  },
+  {
+    "description": {
+      "type": "root",
+      "children": [
+        {
+          "type": "paragraph",
+          "children": [
+            {
+              "type": "text",
+              "value": "Bind events listener on each element of elements and unbind after first triggered.",
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 83,
+                  "offset": 82
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 83,
+              "offset": 82
+            },
+            "indent": []
+          }
+        }
+      ],
+      "position": {
+        "start": {
+          "line": 1,
+          "column": 1,
+          "offset": 0
+        },
+        "end": {
+          "line": 1,
+          "column": 83,
+          "offset": 82
+        }
+      }
+    },
+    "tags": [
+      {
+        "title": "param",
+        "description": "The iterable or selector",
+        "lineNumber": 2,
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "string"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Array"
+            },
+            {
+              "type": "NameExpression",
+              "name": "NodeList"
+            },
+            {
+              "type": "NameExpression",
+              "name": "HTMLCollection"
+            }
+          ]
+        },
+        "name": "elements"
+      },
+      {
+        "title": "param",
+        "description": "The events that should be bound seperated with spaces",
+        "lineNumber": 3,
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        },
+        "name": "events"
+      },
+      {
+        "title": "param",
+        "description": "The callback used for event binding",
+        "lineNumber": 4,
+        "type": {
+          "type": "NameExpression",
+          "name": "function"
+        },
+        "name": "callback"
+      },
+      {
+        "title": "return",
+        "description": "offObject - An object with off method for unbinding",
+        "lineNumber": 5,
+        "type": {
+          "type": "NameExpression",
+          "name": "object"
+        }
+      }
+    ],
+    "loc": {
+      "start": {
+        "line": 4,
+        "column": 0
+      },
+      "end": {
+        "line": 10,
+        "column": 3
+      }
+    },
+    "context": {
+      "loc": {
+        "start": {
+          "line": 11,
+          "column": 0
+        },
+        "end": {
+          "line": 25,
+          "column": 1
+        }
+      },
+      "file": "/Users/alex/Dev/Chirashi/chirashi/src/events/once.js",
+      "code": "import on      from './on'\nimport off     from './off'\n\n/**\n * Bind events listener on each element of elements and unbind after first triggered.\n * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector\n * @param {string} events - The events that should be bound seperated with spaces\n * @param {function} callback - The callback used for event binding\n * @return {object} offObject - An object with off method for unbinding\n */\nexport default function once (elements, events, callback) {\n    const innerCallback = (event) => {\n        callback(event)\n\n        off(elements, events, innerCallback)\n    }\n\n    on(elements, events, innerCallback)\n\n    return {\n        off() {\n            off(elements, events, innerCallback)\n        }\n    }\n}\n"
+    },
+    "params": [
+      {
+        "name": "elements",
+        "lineNumber": 2,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The iterable or selector",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 25,
+                      "offset": 24
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 25,
+                  "offset": 24
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 25,
+              "offset": 24
+            }
+          }
+        },
+        "type": {
+          "type": "UnionType",
+          "elements": [
+            {
+              "type": "NameExpression",
+              "name": "string"
+            },
+            {
+              "type": "NameExpression",
+              "name": "Array"
+            },
+            {
+              "type": "NameExpression",
+              "name": "NodeList"
+            },
+            {
+              "type": "NameExpression",
+              "name": "HTMLCollection"
+            }
+          ]
+        }
+      },
+      {
+        "name": "events",
+        "lineNumber": 3,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The events that should be bound seperated with spaces",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 54,
+                      "offset": 53
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 54,
+                  "offset": 53
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 54,
+              "offset": 53
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "string"
+        }
+      },
+      {
+        "name": "callback",
+        "lineNumber": 4,
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The callback used for event binding",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 36,
+                      "offset": 35
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 36,
+                  "offset": 35
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 36,
+              "offset": 35
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "function"
+        }
+      }
+    ],
+    "returns": [
+      {
+        "description": {
+          "type": "root",
+          "children": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "type": "text",
+                  "value": "offObject - An object with off method for unbinding",
+                  "position": {
+                    "start": {
+                      "line": 1,
+                      "column": 1,
+                      "offset": 0
+                    },
+                    "end": {
+                      "line": 1,
+                      "column": 52,
+                      "offset": 51
+                    },
+                    "indent": []
+                  }
+                }
+              ],
+              "position": {
+                "start": {
+                  "line": 1,
+                  "column": 1,
+                  "offset": 0
+                },
+                "end": {
+                  "line": 1,
+                  "column": 52,
+                  "offset": 51
+                },
+                "indent": []
+              }
+            }
+          ],
+          "position": {
+            "start": {
+              "line": 1,
+              "column": 1,
+              "offset": 0
+            },
+            "end": {
+              "line": 1,
+              "column": 52,
+              "offset": 51
+            }
+          }
+        },
+        "type": {
+          "type": "NameExpression",
+          "name": "object"
+        }
+      }
+    ],
+    "name": "once",
+    "members": {
+      "instance": [],
+      "static": []
+    },
+    "path": [
+      {
+        "name": "once"
+      }
+    ],
+    "namespace": "once"
   },
   {
     "description": {

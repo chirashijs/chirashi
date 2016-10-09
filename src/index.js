@@ -57,11 +57,13 @@ import setData             from './dom/setData'
 import setHtml             from './dom/setHtml'
 import setProp             from './dom/setProp'
 import toggleClass         from './dom/toggleClass'
+import bind                from './events/bind'
 import drag                from './events/drag'
 import hover               from './events/hover'
 import load                from './events/load'
 import off                 from './events/off'
 import on                  from './events/on'
+import once                from './events/once'
 import ready               from './events/ready'
 import trigger             from './events/trigger'
 import getHeight           from './styles/getHeight'
@@ -162,11 +164,13 @@ export default {
     setHtml,
     setProp,
     toggleClass,
+    bind,
     drag,
     hover,
     load,
     off,
     on,
+    once,
     ready,
     trigger,
     getHeight,

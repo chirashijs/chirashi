@@ -749,7 +749,6 @@ function toggleClass(elements, classes) {
  * @param {function} callback - The callback used for event binding
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-
 function on(elements, events, callback) {
     events = events.split(' ');
 
@@ -757,45 +756,52 @@ function on(elements, events, callback) {
         if (!element.addEventListener) return;
 
         var i = events.length;
-
-        var _loop = function _loop() {
-            var event = events[i];
-
-            if (!('_cs-events' in element)) {
-                element['_cs-events'] = {};
-            }
-
-            if (!(event in element['_cs-events'])) {
-                element['_cs-callback'] = function (e) {
-                    var pool = element['_cs-events'][event];
-
-                    var i = pool.length;
-
-                    var _loop2 = function _loop2() {
-                        var poolCallback = pool[i];
-
-                        setTimeout(function () {
-                            poolCallback(e);
-                        });
-                    };
-
-                    while (i--) {
-                        _loop2();
-                    }
-                };
-
-                element.addEventListener(event, element['_cs-callback']);
-
-                element['_cs-events'][event] = [];
-            }
-
-            element['_cs-events'][event].push(callback);
-        };
-
         while (i--) {
-            _loop();
+            element.addEventListener(events[i], callback);
         }
     });
+}
+
+/**
+ * Bind hover listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} events - The events that should be bound seperated with spaces
+ * @param {function} callback - The callback used for event binding
+ * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ */
+function off$1(elements, events, callback) {
+    events = events.split(' ');
+
+    return forElements(elements, function (element) {
+        if (!element.removeEventListener) return;
+
+        var i = events.length;
+        while (i--) {
+            element.removeEventListener(events[i], callback);
+        }
+    });
+}
+
+/**
+ * Bind events listener on body and execute callback when target match selector.
+ * @param {string} selector - The selector to match
+ * @param {string} events - The events that should be bound seperated with spaces
+ * @param {function} callback - The callback used for event binding
+ * @return {object} unbindObject - An object with unbind method for unbinding
+ */
+function bind(selector, events, callback) {
+    var innerCallback = function innerCallback(event) {
+        var target = closest(event.target, selector);
+        if (!!target) callback(event, target);
+    };
+
+    on(document.body, events, innerCallback);
+
+    return {
+        unbind: function unbind() {
+            off$1(document.body, events, innerCallback);
+        }
+    };
 }
 
 /**
@@ -913,66 +919,6 @@ function hover(elements, enter, leave) {
 /**
  * Bind hover listener on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string} events - The events that should be bound seperated with spaces
- * @param {function} callback - The callback used for event binding
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
- */
-
-function unbindEvents(element, events) {
-    if (!element.removeEventListener || !('_cs-events' in element)) {
-        return;
-    }
-
-    events = events ? events.split(' ') : Object.keys(element['_cs-events']);
-
-    var i = events.length;
-    while (i--) {
-        var event = events[i];
-
-        if (event in element['_cs-events']) unbindEvent(element, event);
-    }
-}
-
-function unbindEvent(element, event) {
-    element.removeEventListener(event, element['_cs-callback']);
-
-    delete element['_cs-events'][event];
-}
-
-function off$1(elements, events, callback) {
-    var traitment = void 0;
-
-    if (events && callback) {
-        events = events.split(' ');
-
-        traitment = function traitment(element) {
-            if (!element.removeEventListener || !('_cs-events' in element)) {
-                return;
-            }
-
-            var i = events.length;
-            while (i--) {
-                var event = events[i];
-
-                if (event in element['_cs-events']) {
-                    element['_cs-events'][event].splice(element['_cs-events'][event].indexOf(callback), 1);
-
-                    if (!element['_cs-events'][event].length) unbindEvent(element, event);
-                }
-            }
-        };
-    } else {
-        traitment = function traitment(element) {
-            unbindEvents(element, events);
-        };
-    }
-
-    return forElements(elements, traitment);
-}
-
-/**
- * Bind hover listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {function} eachCallback - The callback on each load event
  * @param {function} allCallback - The callback when all elements have been loaded
  * @param {bool} [once] = true - Trigger only once for each media if true
@@ -1027,6 +973,29 @@ function load(elements, eachCallback, allCallback) {
             forEach$1(elements, function (element) {
                 return off$1(element, 'load loadedmetadata error', callback);
             });
+        }
+    };
+}
+
+/**
+ * Bind events listener on each element of elements and unbind after first triggered.
+ * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {string} events - The events that should be bound seperated with spaces
+ * @param {function} callback - The callback used for event binding
+ * @return {object} offObject - An object with off method for unbinding
+ */
+function once(elements, events, callback) {
+    var innerCallback = function innerCallback(event) {
+        callback(event);
+
+        off$1(elements, events, innerCallback);
+    };
+
+    on(elements, events, innerCallback);
+
+    return {
+        off: function off() {
+            off$1(elements, events, innerCallback);
         }
     };
 }
@@ -1927,11 +1896,13 @@ var index = {
     setHtml: setHtml,
     setProp: setProp,
     toggleClass: toggleClass,
+    bind: bind,
     drag: drag,
     hover: hover,
     load: load,
     off: off$1,
     on: on,
+    once: once,
     ready: ready,
     trigger: trigger,
     getHeight: getHeight,
