@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import setStyle from './setStyle'
 
 /**
 * Reset visibility style attribute for elements
@@ -6,9 +6,5 @@ import forElements from '../core/forElements'
 * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
 */
 export default function show (elements) {
-    return forElements(elements, element => {
-        if (!element.style) return
-
-        element.style.visibility = ''
-    })
+  return setStyle(elements, { visibility: 'hidden' })
 }

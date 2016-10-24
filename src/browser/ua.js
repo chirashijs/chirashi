@@ -1,6 +1,3 @@
-/**
- * User Agent in lower case.
- */
-
-var ua = navigator.userAgent.toLowerCase()
+/** User Agent in lower case. */
+const ua = navigator && navigator.userAgent.toLowerCase()
 export default ua

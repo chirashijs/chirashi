@@ -1,12 +1,25 @@
 import getElement from '../core/getElement'
 
 /**
- * Clone element.
- * @param {string | HTMLElement | SVGElement} element - The dom element or selector
- * @return {HTMLElement | SVGElement} clone - The clone of element
+ * Clones element.
+ * @param {string | HTMLElement | SVGElement} element - Selector or element.
+ * @return {string | HTMLElement | SVGElement} clone - element's clone.
+ * @example //esnext
+ * import { createElement, append, clone } from 'chirashi'
+ * const maki = createElement('.maki')
+ * clone(maki) //returns: <div class="maki"></div>
+ * const sushi = createElement('.sushi')
+ * append(document.body, sushi)
+ * clone('.sushi') //returns: <div class="sushi"></div>
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.clone(maki) //returns: <div class="maki"></div>
+ * var sushi = Chirashi.createElement('.sushi')
+ * Chirashi.append(document.body, sushi)
+ * Chirashi.clone('.sushi') //returns: <div class="sushi"></div>
  */
 export default function clone (element) {
-    element = getElement(element)
+  element = getElement(element)
 
-    return !!element && element.cloneNode(true)
+  return !!element && element.cloneNode(true)
 }

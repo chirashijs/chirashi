@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import setStyle from './setStyle'
 
 /**
 * Set the provided height to elements
@@ -7,11 +7,5 @@ import forElements from '../core/forElements'
 * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
 */
 export default function setHeight (elements, height) {
-    if (typeof height == 'number') height += 'px'
-
-    return forElements(elements, element => {
-        if (!element.style) return
-
-        element.style.height = height
-    })
+  return setStyle(elements, { height })
 }

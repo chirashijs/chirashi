@@ -1,17 +1,23 @@
 import forElements from '../core/forElements'
+import forIn from '../core/forIn'
 
-const unitLessAttributes = [
-    'zindex',
-    'zoom',
-    'fontweight',
-    'lineheight',
-    'counterreset',
-    'counterincrement',
-    'volume',
-    'stress',
-    'pitchRange',
-    'richness',
-    'opacity'
+const unitless = [
+  'zIndex',
+  'z-index',
+  'zoom',
+  'font-weight',
+  'lineHeight',
+  'line-height',
+  'counterReset',
+  'counter-reset',
+  'counterIncrement',
+  'counter-increment',
+  'volume',
+  'stress',
+  'pitchRange',
+  'pitch-range',
+  'richness',
+  'opacity'
 ]
 
 /**
@@ -21,23 +27,15 @@ const unitLessAttributes = [
 * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
 */
 export default function setStyle (elements, style) {
-    let properties = Object.keys(style)
-
-    let i = properties.length
-    while(i--) {
-        let property = properties[i]
-
-        if (unitLessAttributes.indexOf(property.replace(/-/g, ' ').toLowerCase()) == -1) {
-            let value = style[property]
-
-            if (typeof value == 'number')
-                style[property] += 'px'
-        }
+  forIn(style, (prop, value) => {
+    if (unitless.indexOf(prop) === -1 && typeof value === 'number') {
+      style[prop] += 'px'
     }
+  })
 
-    return forElements(elements, element => {
-        if (!element.style) return
+  return forElements(elements, element => {
+    if (!element.style) return
 
-        Object.assign(element.style, style)
-    })
+    Object.assign(element.style, style)
+  })
 }

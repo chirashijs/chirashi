@@ -1,15 +1,14 @@
-import getElement from '../core/getElement'
+import getWidth from './getWidth'
+import getHeight from './getHeight'
 
 /**
  * Get size in pixels of element.
- * @param {string | HTMLElement | window | document | SVGElement} element - The selector or dom element
+ * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
  * @return {number} size - The size in pixels
  */
- export default function getSize (element) {
-    element = getElement(element)
-
-    return !!element && {
-        width: element.offsetWidth,
-        height: element.offsetHeight
-    }
- }
+export default function getSize (element, inner = false) {
+  return !!element && {
+    width: getWidth(element, inner),
+    height: getHeight(element, inner)
+  }
+}

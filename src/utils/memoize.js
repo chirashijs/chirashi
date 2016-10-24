@@ -4,11 +4,11 @@
  * @return {function} memoized - The memoized callback
  */
 export default function memoize (callback) {
-    let cache = {}
+  const cache = {}
 
-    return function () {
-        let args = JSON.stringify(arguments)
+  return () => {
+    const args = JSON.stringify(arguments)
 
-        return args in cache ? cache[args] : cache[args] = callback.call(this, ...arguments)
-    }
+    return args in cache ? cache[args] : cache[args] = callback.call(this, ...arguments)
+  }
 }

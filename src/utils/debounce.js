@@ -6,29 +6,31 @@
  * @return {function} debounced - The debounced callback with cancel method
  */
 export default function debounce (callback, wait, immediate = false) {
-    let canCall = immediate, timeout
+  let canCall = immediate
+  let timeout
 
-    const applyCallback = function() {
-        canCall = false
-        callback.call(this, ...arguments)
+  const applyCallback = args => {
+    canCall = false
+    callback(...args)
 
-        timeout = setTimeout(function () {canCall = immediate}, wait)
+    timeout = setTimeout(() => canCall = immediate, wait)
+  }
+
+  const debounced = (...args) => {
+    clearTimeout(timeout)
+
+    if (canCall) {
+      applyCallback(args)
+    } else {
+      timeout = setTimeout(applyCallback.bind(null, args), wait)
     }
 
-    const debounced = function() {
-        clearTimeout(timeout)
-
-        if (canCall)
-            applyCallback.call(this, ...arguments)
-        else
-            timeout = setTimeout(applyCallback.bind(this, arguments), wait)
-
-        debounced.cancel = function () {
-            clearTimeout(timeout)
-            canCall = true
-            timeout = null
-        }
+    debounced.cancel = () => {
+      clearTimeout(timeout)
+      canCall = true
+      timeout = null
     }
+  }
 
-    return debounced
+  return debounced
 }

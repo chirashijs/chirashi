@@ -5,6 +5,8 @@ import prefix      from '../browser/prefix'
 * Apply the provided translate transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
+* @param {object.x} x - translateX option
+* @param {object.y} y - translateY option
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */

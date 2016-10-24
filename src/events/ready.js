@@ -5,5 +5,7 @@ import on from './on'
  * @param {function} callback - The callback
  */
 export default function ready (callback) {
-    on(document, 'DOMContentLoaded', callback)
+  on(document, {
+    'DOMContentLoaded': callback
+  })
 }

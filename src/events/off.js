@@ -1,19 +1,26 @@
+import forEach from '../core/forEach'
 import forElements from '../core/forElements'
+import forIn from '../core/forIn'
 
 /**
- * Bind hover listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string} events - The events that should be bound seperated with spaces
- * @param {function} callback - The callback used for event binding
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * Bind events listener on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {string | Array} events - Array of events to listen or string of events seperated with comma and/or spaces.
+ * @param {eventCallback} callback - The callback used for event binding.
+ * @return {Array} elements - The iterable for chaining.
  */
-export default function off (elements, events, callback) {
-    events = events.split(' ')
+export default function off (elements, input) {
+  return forElements(elements, element => {
+    if (!element.addEventListener) return
 
-    return forElements(elements, element => {
-        if (!element.removeEventListener) return
-
-        let i = events.length
-        while(i--) element.removeEventListener(events[i], callback)
+    forIn(input, (events, callback) => {
+      forEach(events.split(/[,\s]+/g), event => element.removeEventListener(event, callback))
     })
+  })
 }
+
+/**
+* Callback to execute on event.
+* @callback eventCallback
+* @param {object} event - Triggered event.
+*/

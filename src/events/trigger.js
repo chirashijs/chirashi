@@ -1,5 +1,10 @@
-import forElements from '../core/forElements'
+import forEach from '../core/forEach'
 import getElements from '../core/getElements'
+
+const defaults = {
+  bubbles: true,
+  cancelable: true
+}
 
 /**
  * Trigger events on elements with data
@@ -8,28 +13,24 @@ import getElements from '../core/getElements'
  * @param {object} data - The events' data
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
-export default function trigger (elements, events, data) {
-    events = events.split(' ')
-    let i = events.length
+export default function trigger (elements, events, options = {}) {
+  elements = getElements(elements)
 
-    elements = getElements(elements)
+  if (!elements.length) return
 
-    while(i--) {
-        let event = events[i]
+  options = { ...options, ...defaults }
 
-        if (window.CustomEvent) {
-            event = new CustomEvent(event, {detail: data})
-        } else {
-            event = document.createEvent('CustomEvent')
-            event.initCustomEvent(event, true, true, data)
-        }
+  if (typeof events === 'string') events = events.split(/[,\s]+/g)
 
-        forEach(elements, element => {
-            if (!element.dispatchEvent) return
+  forEach(events, event => {
+    event = new window.CustomEvent(event, options)
 
-            element.dispatchEvent(event)
-        })
-    }
+    forEach(elements, element => {
+      if (!element.dispatchEvent) return
 
-    return elements
+      element.dispatchEvent(event)
+    })
+  })
+
+  return elements
 }

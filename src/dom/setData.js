@@ -1,26 +1,28 @@
-import forElements from '../core/forElements'
+import forIn from '../core/forIn'
+import setAttr from './setAttr'
 
 /**
- * Set data attributes from attributes object keys to values on elements
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {Object} attributes - attribute names and values association
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * Iterates over data-attributes as key value pairs and apply on each element of elements.
+ * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {object} - The data-attributes key value pairs.
+ * @return {Array} elements - The elements for chaining.
+ * @example //esnext
+ * import { createElement, setData } from 'chirashi'
+ * const maki = createElement('.maki')
+ * setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
  */
-export default function setData (elements, attributes) {
-    let attributesName = Object.keys(attributes)
+export default function setData (elements, dataAttributes) {
+  const attributes = {}
+  forIn(dataAttributes, (name, value) => {
+    attributes[`data-${name}`] = value
+  })
 
-    return forElements(elements, element => {
-        if (!element.setAttribute) return
-
-        let i = attributesName.length, attributeName
-        while(i--) {
-            attributeName = attributesName[i]
-            value = attributes[attributeName]
-
-            if (value)
-                element.setAttribute('data-'+attributeName, value)
-            else
-                element.removeAttribute(name)
-        }
-    })
+  setAttr(elements, attributes)
 }

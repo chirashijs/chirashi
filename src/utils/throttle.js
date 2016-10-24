@@ -6,34 +6,35 @@
  * @param {bool} [trailing=false] - Execute callback wait time after last execution
  * @return {function} throttled - The throttled callback with cancel method
  */
-export default function throttle (callback, wait, leading=true, trailing=true) {
-    let last = 0, timeout
+export default function throttle (callback, wait, leading = true, trailing = true) {
+  let last = 0
+  let timeout
 
-    const applyCallback = function() {
-        timeout = null
-        last = leading ? performance.now() : 0
-        callback.call(this, ...arguments)
+  const applyCallback = args => {
+    timeout = null
+    last = leading ? window.performance.now() : 0
+    callback(...args)
+  }
+
+  const throttled = (...args) => {
+    let now = window.performance.now()
+
+    if (!last && !leading) last = now
+
+    let remaining = wait - (now - last)
+
+    if (remaining < 0 || remaining > wait) {
+      applyCallback(args)
+    } else if (trailing && !timeout) {
+      timeout = setTimeout(applyCallback.bind(null, args), remaining)
     }
 
-    const throttled = function() {
-        let now = performance.now()
-
-        if (!last && !leading)
-            last = now
-
-        let remaining = wait - (now - last)
-
-        if (remaining < 0 || remaining > wait)
-            applyCallback.call(this, ...arguments)
-        else if (trailing && !timeout)
-            timeout = setTimeout(applyCallback.bind(this, arguments), remaining)
-
-        throttled.cancel = function () {
-            clearTimeout(timeout)
-            last = 0
-            timeout = null
-        }
+    throttled.cancel = () => {
+      clearTimeout(timeout)
+      last = 0
+      timeout = null
     }
+  }
 
-    return throttled
+  return throttled
 }

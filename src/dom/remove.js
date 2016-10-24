@@ -1,14 +1,29 @@
 import forElements from '../core/forElements'
 
 /**
- * Remove all elements from dom.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @return {string | Array | NodeList | HTMLCollection} elements - The removed elements
+ * Iterates over elements and removes it from DOM.
+ * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
+ * @return {Array} elements - The removed elements.
+ * @example //esnext
+ * import { createElement, append, remove } from 'chirashi'
+ * const maki = createElement('.maki')
+ * append(document.body, maki)
+ * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * const avocado = createElement('.avocado')
+ * append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.append(document.body, maki)
+ * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * var avocado = Chirashi.createElement('.avocado')
+ * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
  */
 export default function remove (elements) {
-    return forElements(elements, element => {
-        if (!element.parentNode) return
+  return forElements(elements, element => {
+    if (!element.parentNode) return
 
-        element.parentNode.removeChild(element)
-    })
+    element.parentNode.removeChild(element)
+  })
 }

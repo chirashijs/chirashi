@@ -1,7 +1,7 @@
-import forEach     from '../core/forEach'
+import forEach from '../core/forEach'
 import getElements from '../core/getElements'
-import on          from './on'
-import off         from './off'
+import on from './on'
+import off from './off'
 
 /**
  * Bind hover listener on each element of elements.
@@ -11,46 +11,47 @@ import off         from './off'
  * @param {bool} [once] = true - Trigger only once for each media if true
  * @param {bool} [testSrc] = true - If true callback will be called with error when an element doesn't have src
  * @return {object} offObject - An object with off method for unbinding
+ * @return {object.off} off - off method
  */
 export default function load (elements, eachCallback, allCallback, once = true, testSrc = true) {
-    elements = getElements(elements)
+  elements = getElements(elements)
 
-    if (!elements || elements.length == 0) {
-        if (allCallback) allCallback()
+  if (!elements || elements.length === 0) {
+    if (allCallback) allCallback()
 
-        return
+    return
+  }
+
+  let n = {
+    value: elements.length
+  }
+
+  const callback = (event, element, error) => {
+    if (event) {
+      element = event.target
+      if (event.type === 'error') error = event
     }
 
-    let n = {
-        value: elements.length
+    if (once) off(element, 'load loadedmetadata error', callback)
+
+    if (eachCallback) eachCallback(element, error)
+
+    if (!(--n.value) && allCallback) allCallback()
+  }
+
+  forEach(elements, element => {
+    if (testSrc && !element.src) {
+      callback(null, element, 'image without src')
+    } else if (element.naturalWidth || element.loadedmetadata) {
+      callback(null, element, null)
+    } else {
+      on(element, 'load loadedmetadata error', callback)
     }
+  })
 
-    callback = (event, element, error) => {
-        if (event) {
-            element = event.target
-            if (event.type == 'error') error = event
-        }
-
-        if (once)
-            off(element, 'load loadedmetadata error', callback)
-
-        if (eachCallback) eachCallback(element, error)
-
-        if (!(--n.value) && allCallback) allCallback()
+  return {
+    off () {
+      forEach(elements, element => off(element, 'load loadedmetadata error', callback))
     }
-
-    forEach(elements, element => {
-        if (testSrc && !element.src)
-            callback(null, element, 'image without src')
-        else if (element.naturalWidth || element.loadedmetadata)
-            callback(null, element, null)
-        else
-            on(element, 'load loadedmetadata error', callback)
-    })
-
-    return {
-        off() {
-            forEach(elements, element => off(element, 'load loadedmetadata error', callback))
-        }
-    }
+  }
 }

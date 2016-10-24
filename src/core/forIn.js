@@ -1,30 +1,56 @@
+import forEach from './forEach'
+
 /**
  * Iterates over object's keys and apply callback on each one.
- * @param {Object} object - The iterable
- * @param {function} callback - The function to call for each iteratee
- * @param {bool} [forceOrder=false] - Respect keys order
- * @return {Object} object - The iterable for chaining
+ * @param {Object} object - The iterable.
+ * @param {forInCallback} callback - The function to call for each key-value pair.
+ * @param {bool} [forceOrder=false] - Respect keys order.
+ * @return {Object} object - The iterable for chaining.
+ * @example //esnext
+ * import { forIn } from 'chirashi'
+ * const californiaRoll = { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * forIn(californiaRoll, (key, value) => {
+ *   console.log(`${key} -> ${value}`)
+ * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * //logs:
+ * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
+ * // price -> 4.25
+ * // name -> California Roll
+ * forIn(californiaRoll, (key, value) => {
+ *   console.log(`${key} -> ${value}`)
+ * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * //logs:
+ * // name -> California Roll
+ * // price -> 4.25
+ * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
+ * @example //es5
+ * var californiaRoll = { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * Chirashi.forIn(californiaRoll, (key, value) => {
+ *   console.log(key + ' -> ' + value)
+ * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * //logs:
+ * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
+ * // price -> 4.25
+ * // name -> California Roll
+ * Chirashi.forIn(californiaRoll, (key, value) => {
+ *   console.log(key + ' -> ' + value)
+ * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
+ * //logs:
+ * // name -> California Roll
+ * // price -> 4.25
+ * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  */
-export default function forIn(object, callback, forceOrder = false) {
-    if (typeof object != 'object') return
+export default function forIn (object, callback, forceOrder = false) {
+  if (typeof object !== 'object') return
 
-    let keys = Object.keys(object)
+  forEach(Object.keys(object), key => callback(key, object[key]), forceOrder)
 
-    if (!forceOrder) {
-        let i = keys.length
-
-        while(i--) {
-            let key = keys[i]
-            callback(key, object[key])
-        }
-    }
-    else {
-        let i = -1, len = keys.length
-        while(++i < len) {
-            let key = keys[i]
-            callback(key, object[key])
-        }
-    }
-
-    return object
+  return object
 }
+
+/**
+ * Callback to apply on each key-value pair.
+ * @callback forInCallback
+ * @param {string} key
+ * @param {*} value
+ */

@@ -1,7 +1,8 @@
-var prefix = (Array.prototype.slice
-  .call(window.getComputedStyle(document.documentElement, ''))
+/** Browser prefix for styling. */
+const prefix = (
+  [...window.getComputedStyle(document.documentElement, '')]
   .join('')
-  .match(/-(moz|webkit|ms)-/) || (styles.OLink === '' && ['', 'o'])
+  .match(/-(moz|webkit|ms)-/) || (window.styles.OLink === '' && ['', 'o'])
 )[1]
 
 export default prefix

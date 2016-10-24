@@ -1,26 +1,35 @@
 import forElements from '../core/forElements'
+import forIn from '../core/forIn'
 
 /**
- * Set attributes from attributes object keys to values on elements
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {Object} attributes - attribute names and values association
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * Iterates over attributes as key value pairs and apply on each element of elements.
+ * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {object} - The attributes key value pairs.
+ * @return {Array} elements - The elements for chaining.
+ * @example //esnext
+ * import { createElement, setAttr } from 'chirashi'
+ * const maki = createElement('.maki')
+ * setAttr(maki, {
+ *   dataFish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.setAttr(maki, {
+ *   dataFish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
  */
 export default function setAttr (elements, attributes) {
-    let attributesName = Object.keys(attributes)
+  forIn(attributes, (name, value) => {
+    if (value instanceof Array) {
+      attributes[name] = value.join(' ')
+    } else if (typeof value !== 'string') {
+      attributes[name] = JSON.stringify(value)
+    }
+  })
 
-    return forElements(elements, element => {
-        if (!element.setAttribute) return
+  return forElements(elements, element => {
+    if (!element.setAttribute) return
 
-        let i = attributesName.length, attributeName, value
-        while(i--) {
-            attributeName = attributesName[i]
-            value = attributes[attributeName]
-
-            if (value)
-                element.setAttribute(attributeName, value)
-            else
-                element.removeAttribute(name)
-        }
-    })
+    forIn(attributes, element.setAttribute.bind(element))
+  })
 }
