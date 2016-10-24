@@ -11,5 +11,5 @@ export default function getStyle (element, property) {
 
   let ret = window.getComputedStyle(element)[property]
 
-  return ret.indexOf('px') === -1 ? ret : +ret
+  return ret.indexOf('px') === -1 ? ret : parseFloat(ret, 10)
 }

@@ -13,7 +13,8 @@ import off from './off'
  * @return {object.off} off - off method
  */
 export default function drag (elements, move, begin, end) {
-  let undragProperties = []
+  const undragProperties = []
+  let position
 
   forElements(elements, element => {
     let dragging = false
@@ -29,7 +30,9 @@ export default function drag (elements, move, begin, end) {
 
         dragging = true
 
-        if (begin) begin({ x: e.pageX, y: e.pageY })
+        position = { x: e.pageX, y: e.pageY }
+
+        if (begin) begin({...position})
       },
 
       move (e) {
@@ -40,7 +43,10 @@ export default function drag (elements, move, begin, end) {
 
         if ('touches' in e && e.touches.length) e = e.touches[0]
 
-        if (move) move({ x: e.pageX, y: e.pageY })
+        const translation = { x: e.pageX - position.x, y: e.pageY - position.y }
+        position = { x: e.pageX, y: e.pageY }
+
+        if (move) move({...translation}, {...position})
       },
 
       end (e) {

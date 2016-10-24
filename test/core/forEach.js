@@ -7,33 +7,26 @@ window.describe('chirashi#forEach', () => {
     assert.equal(typeof Chirashi.forEach, 'function')
   })
 
-  window.it('should execute callback on array', () => {
+  window.it('should execute callback on item', () => {
     let i = items.length
     Chirashi.forEach(items, (item, index) => {
-      assert.equal(--i, index)
-      assert.equal(items[index], item)
+      assert.equal(--i, index, 'should provide index backward')
+      assert.equal(items[index], item, 'should iterate backward')
     })
-  })
 
-  window.it('should execute callback on array in same order', () => {
-    let i = -1
+    let j = -1
     Chirashi.forEach(items, (item, index) => {
-      assert.equal(++i, index)
-      assert.equal(items[index], item)
+      assert.equal(++j, index, 'should provide index forward')
+      assert.equal(items[index], item, 'should iterate forward')
     }, true)
-  })
 
-  window.it('should execute callback on singleton', () => {
     Chirashi.forEach(1, item => {
-      assert.equal(1, item)
+      assert.equal(1, item, 'should work with singleton')
     })
-  })
 
-  window.it('should return items', () => {
-    assert.equal(items, Chirashi.forEach(items, () => {}))
-  })
+    assert.equal(items, Chirashi.forEach(items, () => {}), 'should return items')
 
-  window.it('should return items in array if not', () => {
-    assert.equal(1, Chirashi.forEach(1, () => {}).length)
+    const singletonArray = Chirashi.forEach(1, () => {})
+    assert.ok(singletonArray instanceof Array && singletonArray.length === 1 && singletonArray[0] === 1, 'should return array with singleton')
   })
 })

@@ -1,5 +1,5 @@
 import forElements from '../core/forElements'
-import prefix      from '../browser/prefix'
+import prefix from '../browser/prefix'
 
 /**
 * Apply the provided 3d scale transformation on each element of elements

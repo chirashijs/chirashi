@@ -6,9 +6,13 @@
 export default function memoize (callback) {
   const cache = {}
 
-  return () => {
+  return function () {
     const args = JSON.stringify(arguments)
 
-    return args in cache ? cache[args] : cache[args] = callback.call(this, ...arguments)
+    if (!(args in cache)) {
+      cache[args] = callback.call(this, ...arguments)
+    }
+
+    return cache[args]
   }
 }

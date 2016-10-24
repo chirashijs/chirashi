@@ -1,8 +1,21 @@
 engines:
+  rubocop:
+    enabled: true
+  brakeman:
+    enabled: true
+    config:
+      path: /Users/alex/.rvm/gems/ruby-2.3.0/bin/rails
+  eslint:
+    enabled: true
   eslint:
     enabled: true
     channel: "eslint-3"
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - javascript
 
 ratings:
    paths:
-   - "**.js"
+   - src/**

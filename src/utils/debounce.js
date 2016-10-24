@@ -13,7 +13,9 @@ export default function debounce (callback, wait, immediate = false) {
     canCall = false
     callback(...args)
 
-    timeout = setTimeout(() => canCall = immediate, wait)
+    timeout = setTimeout(() => {
+      canCall = immediate
+    }, wait)
   }
 
   const debounced = (...args) => {
