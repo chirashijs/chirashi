@@ -31,7 +31,7 @@ const breakingMethods = ['push', 'splice', 'unshift']
 * Chirashi.getElements('.wasabi') //returns: []
 */
 export default function getElements (input) {
-  if (input['_chrsh-valid']) return input
+  if (input && input['_chrsh-valid']) return input
 
   let output
 

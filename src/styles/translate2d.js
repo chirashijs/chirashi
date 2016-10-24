@@ -10,7 +10,7 @@ import prefix      from '../browser/prefix'
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-export default function translate2D (elements, transformation, keep) {
+export default function translate2d (elements, transformation, keep) {
     let x = 'x' in transformation ? transformation.x : 0,
         y = 'y' in transformation ? transformation.y : 0
 

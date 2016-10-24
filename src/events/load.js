@@ -6,8 +6,8 @@ import off from './off'
 /**
  * Bind hover listener on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {function} eachCallback - The callback on each load event
- * @param {function} allCallback - The callback when all elements have been loaded
+ * @param {eventCallback} eachCallback - The callback on each load event
+ * @param {eventCallback} allCallback - The callback when all elements have been loaded
  * @param {bool} [once] = true - Trigger only once for each media if true
  * @param {bool} [testSrc] = true - If true callback will be called with error when an element doesn't have src
  * @return {object} offObject - An object with off method for unbinding

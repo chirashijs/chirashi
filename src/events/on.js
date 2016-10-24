@@ -22,5 +22,5 @@ export default function on (elements, input) {
 /**
 * Callback to execute on event.
 * @callback eventCallback
-* @param {object} event - Triggered event.
+* @param {Event} event - Triggered event.
 */

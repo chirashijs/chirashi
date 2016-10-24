@@ -3,7 +3,7 @@ import scale from './scale'
 import translate from './translate'
 
 /**
- * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
+ * Set the provided transformation to all elements using a matrix if needed and 3d if supported.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {object} [transformation] - The transformation as an object
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining

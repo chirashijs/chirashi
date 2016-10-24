@@ -1,10 +1,10 @@
-import support3D from '../browser/support3D'
+import support3d from '../browser/support3d'
 
-import translate2D from './translate2D'
-import translate3D from './translate3D'
+import translate2d from './translate2d'
+import translate3d from './translate3d'
 
 /**
-* Apply the provided translate transformation (3D if supported) on each element of elements
+* Apply the provided translate transformation (3d if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -14,5 +14,5 @@ import translate3D from './translate3D'
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 export default function translate (elements, transformation, keep) {
-    return support3D ? translate3D(elements, transformation, keep) : translate2D(elements, transformation, keep)
+    return support3d ? translate3d(elements, transformation, keep) : translate2d(elements, transformation, keep)
 }

@@ -1,9 +1,9 @@
 import forElements         from '../core/forElements'
 import prefix              from '../browser/prefix'
-import transformTo2DMatrix from '../utils/transformTo2DMatrix'
+import transformTo2dMatrix from '../utils/transformTo2dMatrix'
 
 /**
-* Apply the provided transformation as a 2D matrix on each element of elements
+* Apply the provided transformation as a 2d matrix on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -26,8 +26,8 @@ import transformTo2DMatrix from '../utils/transformTo2DMatrix'
 * @param {object.skewY} skewY - skewY option
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-export default function matrix2D (elements, transformation) {
-  let matrix = transformTo2DMatrix(transformation)
+export default function matrix2d (elements, transformation) {
+  let matrix = transformTo2dMatrix(transformation)
 
   matrix = `matrix(${matrix.join(',')})`
 

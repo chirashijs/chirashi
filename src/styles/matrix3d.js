@@ -1,9 +1,9 @@
 import forElements         from '../core/forElements'
 import prefix              from '../browser/prefix'
-import transformTo3DMatrix from '../utils/transformTo3DMatrix'
+import transformTo3dMatrix from '../utils/transformTo3dMatrix'
 
 /**
-* Apply the provided transformation as a 3D matrix on each element of elements
+* Apply the provided transformation as a 3d matrix on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -31,10 +31,10 @@ import transformTo3DMatrix from '../utils/transformTo3DMatrix'
 * @param {object.skewY} skewY - skewY option
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-export default function matrix3D (elements, transformation) {
-  let matrix = transformTo3DMatrix(transformation)
+export default function matrix3d (elements, transformation) {
+  let matrix = transformTo3dMatrix(transformation)
 
-  matrix = `matrix3D(${matrix.join(',')})`
+  matrix = `matrix3d(${matrix.join(',')})`
 
   return forElements(elements, element => {
     if (!element.style) return

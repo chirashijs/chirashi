@@ -89,11 +89,11 @@ function _applyPropertyToMatrix (property, value, matrix) {
 }
 
 /**
- * Convert a transformation as object to a 3D matrix as object
+ * Convert a transformation as object to a 3d matrix as object
  * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 3D matrix
+ * @return {Array} matrix - The 3d matrix
  */
-export default function transformTo3DMatrix (transformation) {
+export default function transformTo3dMatrix (transformation) {
   const matrix = [
     1, 0, 0, 0,
     0, 1, 0, 0,

@@ -2,7 +2,7 @@ import forElements from '../core/forElements'
 import prefix      from '../browser/prefix'
 
 /**
-* Apply the provided 3D scale transformation on each element of elements
+* Apply the provided 3d scale transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.scale} scale - scale option
@@ -15,7 +15,7 @@ import prefix      from '../browser/prefix'
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-export default function scale3D (elements, transformation, keep) {
+export default function scale3d (elements, transformation, keep) {
   let scaleX
   if ('scaleX' in transformation) {
     scaleX = transformation.scaleX
@@ -51,7 +51,7 @@ export default function scale3D (elements, transformation, keep) {
     scaleZ = 1
   }
 
-  const style = `scale3D(${scaleX},${scaleY},${scaleZ})`
+  const style = `scale3d(${scaleX},${scaleY},${scaleZ})`
 
   return forElements(elements, element => {
     if (!element.style) return

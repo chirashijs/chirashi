@@ -13,7 +13,7 @@ import prefix from '../browser/prefix'
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-export default function scale2D (elements, transformation, keep) {
+export default function scale2d (elements, transformation, keep) {
   let scaleX
   if ('scaleX' in transformation) {
     scaleX = transformation.scaleX

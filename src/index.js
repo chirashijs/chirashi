@@ -15,7 +15,7 @@ import isWindows from './browser/isWindows'
 import isWindowsPhone from './browser/isWindowsPhone'
 import isWindowsTablet from './browser/isWindowsTablet'
 import prefix from './browser/prefix'
-import support3D from './browser/support3D'
+import support3d from './browser/support3d'
 import ua from './browser/ua'
 import vendor from './browser/vendor'
 import forEach from './core/forEach'
@@ -66,13 +66,13 @@ import getStyle from './styles/getStyle'
 import getWidth from './styles/getWidth'
 import hide from './styles/hide'
 import matrix from './styles/matrix'
-import matrix2D from './styles/matrix2D'
-import matrix3D from './styles/matrix3D'
+import matrix2d from './styles/matrix2d'
+import matrix3d from './styles/matrix3d'
 import offset from './styles/offset'
 import position from './styles/position'
 import scale from './styles/scale'
-import scale2D from './styles/scale2D'
-import scale3D from './styles/scale3D'
+import scale2d from './styles/scale2d'
+import scale3d from './styles/scale3d'
 import screenPosition from './styles/screenPosition'
 import setHeight from './styles/setHeight'
 import setSize from './styles/setSize'
@@ -81,16 +81,16 @@ import setWidth from './styles/setWidth'
 import show from './styles/show'
 import transform from './styles/transform'
 import translate from './styles/translate'
-import translate2D from './styles/translate2D'
-import translate3D from './styles/translate3D'
+import translate2d from './styles/translate2d'
+import translate3d from './styles/translate3d'
 import clamp from './utils/clamp'
 import debounce from './utils/debounce'
 import memoize from './utils/memoize'
 import randomBetween from './utils/randomBetween'
 import randomIntBetween from './utils/randomIntBetween'
 import throttle from './utils/throttle'
-import transformTo2DMatrix from './utils/transformTo2DMatrix'
-import transformTo3DMatrix from './utils/transformTo3DMatrix'
+import transformTo2dMatrix from './utils/transformTo2dMatrix'
+import transformTo3dMatrix from './utils/transformTo3dMatrix'
 
 export default {
   isAndroid,
@@ -110,7 +110,7 @@ export default {
   isWindowsPhone,
   isWindowsTablet,
   prefix,
-  support3D,
+  support3d,
   ua,
   vendor,
   forEach,
@@ -161,13 +161,13 @@ export default {
   getWidth,
   hide,
   matrix,
-  matrix2D,
-  matrix3D,
+  matrix2d,
+  matrix3d,
   offset,
   position,
   scale,
-  scale2D,
-  scale3D,
+  scale2d,
+  scale3d,
   screenPosition,
   setHeight,
   setSize,
@@ -176,14 +176,14 @@ export default {
   show,
   transform,
   translate,
-  translate2D,
-  translate3D,
+  translate2d,
+  translate3d,
   clamp,
   debounce,
   memoize,
   randomBetween,
   randomIntBetween,
   throttle,
-  transformTo2DMatrix,
-  transformTo3DMatrix
+  transformTo2dMatrix,
+  transformTo3dMatrix
 }

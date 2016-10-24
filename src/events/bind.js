@@ -61,6 +61,6 @@ export default function bind (selector, input, delegate = document.body) {
 /**
 * Callback to execute on event.
 * @callback bindCallback
-* @param {object} event - Triggered event.
+* @param {Event} event - Triggered event.
 * @param {HTMLElement | SVGElement} target - Target of the event.
 */

@@ -2,7 +2,7 @@ import on from './on'
 
 /**
  * Execute callback when dom is ready.
- * @param {function} callback - The callback
+ * @param {eventCallback} callback - The callback.
  */
 export default function ready (callback) {
   on(document, {

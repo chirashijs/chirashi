@@ -18,9 +18,3 @@ export default function off (elements, input) {
     })
   })
 }
-
-/**
-* Callback to execute on event.
-* @callback eventCallback
-* @param {object} event - Triggered event.
-*/

@@ -51,11 +51,11 @@ function _applyPropertyToMatrix (property, value, matrix) {
 }
 
 /**
- * Convert a transformation as object to a 2D matrix as object
+ * Convert a transformation as object to a 2d matrix as object
  * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 2D matrix
+ * @return {Array} matrix - The 2d matrix
  */
-export default function transformTo2DMatrix (transformation) {
+export default function transformTo2dMatrix (transformation) {
   const matrix = [
     1, 0,
     0, 1,
