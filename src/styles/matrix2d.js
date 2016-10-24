@@ -1,6 +1,6 @@
-import forElements         from '../core/forElements'
-import prefix              from '../browser/prefix'
+import prefix from '../browser/prefix'
 import transformTo2dMatrix from '../utils/transformTo2dMatrix'
+import setStyle from './setStyle'
 
 /**
 * Apply the provided transformation as a 2d matrix on each element of elements
@@ -27,13 +27,7 @@ import transformTo2dMatrix from '../utils/transformTo2dMatrix'
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 export default function matrix2d (elements, transformation) {
-  let matrix = transformTo2dMatrix(transformation)
+  const matrix = transformTo2dMatrix(transformation).join(',')
 
-  matrix = `matrix(${matrix.join(',')})`
-
-  return forElements(elements, element => {
-    if (!element.style) return
-
-    element.style[`${prefix}transform`] = matrix
-  })
+  return setStyle(elements, {[`${prefix}transform`]: `matrix(${matrix})`})
 }

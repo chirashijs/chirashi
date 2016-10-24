@@ -1,45 +1,50 @@
 // Karma configuration
 
-module.exports = function(config) {
-    config.set({
-        plugins: [
-            'karma-mocha',
-            require('karma-webpack'),
-            'karma-chrome-launcher',
-            'karma-firefox-launcher'
-        ],
+module.exports = function (config) {
+  config.set({
+    plugins: [
+      'karma-coverage',
+      'karma-mocha',
+      require('karma-webpack'),
+      'karma-chrome-launcher',
+      'karma-firefox-launcher'
+    ],
 
-        basePath: './',
+    basePath: './',
 
-        frameworks: ['mocha'],
+    frameworks: ['mocha'],
 
-        files: ['test/**/*.js'],
+    files: ['test/**/*.js'],
 
-        preprocessors: {
-            'src/**/*.js': ['webpack'],
-            'test/**/*.js': ['webpack']
-        },
+    reporters: ['coverage'],
 
-        webpack: {
-            module: {
-                loaders: [
-                    {
-                        test: /(\.js$)|(\.jsx$)/,
-                        exclude: /node_modules/,
-                        loader: 'babel',
-                        query: {
-                            presets: ['es2015'],
-                            plugins: ['transform-runtime', 'transform-object-rest-spread']
-                        }
-                    }
-                ]
+    preprocessors: {
+      'src/**/*.js': ['webpack', 'coverage'],
+      'test/**/*.js': ['webpack', 'coverage']
+    },
+
+    webpack: {
+      module: {
+        loaders: [
+          {
+            test: /(\.js$)|(\.jsx$)/,
+            exclude: /node_modules/,
+            loader: 'babel',
+            query: {
+              presets: ['es2015'],
+              plugins: ['transform-runtime', 'transform-object-rest-spread']
             }
-        },
+          }
+        ]
+      }
+    },
 
-        webpackMiddleware: { noInfo: true },
+    webpackMiddleware: { noInfo: true },
 
-        autoWatch: true,
+    autoWatch: true,
 
-        browsers: ['Chrome', 'Firefox']
-    })
+    browsers: ['Chrome', 'Firefox'],
+
+    coverageReporter: { type: 'lcov', subdir: 'report-lcov' }
+  })
 }

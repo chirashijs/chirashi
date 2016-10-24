@@ -1,6 +1,6 @@
-import forElements         from '../core/forElements'
-import prefix              from '../browser/prefix'
+import prefix from '../browser/prefix'
 import transformTo3dMatrix from '../utils/transformTo3dMatrix'
+import setStyle from './setStyle'
 
 /**
 * Apply the provided transformation as a 3d matrix on each element of elements
@@ -32,13 +32,7 @@ import transformTo3dMatrix from '../utils/transformTo3dMatrix'
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 export default function matrix3d (elements, transformation) {
-  let matrix = transformTo3dMatrix(transformation)
+  const matrix = transformTo3dMatrix(transformation).join(',')
 
-  matrix = `matrix3d(${matrix.join(',')})`
-
-  return forElements(elements, element => {
-    if (!element.style) return
-
-    element.style[`${prefix}transform`] = matrix
-  })
+  return setStyle(elements, {[`${prefix}transform`]: `matrix(${matrix})`})
 }

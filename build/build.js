@@ -4,7 +4,7 @@ var rollup = require('rollup')
 var uglify = require('uglify-js')
 var babel = require('rollup-plugin-babel')
 var replace = require('rollup-plugin-replace')
-var version = process.env.VERSION || require('../package.json').version
+var version = require('../package.json').version
 
 var banner =
   '/*!\n' +
@@ -29,9 +29,9 @@ rollup.rollup({
       runtimeHelpers: true,
       presets: [
         [
-            'es2015-rollup'
-          ]
-        ],
+          'es2015-rollup'
+        ]
+      ],
       plugins: ['transform-object-rest-spread']
     })
   ]

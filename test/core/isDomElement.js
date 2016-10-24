@@ -2,7 +2,6 @@ import assert from 'assert'
 import Chirashi from '../../src'
 
 window.describe('chirashi#isDomElement', () => {
-
   window.it('should return a function', () => {
     assert.equal(typeof Chirashi.isDomElement, 'function')
   })

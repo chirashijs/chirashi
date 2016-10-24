@@ -1,6 +1,8 @@
 import forIn from '../core/forIn'
 
 function _applyPropertyToMatrix (property, value, matrix) {
+  let cosValue, sinValue, tanValue
+
   switch (property) {
     case 'x':
       matrix[12] += value
@@ -15,8 +17,8 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'rotate':
-      let cosValue = Math.cos(value)
-      let sinValue = Math.sin(value)
+      cosValue = Math.cos(value)
+      sinValue = Math.sin(value)
 
       matrix[0] *= cosValue
       matrix[1] += sinValue
@@ -25,33 +27,33 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'rotateX':
-      let cosValue2 = Math.cos(value)
-      let sinValue2 = Math.sin(value)
+      cosValue = Math.cos(value)
+      sinValue = Math.sin(value)
 
-      matrix[5] *= cosValue2
-      matrix[6] += sinValue2
-      matrix[9] -= sinValue2
-      matrix[10] *= cosValue2
+      matrix[5] *= cosValue
+      matrix[6] += sinValue
+      matrix[9] -= sinValue
+      matrix[10] *= cosValue
       break
 
     case 'rotateY':
-      let cosValue3 = Math.cos(value)
-      let sinValue3 = Math.sin(value)
+      cosValue = Math.cos(value)
+      sinValue = Math.sin(value)
 
-      matrix[0] *= cosValue3
-      matrix[2] -= sinValue3
-      matrix[8] += sinValue3
-      matrix[10] *= cosValue3
+      matrix[0] *= cosValue
+      matrix[2] -= sinValue
+      matrix[8] += sinValue
+      matrix[10] *= cosValue
       break
 
     case 'rotateZ':
-      let cosValue4 = Math.cos(value)
-      let sinValue4 = Math.sin(value)
+      cosValue = Math.cos(value)
+      sinValue = Math.sin(value)
 
-      matrix[0] *= cosValue4
-      matrix[1] += sinValue4
-      matrix[4] -= sinValue4
-      matrix[5] *= cosValue4
+      matrix[0] *= cosValue
+      matrix[1] += sinValue
+      matrix[4] -= sinValue
+      matrix[5] *= cosValue
       break
 
     case 'scale':
@@ -72,7 +74,7 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'skew':
-      let tanValue = Math.tan(value)
+      tanValue = Math.tan(value)
 
       matrix[4] += tanValue
       matrix[1] += tanValue

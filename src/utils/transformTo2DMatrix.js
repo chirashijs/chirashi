@@ -1,6 +1,8 @@
 import forIn from '../core/forIn'
 
 function _applyPropertyToMatrix (property, value, matrix) {
+  let cosValue, sinValue, tanValue
+
   switch (property) {
     case 'x':
       matrix[4] += value
@@ -11,8 +13,8 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'rotate':
-      let cosValue = Math.cos(value)
-      let sinValue = Math.sin(value)
+      cosValue = Math.cos(value)
+      sinValue = Math.sin(value)
 
       matrix[0] *= cosValue
       matrix[1] += sinValue
@@ -34,7 +36,7 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'skew':
-      let tanValue = Math.tan(value)
+      tanValue = Math.tan(value)
 
       matrix[2] += tanValue
       matrix[1] += tanValue

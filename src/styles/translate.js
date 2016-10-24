@@ -14,5 +14,5 @@ import translate3d from './translate3d'
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 export default function translate (elements, transformation, keep) {
-    return support3d ? translate3d(elements, transformation, keep) : translate2d(elements, transformation, keep)
+  return support3d ? translate3d(elements, transformation, keep) : translate2d(elements, transformation, keep)
 }
