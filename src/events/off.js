@@ -1,6 +1,4 @@
-import forEach from '../core/forEach'
-import forElements from '../core/forElements'
-import forIn from '../core/forIn'
+import _setEvents from '../internals/_setEvents'
 
 /**
  * Bind events listener on each element of elements.
@@ -10,11 +8,5 @@ import forIn from '../core/forIn'
  * @return {Array} elements - The iterable for chaining.
  */
 export default function off (elements, input) {
-  return forElements(elements, element => {
-    if (!element.addEventListener) return
-
-    forIn(input, (events, callback) => {
-      forEach(events.split(/[,\s]+/g), event => element.removeEventListener(event, callback))
-    })
-  })
+  return _setEvents(elements, 'remove', input)
 }

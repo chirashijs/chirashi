@@ -35,12 +35,10 @@
 * //   0: 1
 */
 export default function forEach (items, callback, forceOrder = false) {
-  if (!items) return
+  if (!items) return []
 
   if (!(items instanceof Array)) {
-    if (items instanceof window.NodeList || items instanceof window.HTMLCollection) {
-      items = [...items]
-    } else {
+    if (!(items instanceof window.NodeList || items instanceof window.HTMLCollection)) {
       items = [items]
     }
   }

@@ -15,7 +15,6 @@ import isWindows from './browser/isWindows'
 import isWindowsPhone from './browser/isWindowsPhone'
 import isWindowsTablet from './browser/isWindowsTablet'
 import prefix from './browser/prefix'
-import support3d from './browser/support3d'
 import ua from './browser/ua'
 import vendor from './browser/vendor'
 import forEach from './core/forEach'
@@ -45,6 +44,7 @@ import next from './dom/next'
 import parent from './dom/parent'
 import prev from './dom/prev'
 import remove from './dom/remove'
+import removeAttr from './dom/removeAttr'
 import removeClass from './dom/removeClass'
 import setAttr from './dom/setAttr'
 import setData from './dom/setData'
@@ -65,14 +65,8 @@ import getSize from './styles/getSize'
 import getStyle from './styles/getStyle'
 import getWidth from './styles/getWidth'
 import hide from './styles/hide'
-import matrix from './styles/matrix'
-import matrix2d from './styles/matrix2d'
-import matrix3d from './styles/matrix3d'
 import offset from './styles/offset'
 import position from './styles/position'
-import scale from './styles/scale'
-import scale2d from './styles/scale2d'
-import scale3d from './styles/scale3d'
 import screenPosition from './styles/screenPosition'
 import setHeight from './styles/setHeight'
 import setSize from './styles/setSize'
@@ -80,17 +74,13 @@ import setStyle from './styles/setStyle'
 import setWidth from './styles/setWidth'
 import show from './styles/show'
 import transform from './styles/transform'
-import translate from './styles/translate'
-import translate2d from './styles/translate2d'
-import translate3d from './styles/translate3d'
 import clamp from './utils/clamp'
 import debounce from './utils/debounce'
 import memoize from './utils/memoize'
 import randomBetween from './utils/randomBetween'
 import randomIntBetween from './utils/randomIntBetween'
 import throttle from './utils/throttle'
-import transformTo2dMatrix from './utils/transformTo2dMatrix'
-import transformTo3dMatrix from './utils/transformTo3dMatrix'
+import getTransformMatrix from './utils/getTransformMatrix'
 
 export default {
   isAndroid,
@@ -110,7 +100,6 @@ export default {
   isWindowsPhone,
   isWindowsTablet,
   prefix,
-  support3d,
   ua,
   vendor,
   forEach,
@@ -140,6 +129,7 @@ export default {
   parent,
   prev,
   remove,
+  removeAttr,
   removeClass,
   setAttr,
   setData,
@@ -160,14 +150,8 @@ export default {
   getStyle,
   getWidth,
   hide,
-  matrix,
-  matrix2d,
-  matrix3d,
   offset,
   position,
-  scale,
-  scale2d,
-  scale3d,
   screenPosition,
   setHeight,
   setSize,
@@ -175,15 +159,11 @@ export default {
   setWidth,
   show,
   transform,
-  translate,
-  translate2d,
-  translate3d,
   clamp,
   debounce,
   memoize,
   randomBetween,
   randomIntBetween,
   throttle,
-  transformTo2dMatrix,
-  transformTo3dMatrix
+  getTransformMatrix
 }

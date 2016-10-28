@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
 
 /**
  * Get the inner html of an element.
@@ -15,7 +15,5 @@ import getElement from '../core/getElement'
  * getHtml(maki) //returns: "salmon"
  */
 export default function getHtml (element) {
-  element = getElement(element)
-
-  return element ? element.innerHTML : null
+  return getProp(element, 'innerHTML')
 }

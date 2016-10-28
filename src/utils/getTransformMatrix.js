@@ -1,7 +1,8 @@
+import forEach from '../core/forEach'
 import forIn from '../core/forIn'
 
 function _applyPropertyToMatrix (property, value, matrix) {
-  let cosValue, sinValue, tanValue
+  let indexes, cosValue, sinValue, tanValue
 
   switch (property) {
     case 'x':
@@ -27,33 +28,23 @@ function _applyPropertyToMatrix (property, value, matrix) {
       break
 
     case 'rotateX':
-      cosValue = Math.cos(value)
-      sinValue = Math.sin(value)
-
-      matrix[5] *= cosValue
-      matrix[6] += sinValue
-      matrix[9] -= sinValue
-      matrix[10] *= cosValue
-      break
-
     case 'rotateY':
-      cosValue = Math.cos(value)
-      sinValue = Math.sin(value)
-
-      matrix[0] *= cosValue
-      matrix[2] -= sinValue
-      matrix[8] += sinValue
-      matrix[10] *= cosValue
-      break
-
     case 'rotateZ':
       cosValue = Math.cos(value)
       sinValue = Math.sin(value)
 
-      matrix[0] *= cosValue
-      matrix[1] += sinValue
-      matrix[4] -= sinValue
-      matrix[5] *= cosValue
+      if (property === 'rotateX') {
+        indexes = [5, 6, 9, 10]
+      } else if (property === 'rotateY') {
+        indexes = [0, 8, 2, 10]
+      } else {
+        indexes = [0, 1, 4, 5]
+      }
+
+      matrix[indexes[0]] *= cosValue
+      matrix[indexes[1]] += sinValue
+      matrix[indexes[2]] -= sinValue
+      matrix[indexes[3]] *= cosValue
       break
 
     case 'scale':
@@ -76,8 +67,9 @@ function _applyPropertyToMatrix (property, value, matrix) {
     case 'skew':
       tanValue = Math.tan(value)
 
-      matrix[4] += tanValue
       matrix[1] += tanValue
+      matrix[4] += tanValue
+
       break
 
     case 'skewX':
@@ -95,7 +87,7 @@ function _applyPropertyToMatrix (property, value, matrix) {
  * @param {object} transformation - The transformation object
  * @return {Array} matrix - The 3d matrix
  */
-export default function transformTo3dMatrix (transformation) {
+export default function getTransformMatrix (transformation) {
   const matrix = [
     1, 0, 0, 0,
     0, 1, 0, 0,
@@ -111,6 +103,10 @@ export default function transformTo3dMatrix (transformation) {
     } else {
       _applyPropertyToMatrix(prop, value, matrix)
     }
+  })
+
+  forEach(matrix, (item, index) => {
+    matrix[index] = +item.toFixed(2)
   })
 
   return matrix

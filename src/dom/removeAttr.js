@@ -1,5 +1,4 @@
-import forEach from '../core/forEach'
-import forElements from '../core/forElements'
+import _applyForEach from '../internals/_applyForEach'
 
 /**
  * Iterates over attributes and removes it from each element of elements.
@@ -20,9 +19,5 @@ import forElements from '../core/forElements'
 export default function removeAttr (elements, attributes) {
   if (typeof attributes === 'string') attributes = attributes.split(/[,\s]+/g)
 
-  return forElements(elements, element => {
-    if (!element.removeAttribute) return
-
-    forEach(attributes, element.removeAttribute.bind(element))
-  })
+  return _applyForEach(elements, 'removeAttribute', attributes)
 }

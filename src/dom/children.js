@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
 
 /**
  * Returns an array of element's children.
@@ -15,7 +15,7 @@ import getElement from '../core/getElement'
  * Chirashi.children(maki) //returns: [<div class="salmon"></div>, <div class="avocado"></div>]
  */
 export default function children (element) {
-  element = getElement(element)
+  const children = getProp(element, 'children')
 
-  return !!element && 'children' in element && [...element.children]
+  return !!children && [...children]
 }

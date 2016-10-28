@@ -7,7 +7,7 @@ import getHeight from './getHeight'
  * @return {number} size - The size in pixels
  */
 export default function getSize (element, inner = false) {
-  return !!element && {
+  return {
     width: getWidth(element, inner),
     height: getHeight(element, inner)
   }

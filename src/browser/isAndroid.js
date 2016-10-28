@@ -1,6 +1,6 @@
-import ua from './ua'
+import _testUA from '../internals/_testUA'
 
 /** Variable true if the device is running Android based on User Agent. */
-const isAndroid = /android/i.test(ua)
+const isAndroid = _testUA('android')
 
 export default isAndroid

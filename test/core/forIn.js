@@ -29,4 +29,8 @@ window.describe('chirashi#forIn', () => {
       assert.equal(value, object[keys[i]])
     }, true)
   })
+
+  window.it('shouldn\'t crash if input isn\'t an object', () => {
+    assert.equal(Chirashi.forIn('test', (key, value) => {}), undefined)
+  })
 })

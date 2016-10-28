@@ -1,21 +1,35 @@
+---
 engines:
-  rubocop:
-    enabled: true
-  brakeman:
-    enabled: true
-    config:
-      path: /Users/alex/.rvm/gems/ruby-2.3.0/bin/rails
   eslint:
     enabled: true
-  eslint:
-    enabled: true
-    channel: "eslint-3"
+    channel: eslint-3
+    checks:
+      complexity:
+        enabled: true
   duplication:
     enabled: true
     config:
       languages:
       - javascript
-
+  rubocop:
+    enabled: true
+exclude_paths:
+- .DS_Store
+- build/
+- coverage/
+- dist/
+- node_modules/
+- test/
+- .codeclimate.yml
+- .eslintignore
+- .eslintrc
+- .gitignore
+- docs.json
+- files.json
+- karma.conf.js
+- LICENSE
+- package.json
+- README.md
 ratings:
-   paths:
-   - src/**
+  paths:
+  - src/**

@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
 
 /**
  * Returns the parent node of the element.
@@ -18,7 +18,5 @@ import getElement from '../core/getElement'
  * Chirashi.parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  */
 export default function parent (element) {
-  element = getElement(element)
-
-  return element && element.parentNode
+  return getProp(element, 'parentNode')
 }

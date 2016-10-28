@@ -5,5 +5,5 @@
  * @return {function} value - A random value between min and max
  */
 export default function randomBetween (max, min = 0) {
-  return Math.random() * (max - min + 1) + min
+  return Math.random() * (max - min) + min
 }

@@ -1,8 +1,8 @@
 // Karma configuration
-
 module.exports = function (config) {
   config.set({
     plugins: [
+      'karma-spec-reporter',
       'karma-coverage',
       'karma-mocha',
       require('karma-webpack'),
@@ -16,11 +16,11 @@ module.exports = function (config) {
 
     files: ['test/**/*.js'],
 
-    reporters: ['coverage'],
+    reporters: ['spec', 'coverage'],
 
     preprocessors: {
-      'src/**/*.js': ['webpack', 'coverage'],
-      'test/**/*.js': ['webpack', 'coverage']
+      'src/**/*.js': ['webpack'],
+      'test/**/*.js': ['webpack']
     },
 
     webpack: {
@@ -32,7 +32,7 @@ module.exports = function (config) {
             loader: 'babel',
             query: {
               presets: ['es2015'],
-              plugins: ['transform-runtime', 'transform-object-rest-spread']
+              plugins: ['istanbul', 'transform-runtime', 'transform-object-rest-spread']
             }
           }
         ]
@@ -45,6 +45,18 @@ module.exports = function (config) {
 
     browsers: ['Chrome', 'Firefox'],
 
-    coverageReporter: { type: 'lcov', subdir: 'report-lcov' }
+    coverageReporter: {
+      type: 'lcov',
+      subdir: 'report-lcov'
+    },
+
+    specReporter: {
+      maxLogLines: 5,
+      suppressErrorSummary: true,
+      suppressFailed: false,
+      suppressPassed: false,
+      suppressSkipped: true,
+      showSpecTiming: false
+    }
   })
 }

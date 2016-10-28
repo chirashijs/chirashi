@@ -8,35 +8,39 @@
 /** User Agent in lower case. */
 var ua = navigator && navigator.userAgent.toLowerCase();
 
-/** Variable true if the device is running Android based on User Agent. */
-var isAndroid = /android/i.test(ua);
-
-/** Variable true if the device is an Android Tablet based on User Agent. */
-var isAndroidTablet = isAndroid && !/mobile/i.test(ua);
-
 /** Navigator's vendor in lower case. */
 var vendor = navigator && navigator.vendor && navigator.vendor.toLowerCase();
 
+function _testUA(uaRegex, vendorRegex) {
+  return new RegExp('/' + uaRegex + '/i').test(ua) && (!vendorRegex || new RegExp('/' + vendorRegex + '/').test(vendor));
+}
+
+/** Variable true if the device is running Android based on User Agent. */
+var isAndroid = _testUA('android');
+
+/** Variable true if the device is an Android Tablet based on User Agent. */
+var isAndroidTablet = isAndroid && !_testUA('mobile');
+
 /** Variable true if the browser is Chrome or Chromium based on User Agent. */
-var isChrome = /chrome|chromium/i.test(ua) && /google inc/.test(vendor);
+var isChrome = _testUA('chrome|chromium', 'google inc');
 
 /** Variable true if the browser is Firefox based on User Agent. */
-var isFirefox = /firefox/i.test(ua);
+var isFirefox = _testUA('firefox');
 
 /** Version number if the browser is Internet Explorer or false based on User Agent. */
 var isIE = ua.indexOf('msie') !== -1 ? +ua.split('msie')[1] : false;
 
 /** Variable true if the device is running iOS based on User Agent. */
-var isIOS = /iphone|ipad|ipod/i.test(ua);
+var isIOS = _testUA('iphone|ipad|ipod');
 
 /** Variable true if the device is an iPad based on User Agent. */
-var isIPad = /ipad/i.test(ua);
+var isIPad = _testUA('ipad');
 
 /** Variable true if the device is an iPhone based on User Agent. */
-var isIPhone = /iphone/i.test(ua);
+var isIPhone = _testUA('iphone');
 
 /** Variable true if the device is an iPod based on User Agent. */
-var isIPod = /ipod/i.test(ua);
+var isIPod = _testUA('ipod');
 
 /** Variable true if the device is running Windows based on User Agent. */
 var isWindows = /win/i.test('navigator' in window && 'appVersion' in window.navigator && window.navigator.appVersion.toLowerCase() || '');
@@ -48,10 +52,10 @@ var isTouchable = !!('ontouchstart' in window || window.DocumentTouch && documen
 var isMobile = isIOS || isAndroid || isWindows && isTouchable;
 
 /** Variable true if the browser is Safari based on User Agent. */
-var isSafari = /safari/i.test(ua) && /apple computer/.test(vendor);
+var isSafari = _testUA('safari', 'apple computer');
 
 /** Variable true if the device is a Windows Phone based on User Agent. */
-var isWindowsPhone = isWindows && /phone/i.test(ua);
+var isWindowsPhone = isWindows && _testUA('phone');
 
 /** Variable true if the device is a Windows Tablet based on User Agent. */
 var isWindowsTablet = isWindows && !isWindowsPhone && isTouchable;
@@ -62,7 +66,151 @@ var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+
+
+
+
+
+var asyncGenerator = function () {
+  function AwaitValue(value) {
+    this.value = value;
+  }
+
+  function AsyncGenerator(gen) {
+    var front, back;
+
+    function send(key, arg) {
+      return new Promise(function (resolve, reject) {
+        var request = {
+          key: key,
+          arg: arg,
+          resolve: resolve,
+          reject: reject,
+          next: null
+        };
+
+        if (back) {
+          back = back.next = request;
+        } else {
+          front = back = request;
+          resume(key, arg);
+        }
+      });
+    }
+
+    function resume(key, arg) {
+      try {
+        var result = gen[key](arg);
+        var value = result.value;
+
+        if (value instanceof AwaitValue) {
+          Promise.resolve(value.value).then(function (arg) {
+            resume("next", arg);
+          }, function (arg) {
+            resume("throw", arg);
+          });
+        } else {
+          settle(result.done ? "return" : "normal", result.value);
+        }
+      } catch (err) {
+        settle("throw", err);
+      }
+    }
+
+    function settle(type, value) {
+      switch (type) {
+        case "return":
+          front.resolve({
+            value: value,
+            done: true
+          });
+          break;
+
+        case "throw":
+          front.reject(value);
+          break;
+
+        default:
+          front.resolve({
+            value: value,
+            done: false
+          });
+          break;
+      }
+
+      front = front.next;
+
+      if (front) {
+        resume(front.key, front.arg);
+      } else {
+        back = null;
+      }
+    }
+
+    this._invoke = send;
+
+    if (typeof gen.return !== "function") {
+      this.return = undefined;
+    }
+  }
+
+  if (typeof Symbol === "function" && Symbol.asyncIterator) {
+    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
+      return this;
+    };
+  }
+
+  AsyncGenerator.prototype.next = function (arg) {
+    return this._invoke("next", arg);
+  };
+
+  AsyncGenerator.prototype.throw = function (arg) {
+    return this._invoke("throw", arg);
+  };
+
+  AsyncGenerator.prototype.return = function (arg) {
+    return this._invoke("return", arg);
+  };
+
+  return {
+    wrap: function (fn) {
+      return function () {
+        return new AsyncGenerator(fn.apply(this, arguments));
+      };
+    },
+    await: function (value) {
+      return new AwaitValue(value);
+    }
+  };
+}();
+
+
+
+
+
+
+
+
+
+
+
+
+
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
 };
 
 var _extends = Object.assign || function (target) {
@@ -79,6 +227,83 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
+var get = function get(object, property, receiver) {
+  if (object === null) object = Function.prototype;
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent === null) {
+      return undefined;
+    } else {
+      return get(parent, property, receiver);
+    }
+  } else if ("value" in desc) {
+    return desc.value;
+  } else {
+    var getter = desc.get;
+
+    if (getter === undefined) {
+      return undefined;
+    }
+
+    return getter.call(receiver);
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var set = function set(object, property, value, receiver) {
+  var desc = Object.getOwnPropertyDescriptor(object, property);
+
+  if (desc === undefined) {
+    var parent = Object.getPrototypeOf(object);
+
+    if (parent !== null) {
+      set(parent, property, value, receiver);
+    }
+  } else if ("value" in desc && desc.writable) {
+    desc.value = value;
+  } else {
+    var setter = desc.set;
+
+    if (setter !== undefined) {
+      setter.call(receiver, value);
+    }
+  }
+
+  return value;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var toConsumableArray = function (arr) {
   if (Array.isArray(arr)) {
     for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
@@ -93,19 +318,19 @@ var toConsumableArray = function (arr) {
 var prefix = ([].concat(toConsumableArray(window.getComputedStyle(document.documentElement, ''))).join('').match(/-(moz|webkit|ms)-/) || window.styles.OLink === '' && ['', 'o'])[1];
 
 var property = prefix + 'Transform';
-document.documentElement.style[property] = 'matrix3D(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
+document.documentElement.style[property] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
 
-/** Variable true if the browser supports 3D css transformations. */
-var support3D = !!document.documentElement.style[property];
+/** Variable true if the browser supports 3d css transformations. */
+var support3d = !!document.documentElement.style[property];
 
 document.documentElement.style[property] = '';
 
 /**
 * Iterates over items and apply callback on each one.
-* @param {string | Array | NodeList | HTMLCollection} items - The iterable.
+* @param {*} items - The iterable.
 * @param {forEachCallback} callback - The callback to call for each iteratee.
 * @param {bool} [forceOrder=false] - Respect items order.
-* @return {string | Array | NodeList | HTMLCollection} items for chaining.
+* @return {Array} items for chaining.
 * @example //esnext
 * import { forEach } from 'chirashi'
 *
@@ -119,6 +344,8 @@ document.documentElement.style[property] = '';
 * //   0: 1
 * //   1: 2
 * //   2: 3
+* forEach(0, (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0]
+* //   0: 1
 * @example //es5
 * var items = Chirashi.forEach([0, 1, 2], function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0, 1, 2]
 * // logs:
@@ -130,26 +357,31 @@ document.documentElement.style[property] = '';
 * //   0: 1
 * //   1: 2
 * //   2: 3
+* Chirashi.forEach(0, function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0]
+* // logs:
+* //   0: 1
 */
 function forEach(items, callback) {
-  var forceOrder = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-  if (!items) return;
+  if (!items) return [];
 
-  if (!(items instanceof Array || items instanceof window.NodeList || items instanceof window.HTMLCollection)) {
-    callback(items, 0);
+  if (!(items instanceof Array)) {
+    if (!(items instanceof window.NodeList || items instanceof window.HTMLCollection)) {
+      items = [items];
+    }
+  }
+
+  if (!forceOrder) {
+    var i = items.length;
+    while (i--) {
+      callback(items[i], i);
+    }
   } else {
-    if (!forceOrder) {
-      var i = items.length;
-      while (i--) {
-        callback(items[i], i);
-      }
-    } else {
-      var _i = -1;
-      var len = items.length;
-      while (++_i < len) {
-        callback(items[_i], _i);
-      }
+    var _i = -1;
+    var len = items.length;
+    while (++_i < len) {
+      callback(items[_i], _i);
     }
   }
 
@@ -215,7 +447,7 @@ var breakingMethods = ['push', 'splice', 'unshift'];
 * Chirashi.getElements('.wasabi') //returns: []
 */
 function getElements(input) {
-  if (input['_chrsh-valid']) return input;
+  if (input && input['_chrsh-valid']) return input;
 
   var output = void 0;
 
@@ -238,7 +470,10 @@ function getElements(input) {
 
   if (!('_chrsh-valid' in output)) {
     output.chrshPush = function (input) {
-      return this.push.apply(this, toConsumableArray(getElements(input)));
+      this.push.apply(this, toConsumableArray(getElements(input)));
+      this['_chrsh-valid'] = true;
+
+      return this;
     };
 
     forEach(breakingMethods, function (method) {
@@ -297,7 +532,7 @@ function getElements(input) {
  * // <div class="sashimi"></div> 1
  */
 function forElements(elements, callback) {
-  var forceOrder = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   return forEach(getElements(elements), callback, forceOrder);
 }
@@ -350,7 +585,7 @@ function forElements(elements, callback) {
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  */
 function forIn(object, callback) {
-  var forceOrder = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') return;
 
@@ -402,6 +637,22 @@ function getElement(input) {
   return isDomElement(input) && input;
 }
 
+function _stringToArray(input) {
+  return typeof input === 'string' ? input.split(/[,\s]+/g) : input;
+}
+
+function _updateClassList(elements, method, classes) {
+  classes = _stringToArray(classes);
+
+  return forElements(elements, function (element) {
+    var _element$classList;
+
+    if (!element.classList[method]) return;
+
+    (_element$classList = element.classList)[method].apply(_element$classList, toConsumableArray(classes));
+  });
+}
+
 /**
  * Iterates over classes and add it on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
@@ -422,14 +673,14 @@ function getElement(input) {
  * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi cheese seaweed salmon avocado tuna egg"></div>
  */
 function addClass(elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g);
+  return _updateClassList(elements, 'add', classes);
+}
 
+function _applyForEach(elements, method, args) {
   return forElements(elements, function (element) {
-    var _element$classList;
+    if (!element[method]) return;
 
-    if (!element.classList) return;
-
-    (_element$classList = element.classList).add.apply(_element$classList, toConsumableArray(classes));
+    forEach(args, element[method].bind(element));
   });
 }
 
@@ -459,11 +710,7 @@ function setAttr(elements, attributes) {
     }
   });
 
-  return forElements(elements, function (element) {
-    if (!element.setAttribute) return;
-
-    forIn(attributes, element.setAttribute.bind(element));
-  });
+  return _applyForEach(elements, 'setAttribute', attributes);
 }
 
 /**
@@ -492,7 +739,7 @@ function setAttr(elements, attributes) {
  * Chirashi.closest('.cheese', '.sushi') //returns: false
  */
 function createElement(string) {
-  var attributes = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+  var attributes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
   if (string.indexOf('<') === -1) {
     var core = null;
@@ -551,23 +798,43 @@ function createElement(string) {
  * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function append(element, nodes) {
-  var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   element = getElement(element);
 
   if (!element || !element.appendChild) return;
 
   var attributeIndex = 0;
-  var attrLen = attributes.length;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributeIndex < attrLen && attributes[attributeIndex++] || {});
+      node = createElement(node, attributes[attributeIndex++] || {});
     }
 
     if (isDomElement(node)) element.appendChild(node);
   }, true);
 
   return element;
+}
+
+/**
+ * Get the value for the property name on the element.
+ * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
+ * @param {string} property - The name of the property.
+ * @return {string} value - The value for the property.
+ * @example //esnext
+ * import { createElement, append, getProp } from 'chirashi'
+ * const maki = createElement('.maki')
+ * append(maki, '.salmon')
+ * getProp(maki, 'firstChild') //returns: <div class="salmon"></div>
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.append(maki, '.salmon')
+ * Chirashi.getProp(maki, 'firstChild') //returns: <div class="salmon"></div>
+ */
+function getProp(element, property) {
+  element = getElement(element);
+
+  return !!element && element[property];
 }
 
 /**
@@ -585,9 +852,9 @@ function append(element, nodes) {
  * Chirashi.children(maki) //returns: [<div class="salmon"></div>, <div class="avocado"></div>]
  */
 function children(element) {
-  element = getElement(element);
+  var children = getProp(element, 'children');
 
-  return !!element && 'children' in element && [].concat(toConsumableArray(element.children));
+  return !!children && [].concat(toConsumableArray(children));
 }
 
 /**
@@ -639,7 +906,7 @@ function clone(element) {
  * Chirashi.closest('.avocado', '.maki', '.cheese') //returns: false
  */
 function closest(element, tested) {
-  var limit = arguments.length <= 2 || arguments[2] === undefined ? document : arguments[2];
+  var limit = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document;
 
   element = getElement(element);
 
@@ -798,30 +1065,7 @@ function getData(element, name) {
  * getHtml(maki) //returns: "salmon"
  */
 function getHtml(element) {
-  element = getElement(element);
-
-  return element ? element.innerHTML : null;
-}
-
-/**
- * Get the value for the property name on the element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
- * @param {string} property - The name of the property.
- * @return {string} value - The value for the property.
- * @example //esnext
- * import { createElement, append, getProp } from 'chirashi'
- * const maki = createElement('.maki')
- * append(maki, '.salmon')
- * getProp(maki, 'firstChild') //returns: <div class="salmon"></div>
- * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * Chirashi.append(maki, '.salmon')
- * Chirashi.getProp(maki, 'firstChild') //returns: <div class="salmon"></div>
- */
-function getProp(element, property) {
-  element = getElement(element);
-
-  return !!element && element[property];
+  return getProp(element, 'innerHTML');
 }
 
 /**
@@ -843,7 +1087,7 @@ function hasClass(element, classes) {
   element = getElement(element);
   if (!element || !element.classList) return;
 
-  if (typeof classes === 'string') classes = classes.split(/[\s,]+/g);
+  classes = _stringToArray(classes);
 
   var i = classes.length;
   var found = void 0;
@@ -899,7 +1143,7 @@ function indexInParent(element) {
  * Chirashi.insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertAfter(element, nodes) {
-  var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   element = getElement(element);
 
@@ -908,10 +1152,9 @@ function insertAfter(element, nodes) {
   var parent = element.parentNode;
 
   var attributeIndex = 0;
-  var attrLen = attributes.length;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributeIndex < attrLen && attributes[attributeIndex++] || {});
+      node = createElement(node, attributes[attributeIndex++] || {});
     }
 
     if (isDomElement(node)) parent.insertBefore(node, element.nextElementSibling);
@@ -939,7 +1182,7 @@ function insertAfter(element, nodes) {
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertBefore(element, nodes) {
-  var attributes = arguments.length <= 2 || arguments[2] === undefined ? [] : arguments[2];
+  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
 
   element = getElement(element);
 
@@ -948,10 +1191,9 @@ function insertBefore(element, nodes) {
   var parent = element.parentNode;
 
   var attributeIndex = 0;
-  var attrLen = attributes.length;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributeIndex < attrLen && attributes[attributeIndex++] || {});
+      node = createElement(node, attributes[attributeIndex++] || {});
     }
 
     if (isDomElement(node)) parent.insertBefore(node, element);
@@ -979,10 +1221,7 @@ function insertBefore(element, nodes) {
  * Chirashi.next(avocado) //returns: <div class="cheese" data-cheese="cream"></div>
  */
 function next(element) {
-  element = getElement(element);
-  if (!element) return;
-
-  return element.nextElementSibling;
+  return getProp(element, 'nextElementSibling');
 }
 
 /**
@@ -1003,9 +1242,7 @@ function next(element) {
  * Chirashi.parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  */
 function parent(element) {
-  element = getElement(element);
-
-  return !!element && element.parentNode;
+  return getProp(element, 'parentNode');
 }
 
 /**
@@ -1027,9 +1264,7 @@ function parent(element) {
  * Chirashi.prev(avocado) //returns: <div class="salmon" data-fish="salmon"></div>
  */
 function prev(element) {
-  element = getElement(element);
-
-  return !!element && element.previousElementSibling;
+  return getProp(element, 'previousElementSibling');
 }
 
 /**
@@ -1061,6 +1296,28 @@ function remove(elements) {
 }
 
 /**
+ * Iterates over attributes and removes it from each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {Array | string} attributes - Array of attributes' name, string of attributes' name seperated by space and/or comas or name of a single attribute.
+ * @return {Array} elements - The elements for chaining.
+ * import { createElement, append, removeAttr } from 'chirashi'
+ * const maki = createElement('.maki')
+ * append(document.body, maki)
+ * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.append(document.body, maki)
+ * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
+ */
+function removeAttr(elements, attributes) {
+  if (typeof attributes === 'string') attributes = attributes.split(/[,\s]+/g);
+
+  return _applyForEach(elements, 'removeAttribute', attributes);
+}
+
+/**
  * Iterates over classes and remove it from each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
  * @param {string | Array} classes - Array of classes or string of classes seperated with comma and/or spaces.
@@ -1074,15 +1331,7 @@ function remove(elements) {
  * Chirashi.removeClass(maki, 'cheese') //returns: [<div class="maki salmon"></div>]
  */
 function removeClass(elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g);
-
-  return forElements(elements, function (element) {
-    var _element$classList;
-
-    if (!element.classList) return;
-
-    (_element$classList = element.classList).remove.apply(_element$classList, toConsumableArray(classes));
-  });
+  return _updateClassList(elements, 'remove', classes);
 }
 
 /**
@@ -1112,6 +1361,27 @@ function setData(elements, dataAttributes) {
 }
 
 /**
+ * Apply props as key value pairs on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {object} - The props key value pairs.
+ * @return {Array} elements - The elements for chaining.
+ * @example //esnext
+ * import { createElement, setProp, getProp } from 'chirashi'
+ * const maki = createElement('input.maki')
+ * setProp(maki, { value: 'こんにちは世界' })
+ * getProp(maki, 'value') //returns: こんにちは世界
+ * @example //es5
+ * var maki = Chirashi.createElement('input.maki')
+ * Chirashi.setProp(maki, { value: 'こんにちは世界' })
+ * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
+ */
+function setProp(elements, props) {
+  return forElements(elements, function (element) {
+    return Object.assign(element, props);
+  });
+}
+
+/**
  * Set the inner html of elements.
  * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
  * @return {string} htmlString - The html to insert.
@@ -1127,32 +1397,7 @@ function setData(elements, dataAttributes) {
 * getHtml(maki) //returns: "salmon"
  */
 function setHtml(elements, string) {
-  return forElements(elements, function (element) {
-    element.innerHTML = string;
-  });
-}
-
-/**
- * Apply props as key value pairs on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The props key value pairs.
- * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setAttr } from 'chirashi'
- * const maki = createElement('.maki')
- * setAttr(maki, {
- *   dataFish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * Chirashi.setAttr(maki, {
- *   dataFish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- */
-function setProp(elements, props) {
-  return forElements(elements, function (element) {
-    return Object.assign(element, props);
-  });
+  return setProp(elements, { 'innerHTML': string });
 }
 
 /**
@@ -1171,14 +1416,36 @@ function setProp(elements, props) {
  * Chirashi.toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
  */
 function toggleClass(elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g);
+  if ((typeof classes === 'undefined' ? 'undefined' : _typeof(classes)) === 'object') {
+    return forElements(elements, function (element) {
+      if (!element.classList.toggle) return;
+
+      forIn(classes, function (className, condition) {
+        element.classList.toggle(className, condition(element));
+      });
+    });
+  } else {
+    classes = _stringToArray(classes);
+
+    return forElements(elements, function (element) {
+      if (!element.classList.toggle) return;
+
+      forEach(classes, element.classList.toggle.bind(element.classList));
+    });
+  }
+}
+
+function _setEvents(elements, method, input) {
+  method += 'EventListener';
 
   return forElements(elements, function (element) {
-    var _element$classList;
+    if (!element[method]) return;
 
-    if (!element.classList) return;
-
-    (_element$classList = element.classList).toggle.apply(_element$classList, toConsumableArray(classes));
+    forIn(input, function (events, callback) {
+      forEach(_stringToArray(events), function (event) {
+        return element[method](event, callback);
+      });
+    });
   });
 }
 
@@ -1190,21 +1457,13 @@ function toggleClass(elements, classes) {
  * @return {Array} elements - The iterable for chaining.
  */
 function on(elements, input) {
-  return forElements(elements, function (element) {
-    if (!element.addEventListener) return;
-
-    forIn(input, function (events, callback) {
-      forEach(events.split(/[,\s]+/g), function (event) {
-        return element.addEventListener(event, callback);
-      });
-    });
-  });
+  return _setEvents(elements, 'add', input);
 }
 
 /**
 * Callback to execute on event.
 * @callback eventCallback
-* @param {object} event - Triggered event.
+* @param {Event} event - Triggered event.
 */
 
 /**
@@ -1214,23 +1473,9 @@ function on(elements, input) {
  * @param {eventCallback} callback - The callback used for event binding.
  * @return {Array} elements - The iterable for chaining.
  */
-function off(elements, input) {
-  return forElements(elements, function (element) {
-    if (!element.addEventListener) return;
-
-    forIn(input, function (events, callback) {
-      forEach(events.split(/[,\s]+/g), function (event) {
-        return element.removeEventListener(event, callback);
-      });
-    });
-  });
+function off$1(elements, input) {
+  return _setEvents(elements, 'remove', input);
 }
-
-/**
-* Callback to execute on event.
-* @callback eventCallback
-* @param {object} event - Triggered event.
-*/
 
 /**
  * Bind events listener on delegate and execute callback when target matches selector (targets doesn't have to be in the DOM at binding).
@@ -1240,31 +1485,37 @@ function off(elements, input) {
  * @return {Object} object - An object with unbind method for unbinding.
  * @return {function} object.unbind - The unbind method.
  * @example //esnext
- * import { createElement, bind, trigger } from 'chirashi'
- * const listener = bind('.cheese, .wasabi', 'click', (e, target) => {
- *   console.log('clicked', target)
+ * import { createElement, append, bind, trigger } from 'chirashi'
+ * const listener = bind('.cheese, .wasabi', {
+ *   'click': (e, target) => {
+ *     console.log('clicked', target)
+ *   }
  * })
  * const maki = createElement('a.cheese.maki')
  * const sushi = createElement('a.wasabi.sushi')
+ * append(document.body, [maki, sushi])
  * trigger(maki, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.unbind()
+ * listener.unbind() //remove listeners
  * @example //es5
- * var listener = Chirashi.bind('.cheese, .wasabi', 'click', (e, target) => {
- *   console.log('clicked', target)
+ * var listener = Chirashi.bind('.cheese, .wasabi', {
+ *   'click': function (e, target) {
+ *     console.log('clicked', target)
+ *   }
  * })
  * var maki = Chirashi.createElement('a.cheese.maki')
  * var sushi = Chirashi.createElement('a.wasabi.sushi')
+ * Chirashi.append(document.body, [maki, sushi])
  * Chirashi.trigger(maki, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * Chirashi.trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.unbind()
+ * listener.unbind() //remove listeners
  */
 function bind(selector, input) {
-  var delegate = arguments.length <= 2 || arguments[2] === undefined ? document.body : arguments[2];
+  var delegate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.body;
 
   var eventsObj = {};
   forIn(input, function (events, callback) {
@@ -1278,7 +1529,7 @@ function bind(selector, input) {
 
   return {
     unbind: function unbind() {
-      off(delegate, eventsObj);
+      off$1(delegate, eventsObj);
     }
   };
 }
@@ -1286,86 +1537,15 @@ function bind(selector, input) {
 /**
 * Callback to execute on event.
 * @callback bindCallback
-* @param {object} event - Triggered event.
+* @param {Event} event - Triggered event.
 * @param {HTMLElement | SVGElement} target - Target of the event.
 */
 
 /**
- * Bind drag listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {function} move - The move callback
- * @param {function} begin - The begin callback
- * @param {function} end - The end callback
- * @return {object} offObject - An object with off method for unbinding
- * @return {object.off} off - off method
- */
-function drag(elements, _move, _begin, _end) {
-  var undragProperties = [];
-
-  forElements(elements, function (element) {
-    var dragging = false;
-
-    var undragProperty = {
-      element: element,
-
-      begin: function begin(e) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if ('touches' in e && e.touches.length) e = e.touches[0];
-
-        dragging = true;
-
-        if (_begin) _begin({ x: e.pageX, y: e.pageY });
-      },
-      move: function move(e) {
-        if (!dragging) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        if ('touches' in e && e.touches.length) e = e.touches[0];
-
-        if (_move) _move({ x: e.pageX, y: e.pageY });
-      },
-      end: function end(e) {
-        if (!dragging) return;
-
-        e.preventDefault();
-        e.stopPropagation();
-
-        if ('touches' in e && e.touches.length) e = e.touches[0];
-
-        dragging = false;
-
-        if (_end) _end({ x: e.pageX, y: e.pageY });
-      }
-    };
-
-    on(element, 'touchstart mousedown', undragProperty.begin);
-    on(document.body, 'touchmove mousemove', undragProperty.move);
-    on(document.body, 'touchend mouseup', undragProperty.end);
-
-    undragProperties.push(undragProperty);
-  });
-
-  return {
-    off: function off$$() {
-      forEach(undragProperties, function (undragProperty) {
-        off(undragProperty.element, 'touchstart, mousedown', undragProperty.begin);
-        off(document.body, 'touchmove, mousemove', undragProperty.move);
-        off(document.body, 'touchend, mouseup', undragProperty.end);
-      });
-    }
-  };
-}
-
-/**
  * Bind hover listener on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {bindCallback} callback - The callback to execute when one event is triggered.
- * @param {function} enter - The enter callback.
- * @param {function} leave - The leave callback.
+ * @param {eventCallback} enter - The enter callback.
+ * @param {eventCallback} leave - The leave callback.
  * @return {Object} object - An object with off method for unbinding.
  * @return {function} object.off - The off method.
  */
@@ -1378,32 +1558,25 @@ function hover(elements, enter, leave) {
   on(elements, events);
 
   return {
-    off: function off$$() {
-      off(elements, events);
+    off: function off() {
+      off$1(elements, events);
     }
   };
 }
 
 /**
-* Callback to execute on event.
-* @callback bindCallback
-* @param {object} event - Triggered event.
-* @param {HTMLElement | SVGElement} target - Target of the event.
-*/
-
-/**
  * Bind hover listener on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {function} eachCallback - The callback on each load event
- * @param {function} allCallback - The callback when all elements have been loaded
+ * @param {eventCallback} eachCallback - The callback on each load event
+ * @param {eventCallback} allCallback - The callback when all elements have been loaded
  * @param {bool} [once] = true - Trigger only once for each media if true
  * @param {bool} [testSrc] = true - If true callback will be called with error when an element doesn't have src
  * @return {object} offObject - An object with off method for unbinding
  * @return {object.off} off - off method
  */
 function load(elements, eachCallback, allCallback) {
-  var once = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
-  var testSrc = arguments.length <= 4 || arguments[4] === undefined ? true : arguments[4];
+  var once = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  var testSrc = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
 
   elements = getElements(elements);
 
@@ -1423,7 +1596,7 @@ function load(elements, eachCallback, allCallback) {
       if (event.type === 'error') error = event;
     }
 
-    if (once) off(element, 'load loadedmetadata error', callback);
+    if (once) off$1(element, 'load loadedmetadata error', callback);
 
     if (eachCallback) eachCallback(element, error);
 
@@ -1441,9 +1614,9 @@ function load(elements, eachCallback, allCallback) {
   });
 
   return {
-    off: function off$$() {
+    off: function off() {
       forEach(elements, function (element) {
-        return off(element, 'load loadedmetadata error', callback);
+        return off$1(element, 'load loadedmetadata error', callback);
       });
     }
   };
@@ -1453,7 +1626,7 @@ function load(elements, eachCallback, allCallback) {
  * Bind events listener on each element of elements and unbind after first triggered.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} events - The events that should be bound seperated with spaces
- * @param {function} callback - The callback used for event binding
+ * @param {eventCallback} callback - The callback used for event binding
  * @return {object} offObject - An object with off method for unbinding
  * @return {object.off} off - off method
  */
@@ -1461,21 +1634,21 @@ function once(elements, events, callback) {
   var innerCallback = function innerCallback(event) {
     callback(event);
 
-    off(elements, events, innerCallback);
+    off$1(elements, events, innerCallback);
   };
 
   on(elements, events, innerCallback);
 
   return {
     cancel: function cancel() {
-      off(elements, events, innerCallback);
+      off$1(elements, events, innerCallback);
     }
   };
 }
 
 /**
  * Execute callback when dom is ready.
- * @param {function} callback - The callback
+ * @param {eventCallback} callback - The callback.
  */
 function ready(callback) {
   on(document, {
@@ -1496,7 +1669,7 @@ var defaults$1 = {
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function trigger(elements, events) {
-  var options = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   elements = getElements(elements);
 
@@ -1525,11 +1698,9 @@ function trigger(elements, events) {
  * @return {number} height - The height in pixels
  */
 function getHeight(element) {
-  var inner = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  element = getElement(element);
-
-  return !!element && (inner ? element.clientHeight : element.offsetHeight);
+  return getProp(element, inner ? 'clientHeight' : 'offsetHeight');
 }
 
 /**
@@ -1538,11 +1709,9 @@ function getHeight(element) {
  * @return {number} width - The width in pixels
  */
 function getWidth(element) {
-  var inner = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  element = getElement(element);
-
-  return !!element && (inner ? element.clientWidth : element.offsetWidth);
+  return getProp(element, inner ? 'clientWidth' : 'offsetWidth');
 }
 
 /**
@@ -1551,9 +1720,9 @@ function getWidth(element) {
  * @return {number} size - The size in pixels
  */
 function getSize(element) {
-  var inner = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  return !!element && {
+  return {
     width: getWidth(element, inner),
     height: getHeight(element, inner)
   };
@@ -1570,7 +1739,7 @@ function getStyle(element, property) {
 
   var ret = window.getComputedStyle(element)[property];
 
-  return ret.indexOf('px') === -1 ? ret : +ret;
+  return ret.indexOf('px') === -1 ? ret : parseFloat(ret);
 }
 
 var unitless = ['zIndex', 'z-index', 'zoom', 'font-weight', 'lineHeight', 'line-height', 'counterReset', 'counter-reset', 'counterIncrement', 'counter-increment', 'volume', 'stress', 'pitchRange', 'pitch-range', 'richness', 'opacity'];
@@ -1604,29 +1773,68 @@ function hide(elements) {
   return setStyle(elements, { visibility: 'hidden' });
 }
 
-function _applyPropertyToMatrix(property, value, matrix) {
+function _applyPropertyToMatrix(property, value, matrix, support3d) {
+  var indexes = void 0,
+      cosValue = void 0,
+      sinValue = void 0,
+      tanValue = void 0;
+
   switch (property) {
     case 'x':
-      matrix[4] += value;
+      matrix[support3d ? 12 : 4] += value;
       break;
 
     case 'y':
-      matrix[5] += value;
+      matrix[support3d ? 13 : 5] += value;
+      break;
+
+    case 'z':
+      if (support3d) matrix[14] += value;
       break;
 
     case 'rotate':
-      var cosValue = Math.cos(value);
-      var sinValue = Math.sin(value);
+      cosValue = Math.cos(value);
+      sinValue = Math.sin(value);
 
       matrix[0] *= cosValue;
       matrix[1] += sinValue;
-      matrix[2] -= sinValue;
-      matrix[3] *= cosValue;
+
+      if (support3d) {
+        matrix[4] -= sinValue;
+        matrix[5] *= cosValue;
+      } else {
+        matrix[2] -= sinValue;
+        matrix[3] *= cosValue;
+      }
+
+      break;
+
+    case 'rotateX':
+    case 'rotateY':
+    case 'rotateZ':
+      if (support3d) {
+        cosValue = Math.cos(value);
+        sinValue = Math.sin(value);
+
+        if (property === 'rotateX') {
+          indexes = [5, 6, 9, 10];
+        } else if (property === 'rotateY') {
+          indexes = [0, 8, 2, 10];
+        } else {
+          indexes = [0, 1, 4, 5];
+        }
+
+        matrix[indexes[0]] *= cosValue;
+        matrix[indexes[1]] += sinValue;
+        matrix[indexes[2]] -= sinValue;
+        matrix[indexes[3]] *= cosValue;
+      }
+
       break;
 
     case 'scale':
       matrix[0] *= value;
-      matrix[2] *= value;
+      matrix[support3d ? 5 : 3] *= value;
       break;
 
     case 'scaleX':
@@ -1634,18 +1842,23 @@ function _applyPropertyToMatrix(property, value, matrix) {
       break;
 
     case 'scaleY':
-      matrix[3] *= value;
+      matrix[support3d ? 5 : 3] *= value;
+      break;
+
+    case 'scaleZ':
+      if (support3d) matrix[10] *= value;
       break;
 
     case 'skew':
-      var tanValue = Math.tan(value);
+      tanValue = Math.tan(value);
 
-      matrix[2] += tanValue;
       matrix[1] += tanValue;
+      matrix[support3d ? 4 : 2] += tanValue;
+
       break;
 
     case 'skewX':
-      matrix[2] += Math.tan(value);
+      matrix[support3d ? 4 : 2] += Math.tan(value);
       break;
 
     case 'skewY':
@@ -1655,28 +1868,50 @@ function _applyPropertyToMatrix(property, value, matrix) {
 }
 
 /**
- * Convert a transformation as object to a 2D matrix as object
+ * Convert a transformation as object to a 3d matrix as object
  * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 2D matrix
+ * @return {Array} matrix - The 3d matrix
  */
-function transformTo2DMatrix(transformation) {
-  var matrix = [1, 0, 0, 1, 0, 0];
+function getTransformMatrix(transformation) {
+  var support3d = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+
+  var matrix = support3d ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] : [1, 0, 0, 1, 0, 0];
 
   forIn(transformation, function (prop, value) {
     if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
       forIn(value, function (subProp, subValue) {
-        _applyPropertyToMatrix(prop + subProp.toUpperCase(), subValue, matrix);
+        _applyPropertyToMatrix(prop + subProp.toUpperCase(), subValue, matrix, support3d);
       });
     } else {
-      _applyPropertyToMatrix(prop, value, matrix);
+      _applyPropertyToMatrix(prop, value, matrix, support3d);
     }
+  });
+
+  forEach(matrix, function (item, index) {
+    matrix[index] = +item.toFixed(2);
   });
 
   return matrix;
 }
 
+function _applyTransform(elements, transform) {
+  var keep = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+  if (keep) {
+    return forElements(elements, function (element) {
+      element.style[prefix + 'transform'] += ' ' + transform;
+    });
+  } else {
+    return setStyle(elements, defineProperty({}, prefix + 'transform', transform));
+  }
+}
+
+function _applyMatrix(elements, matrix) {
+  return _applyTransform(elements, 'matrix(' + matrix.join(',') + ')');
+}
+
 /**
-* Apply the provided transformation as a 2D matrix on each element of elements
+* Apply the provided transformation as a 2d matrix on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -1699,129 +1934,12 @@ function transformTo2DMatrix(transformation) {
 * @param {object.skewY} skewY - skewY option
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function matrix2D(elements, transformation) {
-  var matrix = transformTo2DMatrix(transformation);
-
-  matrix = 'matrix(' + matrix.join(',') + ')';
-
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    element.style[prefix + 'transform'] = matrix;
-  });
-}
-
-function _applyPropertyToMatrix$1(property, value, matrix) {
-  switch (property) {
-    case 'x':
-      matrix[12] += value;
-      break;
-
-    case 'y':
-      matrix[13] += value;
-      break;
-
-    case 'z':
-      matrix[14] += value;
-      break;
-
-    case 'rotate':
-      var cosValue = Math.cos(value);
-      var sinValue = Math.sin(value);
-
-      matrix[0] *= cosValue;
-      matrix[1] += sinValue;
-      matrix[4] -= sinValue;
-      matrix[5] *= cosValue;
-      break;
-
-    case 'rotateX':
-      var cosValue2 = Math.cos(value);
-      var sinValue2 = Math.sin(value);
-
-      matrix[5] *= cosValue2;
-      matrix[6] += sinValue2;
-      matrix[9] -= sinValue2;
-      matrix[10] *= cosValue2;
-      break;
-
-    case 'rotateY':
-      var cosValue3 = Math.cos(value);
-      var sinValue3 = Math.sin(value);
-
-      matrix[0] *= cosValue3;
-      matrix[2] -= sinValue3;
-      matrix[8] += sinValue3;
-      matrix[10] *= cosValue3;
-      break;
-
-    case 'rotateZ':
-      var cosValue4 = Math.cos(value);
-      var sinValue4 = Math.sin(value);
-
-      matrix[0] *= cosValue4;
-      matrix[1] += sinValue4;
-      matrix[4] -= sinValue4;
-      matrix[5] *= cosValue4;
-      break;
-
-    case 'scale':
-      matrix[0] *= value;
-      matrix[5] *= value;
-      break;
-
-    case 'scaleX':
-      matrix[0] *= value;
-      break;
-
-    case 'scaleY':
-      matrix[5] *= value;
-      break;
-
-    case 'scaleZ':
-      matrix[10] *= value;
-      break;
-
-    case 'skew':
-      var tanValue = Math.tan(value);
-
-      matrix[4] += tanValue;
-      matrix[1] += tanValue;
-      break;
-
-    case 'skewX':
-      matrix[4] += Math.tan(value);
-      break;
-
-    case 'skewY':
-      matrix[1] += Math.tan(value);
-      break;
-  }
+function matrix2d(elements, transformation) {
+  return _applyMatrix(elements, getTransformMatrix(transformation, false));
 }
 
 /**
- * Convert a transformation as object to a 3D matrix as object
- * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 3D matrix
- */
-function transformTo3DMatrix(transformation) {
-  var matrix = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
-
-  forIn(transformation, function (prop, value) {
-    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-      forIn(value, function (subProp, subValue) {
-        _applyPropertyToMatrix$1(prop + subProp.toUpperCase(), subValue, matrix);
-      });
-    } else {
-      _applyPropertyToMatrix$1(prop, value, matrix);
-    }
-  });
-
-  return matrix;
-}
-
-/**
-* Apply the provided transformation as a 3D matrix on each element of elements
+* Apply the provided transformation as a 3d matrix on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -1849,20 +1967,12 @@ function transformTo3DMatrix(transformation) {
 * @param {object.skewY} skewY - skewY option
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function matrix3D(elements, transformation) {
-  var matrix = transformTo3DMatrix(transformation);
-
-  matrix = 'matrix3D(' + matrix.join(',') + ')';
-
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    element.style[prefix + 'transform'] = matrix;
-  });
+function matrix3d(elements, transformation) {
+  return _applyMatrix(elements, getTransformMatrix(transformation));
 }
 
 /**
-* Apply the provided transformation as a matrix (3D if supported) on each element of elements
+* Apply the provided transformation as a matrix (3d if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -1891,7 +2001,7 @@ function matrix3D(elements, transformation) {
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 function matrix(elements, transformation) {
-  return support3D ? matrix3D(elements, transformation) : matrix2D(elements, transformation);
+  return support3d ? matrix3d(elements, transformation) : matrix2d(elements, transformation);
 }
 
 /**
@@ -1927,6 +2037,26 @@ function position(element) {
   };
 }
 
+function _capitalize(input) {
+  return input.slice(0, 1).toUpperCase() + input.slice(1);
+}
+
+function _flattenObject(object, defaults$$1) {
+  var flatten = {};
+
+  forIn(object, function (key, value) {
+    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+      forIn(value, function (subKey, subValue) {
+        flatten[key + _capitalize(subKey)] = subValue;
+      });
+    } else {
+      flatten[key] = value;
+    }
+  });
+
+  return _extends({}, flatten, defaults$$1);
+}
+
 /**
 * Apply the provided scale transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
@@ -1939,48 +2069,18 @@ function position(element) {
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function scale2D(elements, transformation, keep) {
-  var scaleX = void 0;
-  if ('scaleX' in transformation) {
-    scaleX = transformation.scaleX;
-  } else if ('scale' in transformation) {
-    if ('x' in transformation.scale) {
-      scaleX = transformation.scale.x;
-    } else {
-      scaleX = transformation.scale;
-    }
-  } else {
-    scaleX = 1;
-  }
+function scale2d(elements, transformation, keep) {
+  var _console;
 
-  var scaleY = void 0;
-  if ('scaleY' in transformation) {
-    scaleY = transformation.scaleY;
-  } else if ('scale' in transformation) {
-    if ('y' in transformation.scale) {
-      scaleY = transformation.scale.y;
-    } else {
-      scaleY = transformation.scale;
-    }
-  } else {
-    scaleY = 1;
-  }
+  var transform = _flattenObject(transformation, { scaleX: 1, scaleY: 1 });
 
-  var style = 'scale(' + scaleX + ',' + scaleY + ')';
+  (_console = console).log.apply(_console, toConsumableArray(transform));
 
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    if (keep) {
-      element.style[prefix + 'transform'] += ' ' + style;
-    } else {
-      element.style[prefix + 'transform'] = style;
-    }
-  });
+  return _applyTransform(elements, 'scale(' + transform.scaleX + ',' + transform.scaleY + ')', keep);
 }
 
 /**
-* Apply the provided 3D scale transformation on each element of elements
+* Apply the provided 3d scale transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.scale} scale - scale option
@@ -1993,7 +2093,7 @@ function scale2D(elements, transformation, keep) {
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function scale3D(elements, transformation, keep) {
+function scale3d(elements, transformation, keep) {
   var scaleX = void 0;
   if ('scaleX' in transformation) {
     scaleX = transformation.scaleX;
@@ -2029,21 +2129,11 @@ function scale3D(elements, transformation, keep) {
     scaleZ = 1;
   }
 
-  var style = 'scale3D(' + scaleX + ',' + scaleY + ',' + scaleZ + ')';
-
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    if (keep) {
-      element.style[prefix + 'transform'] += ' ' + style;
-    } else {
-      element.style[prefix + 'transform'] = style;
-    }
-  });
+  return _applyTransform(elements, 'scale3d(' + scaleX + ',' + scaleY + ',' + scaleZ + ')', keep);
 }
 
 /**
-* Apply the provided scale transformation (3D if supported) on each element of elements
+* Apply the provided scale transformation (3d if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.scale} scale - scale option
@@ -2057,7 +2147,7 @@ function scale3D(elements, transformation, keep) {
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 function scale(elements, transformation, keep) {
-  return support3D ? scale3D(elements, transformation, keep) : scale2D(elements, transformation, keep);
+  return support3d ? scale3d(elements, transformation, keep) : scale2d(elements, transformation, keep);
 }
 
 /**
@@ -2107,7 +2197,7 @@ function setWidth(elements, width) {
 * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
 */
 function show(elements) {
-  return setStyle(elements, { visibility: 'hidden' });
+  return setStyle(elements, { visibility: 'visible' });
 }
 
 /**
@@ -2119,30 +2209,18 @@ function show(elements) {
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function translate2D(elements, transformation, keep) {
-    var x = 'x' in transformation ? transformation.x : 0,
-        y = 'y' in transformation ? transformation.y : 0;
+function translate2d(elements, transformation, keep) {
+  var x = 'x' in transformation ? transformation.x : 0;
+  var y = 'y' in transformation ? transformation.y : 0;
 
-    if (typeof x == 'number') x += 'px';
-    if (typeof y == 'number') y += 'px';
+  if (typeof x === 'number') x += 'px';
+  if (typeof y === 'number') y += 'px';
 
-    var style = 'translate(' + x + ',' + y + ')';
-
-    return forElements(elements, function (element) {
-        if (!element.style) return;
-
-        if (keep) {
-            element.style[prefix + 'transform'] += ' ' + style;
-            element.style.transform += ' ' + style;
-        } else {
-            element.style[prefix + 'transform'] = style;
-            element.style.transform = style;
-        }
-    });
+  return _applyTransform(elements, 'translate(' + x + ',' + y + ')', keep);
 }
 
 /**
-* Apply the provided 3D translate transformation on each element of elements
+* Apply the provided 3d translate transformation on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -2151,32 +2229,20 @@ function translate2D(elements, transformation, keep) {
 * @param {bool} [keep] - Preserve previous transformation
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
-function translate3D(elements, transformation, keep) {
-    var x = 'x' in transformation ? transformation.x : 0,
-        y = 'y' in transformation ? transformation.y : 0,
-        z = 'z' in transformation ? transformation.z : 0;
+function translate3d(elements, transformation, keep) {
+  var x = 'x' in transformation ? transformation.x : 0;
+  var y = 'y' in transformation ? transformation.y : 0;
+  var z = 'z' in transformation ? transformation.z : 0;
 
-    if (typeof x == 'number') x += 'px';
-    if (typeof y == 'number') y += 'px';
-    if (typeof z == 'number') z += 'px';
+  if (typeof x === 'number') x += 'px';
+  if (typeof y === 'number') y += 'px';
+  if (typeof z === 'number') z += 'px';
 
-    var style = 'translate3D(' + x + ',' + y + ',' + z + ')';
-
-    return forElements(elements, function (element) {
-        if (!element.style) return;
-
-        if (keep) {
-            element.style[prefix + 'transform'] += ' ' + style;
-            element.style.transform += ' ' + style;
-        } else {
-            element.style[prefix + 'transform'] = style;
-            element.style.transform = style;
-        }
-    });
+  return _applyTransform(elements, 'translate3d(' + x + ',' + y + ',' + z + ')', keep);
 }
 
 /**
-* Apply the provided translate transformation (3D if supported) on each element of elements
+* Apply the provided translate transformation (3d if supported) on each element of elements
 * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
 * @param {object} transformation - The transformation object
 * @param {object.x} x - translateX option
@@ -2186,26 +2252,30 @@ function translate3D(elements, transformation, keep) {
 * @return {string | Array | NodeList | HTMLCollection} elements for chaining
 */
 function translate(elements, transformation, keep) {
-    return support3D ? translate3D(elements, transformation, keep) : translate2D(elements, transformation, keep);
+  return support3d ? translate3d(elements, transformation, keep) : translate2d(elements, transformation, keep);
 }
 
 /**
- * Set the provided transformation to all elements using a matrix if needed and 3D if supported.
+ * Set the provided transformation to all elements using a matrix if needed and 3d if supported.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {object} [transformation] - The transformation as an object
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function transform(elements, transformation) {
-   // if skew or rotation use matrix
-   if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation || 'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation) {
-      return matrix(elements, transformation);
-   } else {
-      var shouldKeep = false; // don't crush translate property
+  // if skew or rotation use matrix
+  if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation || 'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation) {
+    return matrix(elements, transformation);
+  } else {
+    var translation = 'x' in transformation || 'y' in transformation || 'z' in transformation; // don't crush translate property
 
-      if (shouldKeep = 'x' in transformation || 'y' in transformation || 'z' in transformation) return translate(elements, transformation);
+    if (translation) {
+      return translate(elements, transformation);
+    }
 
-      if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation) return scale(elements, transformation, shouldKeep);
-   }
+    if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation) {
+      return scale(elements, transformation, translation);
+    }
+  }
 }
 
 /**
@@ -2216,8 +2286,8 @@ function transform(elements, transformation) {
  * @return {function} value - A random interger between min and max or max if value isn't a number
  */
 function clamp(value) {
-  var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
-  var max = arguments.length <= 2 || arguments[2] === undefined ? 1 : arguments[2];
+  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+  var max = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
 
   return isNaN(value) ? max : Math.min(Math.max(value, min), max);
 }
@@ -2230,7 +2300,7 @@ function clamp(value) {
  * @return {function} debounced - The debounced callback with cancel method
  */
 function debounce(callback, wait) {
-  var immediate = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+  var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
   var canCall = immediate;
   var timeout = void 0;
@@ -2240,7 +2310,7 @@ function debounce(callback, wait) {
     callback.apply(undefined, toConsumableArray(args));
 
     timeout = setTimeout(function () {
-      return canCall = immediate;
+      canCall = immediate;
     }, wait);
   };
 
@@ -2273,15 +2343,16 @@ function debounce(callback, wait) {
  * @return {function} memoized - The memoized callback
  */
 function memoize(callback) {
-  var _arguments = arguments,
-      _this = this;
-
   var cache = {};
 
   return function () {
-    var args = JSON.stringify(_arguments);
+    var args = JSON.stringify(arguments);
 
-    return args in cache ? cache[args] : cache[args] = callback.call.apply(callback, [_this].concat(Array.prototype.slice.call(_arguments)));
+    if (!(args in cache)) {
+      cache[args] = callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
+    }
+
+    return cache[args];
   };
 }
 
@@ -2292,9 +2363,9 @@ function memoize(callback) {
  * @return {function} value - A random value between min and max
  */
 function randomBetween(max) {
-  var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
-  return Math.random() * (max - min + 1) + min;
+  return Math.random() * (max - min) + min;
 }
 
 /**
@@ -2304,7 +2375,7 @@ function randomBetween(max) {
  * @return {function} value - A random interger between min and max
  */
 function randomIntBetween(max) {
-  var min = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
+  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 
   return ~~(Math.random() * (max - min + 1)) + min;
 }
@@ -2318,8 +2389,8 @@ function randomIntBetween(max) {
  * @return {function} throttled - The throttled callback with cancel method
  */
 function throttle(callback, wait) {
-  var leading = arguments.length <= 2 || arguments[2] === undefined ? true : arguments[2];
-  var trailing = arguments.length <= 3 || arguments[3] === undefined ? true : arguments[3];
+  var leading = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  var trailing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
   var last = 0;
   var timeout = void 0;
@@ -2375,7 +2446,7 @@ var index = {
   isWindowsPhone: isWindowsPhone,
   isWindowsTablet: isWindowsTablet,
   prefix: prefix,
-  support3D: support3D,
+  support3d: support3d,
   ua: ua,
   vendor: vendor,
   forEach: forEach,
@@ -2405,6 +2476,7 @@ var index = {
   parent: parent,
   prev: prev,
   remove: remove,
+  removeAttr: removeAttr,
   removeClass: removeClass,
   setAttr: setAttr,
   setData: setData,
@@ -2415,7 +2487,7 @@ var index = {
   drag: drag,
   hover: hover,
   load: load,
-  off: off,
+  off: off$1,
   on: on,
   once: once,
   ready: ready,
@@ -2426,13 +2498,13 @@ var index = {
   getWidth: getWidth,
   hide: hide,
   matrix: matrix,
-  matrix2D: matrix2D,
-  matrix3D: matrix3D,
+  matrix2d: matrix2d,
+  matrix3d: matrix3d,
   offset: offset,
   position: position,
   scale: scale,
-  scale2D: scale2D,
-  scale3D: scale3D,
+  scale2d: scale2d,
+  scale3d: scale3d,
   screenPosition: screenPosition,
   setHeight: setHeight,
   setSize: setSize,
@@ -2441,16 +2513,15 @@ var index = {
   show: show,
   transform: transform,
   translate: translate,
-  translate2D: translate2D,
-  translate3D: translate3D,
+  translate2d: translate2d,
+  translate3d: translate3d,
   clamp: clamp,
   debounce: debounce,
   memoize: memoize,
   randomBetween: randomBetween,
   randomIntBetween: randomIntBetween,
   throttle: throttle,
-  transformTo2DMatrix: transformTo2DMatrix,
-  transformTo3DMatrix: transformTo3DMatrix
+  getTransformMatrix: getTransformMatrix
 };
 
 module.exports = index;

@@ -8,7 +8,7 @@ window.describe('chirashi#getSize', () => {
 
   window.it('should return element\'s size as object of width and height', () => {
     let div = document.createElement('div')
-    div.classList.add('test')
+    div.classList.add('get-size', 'test')
     document.body.appendChild(div)
 
     Object.assign(div.style, {

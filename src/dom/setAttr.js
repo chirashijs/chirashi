@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import _applyForEach from '../internals/_applyForEach'
 import forIn from '../core/forIn'
 
 /**
@@ -27,9 +27,5 @@ export default function setAttr (elements, attributes) {
     }
   })
 
-  return forElements(elements, element => {
-    if (!element.setAttribute) return
-
-    forIn(attributes, element.setAttribute.bind(element))
-  })
+  return _applyForEach(elements, 'setAttribute', attributes)
 }

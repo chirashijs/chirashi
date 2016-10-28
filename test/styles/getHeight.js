@@ -8,7 +8,7 @@ window.describe('chirashi#getHeight', () => {
 
   window.it('should return element\'s height as Number', () => {
     let div = document.createElement('div')
-    div.classList.add('test')
+    div.classList.add('get-height', 'test')
     document.body.appendChild(div)
 
     Object.assign(div.style, {

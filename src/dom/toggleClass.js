@@ -1,4 +1,7 @@
+import forEach from '../core/forEach'
 import forElements from '../core/forElements'
+import forIn from '../core/forIn'
+import _stringToArray from '../internals/_stringToArray'
 
 /**
  * Iterates over classes and toggle it on each element of elements.
@@ -16,11 +19,21 @@ import forElements from '../core/forElements'
  * Chirashi.toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
  */
 export default function toggleClass (elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g)
+  if (typeof classes === 'object') {
+    return forElements(elements, element => {
+      if (!element.classList.toggle) return
 
-  return forElements(elements, element => {
-    if (!element.classList) return
+      forIn(classes, (className, condition) => {
+        element.classList.toggle(className, condition(element))
+      })
+    })
+  } else {
+    classes = _stringToArray(classes)
 
-    element.classList.toggle(...classes)
-  })
+    return forElements(elements, element => {
+      if (!element.classList.toggle) return
+
+      forEach(classes, element.classList.toggle.bind(element.classList))
+    })
+  }
 }

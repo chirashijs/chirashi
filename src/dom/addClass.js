@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import _updateClassList from '../internals/_updateClassList'
 
 /**
  * Iterates over classes and add it on each element of elements.
@@ -20,11 +20,5 @@ import forElements from '../core/forElements'
  * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi cheese seaweed salmon avocado tuna egg"></div>
  */
 export default function addClass (elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g)
-
-  return forElements(elements, element => {
-    if (!element.classList) return
-
-    element.classList.add(...classes)
-  })
+  return _updateClassList(elements, 'add', classes)
 }

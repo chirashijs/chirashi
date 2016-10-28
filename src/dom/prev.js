@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
 
 /**
  * Get the previous sibling of element.
@@ -19,7 +19,5 @@ import getElement from '../core/getElement'
  * Chirashi.prev(avocado) //returns: <div class="salmon" data-fish="salmon"></div>
  */
 export default function prev (element) {
-  element = getElement(element)
-
-  return element && element.previousElementSibling
+  return getProp(element, 'previousElementSibling')
 }

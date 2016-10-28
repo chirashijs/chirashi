@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import setProp from './setProp'
 
 /**
  * Set the inner html of elements.
@@ -16,7 +16,5 @@ import forElements from '../core/forElements'
 * getHtml(maki) //returns: "salmon"
  */
 export default function setHtml (elements, string) {
-  return forElements(elements, element => {
-    element.innerHTML = string
-  })
+  return setProp(elements, {'innerHTML': string})
 }

@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
 
 /**
  * Get the next sibling of element.
@@ -19,7 +19,5 @@ import getElement from '../core/getElement'
  * Chirashi.next(avocado) //returns: <div class="cheese" data-cheese="cream"></div>
  */
 export default function next (element) {
-  element = getElement(element)
-
-  return element && element.nextElementSibling
+  return getProp(element, 'nextElementSibling')
 }

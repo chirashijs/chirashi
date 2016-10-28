@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import getProp from '../dom/getProp'
 
 /**
  * Get width in pixels of element.
@@ -6,7 +6,5 @@ import getElement from '../core/getElement'
  * @return {number} width - The width in pixels
  */
 export default function getWidth (element, inner = false) {
-  element = getElement(element)
-
-  return !!element && (inner ? element.clientWidth : element.offsetWidth)
+  return getProp(element, inner ? 'clientWidth' : 'offsetWidth')
 }

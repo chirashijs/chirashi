@@ -1,6 +1,5 @@
-import matrix from './matrix'
-import scale from './scale'
-import translate from './translate'
+import setStyle from '../styles/setStyle'
+import getTransformMatrix from '../utils/getTransformMatrix'
 
 /**
  * Set the provided transformation to all elements using a matrix if needed and 3d if supported.
@@ -9,18 +8,5 @@ import translate from './translate'
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 export default function transform (elements, transformation) {
-  // if skew or rotation use matrix
-  if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation || 'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation) {
-    return matrix(elements, transformation)
-  } else {
-    const translation = ('x' in transformation || 'y' in transformation || 'z' in transformation) // don't crush translate property
-
-    if (translation) {
-      return translate(elements, transformation)
-    }
-
-    if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation) {
-      return scale(elements, transformation, translation)
-    }
-  }
+  setStyle(elements, {transform: `matrix3d(${getTransformMatrix(transformation).join(',')})`})
 }

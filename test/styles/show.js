@@ -8,7 +8,7 @@ window.describe('chirashi#show', () => {
 
   window.it('should set element\'s visibility to visible', () => {
     let div = document.createElement('div')
-    div.classList.add('test')
+    div.classList.add('show', 'test')
     document.body.appendChild(div)
     div.style.visibility = 'hidden'
 

@@ -52,7 +52,10 @@ export default function getElements (input) {
 
   if (!('_chrsh-valid' in output)) {
     output.chrshPush = function (input) {
-      return this.push(...getElements(input))
+      this.push(...getElements(input))
+      this['_chrsh-valid'] = true
+
+      return this
     }
 
     forEach(breakingMethods, method => {

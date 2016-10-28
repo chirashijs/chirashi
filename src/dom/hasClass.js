@@ -1,4 +1,5 @@
 import getElement from '../core/getElement'
+import _stringToArray from '../internals/_stringToArray'
 
 /**
  * Iterates over classes and test if element has each.
@@ -19,7 +20,7 @@ export default function hasClass (element, classes) {
   element = getElement(element)
   if (!element || !element.classList) return
 
-  if (typeof classes === 'string') classes = classes.split(/[\s,]+/g)
+  classes = _stringToArray(classes)
 
   let i = classes.length
   let found

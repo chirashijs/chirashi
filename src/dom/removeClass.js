@@ -1,4 +1,4 @@
-import forElements from '../core/forElements'
+import _updateClassList from '../internals/_updateClassList'
 
 /**
  * Iterates over classes and remove it from each element of elements.
@@ -14,11 +14,5 @@ import forElements from '../core/forElements'
  * Chirashi.removeClass(maki, 'cheese') //returns: [<div class="maki salmon"></div>]
  */
 export default function removeClass (elements, classes) {
-  if (typeof classes === 'string') classes = classes.split(/[,\s]+/g)
-
-  return forElements(elements, element => {
-    if (!element.classList) return
-
-    element.classList.remove(...classes)
-  })
+  return _updateClassList(elements, 'remove', classes)
 }

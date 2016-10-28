@@ -1,7 +1,6 @@
-import ua from './ua'
-import vendor from './vendor'
+import _testUA from '../internals/_testUA'
 
 /** Variable true if the browser is Chrome or Chromium based on User Agent. */
-const isChrome = /chrome|chromium/i.test(ua) && /google inc/.test(vendor)
+const isChrome = _testUA('chrome|chromium', 'google inc')
 
 export default isChrome
