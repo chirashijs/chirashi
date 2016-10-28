@@ -6,7 +6,7 @@ module.exports = function (config) {
       'karma-coverage',
       'karma-mocha',
       require('karma-webpack'),
-      'karma-chrome-launcher',
+      'karma-phantomjs-launcher',
       'karma-firefox-launcher'
     ],
 
@@ -43,7 +43,7 @@ module.exports = function (config) {
 
     autoWatch: true,
 
-    browsers: ['Chrome', 'Firefox'],
+    browsers: ['PhantomJS', 'Firefox'],
 
     coverageReporter: {
       type: 'lcov',

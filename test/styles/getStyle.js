@@ -13,6 +13,7 @@ window.describe('chirashi#getStyle', () => {
 
     Object.assign(div.style, {
       display: 'block',
+      position: 'relative',
       top: '10px'
     })
 
