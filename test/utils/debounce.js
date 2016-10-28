@@ -46,19 +46,19 @@ window.describe('chirashi#debounce', () => {
     setTimeout(() => {
       assert.equal(called, 1, 'should call debounced wait time after last call')
       assert.ok(c && d, 'should support arguments')
-    }, 160)
-
-    setTimeout(() => {
-      debounced(true, true)
     }, 170)
 
     setTimeout(() => {
+      debounced(true, true)
+    }, 180)
+
+    setTimeout(() => {
       debounced.cancel()
-    }, 190)
+    }, 200)
 
     setTimeout(() => {
       assert.equal(called, 1, 'should cancel call')
       done()
-    }, 280)
+    }, 290)
   })
 })
