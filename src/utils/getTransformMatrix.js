@@ -2,6 +2,31 @@ import forEach from '../core/forEach'
 import forIn from '../core/forIn'
 
 function _applyPropertyToMatrix (property, value, matrix) {
+  // if (property === 'x') {
+  //   matrix[12] += value
+  // } else if (property === 'y') {
+  //   matrix[13] += value
+  // } else if (property === 'z') {
+  //   matrix[14] += value
+  // } else if (property.indexOf('rotate') === 0) {
+  //   let cosValue = Math.cos(value)
+  //   let sinValue = Math.sin(value)
+  //   let indexes
+  //
+  //   if (property === 'rotateX') {
+  //     indexes = [5, 6, 9, 10]
+  //   } else if (property === 'rotateY') {
+  //     indexes = [0, 8, 2, 10]
+  //   } else {
+  //     indexes = [0, 1, 4, 5]
+  //   }
+  //
+  //   matrix[indexes[0]] *= cosValue
+  //   matrix[indexes[1]] += sinValue
+  //   matrix[indexes[2]] -= sinValue
+  //   matrix[indexes[3]] *= cosValue
+  // } else if (property === scale)
+
   let indexes, cosValue, sinValue, tanValue
 
   switch (property) {
