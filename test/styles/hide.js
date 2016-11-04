@@ -1,9 +1,9 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#hide', () => {
   window.it('should be a function', () => {
-    assert.equal(typeof Chirashi.hide, 'function')
+    assert.isFunction(Chirashi.hide)
   })
 
   window.it('should set element\'s visibility to hidden', () => {

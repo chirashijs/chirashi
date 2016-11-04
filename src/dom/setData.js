@@ -1,5 +1,5 @@
+import forElements from '../core/forElements'
 import forIn from '../core/forIn'
-import setAttr from './setAttr'
 
 /**
  * Iterates over data-attributes as key value pairs and apply on each element of elements.
@@ -19,10 +19,9 @@ import setAttr from './setAttr'
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
 export default function setData (elements, dataAttributes) {
-  const attributes = {}
-  forIn(dataAttributes, (name, value) => {
-    attributes[`data-${name}`] = value
+  return forElements(elements, element => {
+    forIn(dataAttributes, (name, value) => {
+      element.setAttribute(name.indexOf('data') === 0 ? name : `data-${name}`, value)
+    })
   })
-
-  setAttr(elements, attributes)
 }

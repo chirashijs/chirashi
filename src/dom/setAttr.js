@@ -1,5 +1,6 @@
-import _applyForEach from '../internals/_applyForEach'
 import forIn from '../core/forIn'
+import setProp from './setProp'
+import setData from './setData'
 
 /**
  * Iterates over attributes as key value pairs and apply on each element of elements.
@@ -19,13 +20,22 @@ import forIn from '../core/forIn'
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
 export default function setAttr (elements, attributes) {
+  const props = {}
+  const dataAttributes = {}
+
   forIn(attributes, (name, value) => {
-    if (value instanceof Array) {
-      attributes[name] = value.join(' ')
-    } else if (typeof value !== 'string') {
-      attributes[name] = JSON.stringify(value)
+    if (typeof value !== 'string' && !(value instanceof Array)) {
+      value = JSON.stringify(value)
+    }
+
+    if (name.indexOf('data') === 0) {
+      dataAttributes[name] = value
+    } else {
+      props[name] = value
     }
   })
 
-  return _applyForEach(elements, 'setAttribute', attributes)
+  setProp(elements, props)
+
+  return setData(elements, dataAttributes)
 }

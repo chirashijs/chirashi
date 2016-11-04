@@ -1,6 +1,5 @@
 import forIn from '../core/forIn'
 import on from './on'
-import off from './off'
 import closest from '../dom/closest'
 
 /**
@@ -49,12 +48,10 @@ export default function bind (selector, input, delegate = document.body) {
     }
   })
 
-  on(delegate, eventsObj)
+  const bound = on(delegate, eventsObj)
 
   return {
-    unbind () {
-      off(delegate, eventsObj)
-    }
+    unbind: bound.off
   }
 }
 

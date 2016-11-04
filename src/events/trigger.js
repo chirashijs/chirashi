@@ -1,3 +1,4 @@
+import _stringToArray from '../internals/_stringToArray'
 import forEach from '../core/forEach'
 import getElements from '../core/getElements'
 
@@ -20,16 +21,10 @@ export default function trigger (elements, events, options = {}) {
 
   options = { ...options, ...defaults }
 
-  if (typeof events === 'string') events = events.split(/[,\s]+/g)
-
-  forEach(events, event => {
+  forEach(_stringToArray(events), event => {
     event = new window.CustomEvent(event, options)
 
-    forEach(elements, element => {
-      if (!element.dispatchEvent) return
-
-      element.dispatchEvent(event)
-    })
+    forEach(elements, element => element.dispatchEvent(event))
   })
 
   return elements

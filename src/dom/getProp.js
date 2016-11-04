@@ -18,5 +18,5 @@ import getElement from '../core/getElement'
 export default function getProp (element, property) {
   element = getElement(element)
 
-  return !!element && element[property]
+  return element ? element[property] : null
 }

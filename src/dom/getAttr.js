@@ -1,4 +1,5 @@
-import getElement from '../core/getElement'
+import getProp from './getProp'
+import getData from './getData'
 
 /**
  * Get value for named attribute of element.
@@ -14,7 +15,5 @@ import getElement from '../core/getElement'
  * Chirashi.getAttr(maki, 'data-fish') //returns: "salmon"
  */
 export default function getAttr (element, name) {
-  element = getElement(element)
-
-  return !!element && 'getAttribute' in element ? element.getAttribute(name) : null
+  return name.indexOf('data') === 0 ? getData(element, name) : getProp(element, name)
 }

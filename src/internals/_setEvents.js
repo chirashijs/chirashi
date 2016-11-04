@@ -7,8 +7,6 @@ export default function _setEvents (elements, method, input) {
   method += 'EventListener'
 
   return forElements(elements, element => {
-    if (!element[method]) return
-
     forIn(input, (events, callback) => {
       forEach(_stringToArray(events), event => element[method](event, callback))
     })

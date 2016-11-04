@@ -9,63 +9,97 @@
   (global.Chirashi = factory());
 }(this, (function () { 'use strict';
 
-/** User Agent in lower case. */
-var ua = navigator && navigator.userAgent.toLowerCase();
+/**
+* Iterates over items and apply callback on each one.
+* @param {*} items - The iterable.
+* @param {forEachCallback} callback - The callback to call for each iteratee.
+* @param {bool} [forceOrder=false] - Respect items order.
+* @return {Array | NodeList | HTMLCollection} items for chaining.
+* @example //esnext
+* import { forEach } from 'chirashi'
+*
+* const items = forEach([0, 1, 2], (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0, 1, 2]
+* // logs:
+* //   2: 3
+* //   1: 2
+* //   0: 1
+* forEach(items, (item, i) => console.log(`${i}: ${item + 1}`), true) //returns: [0, 1, 2]
+* // logs:
+* //   0: 1
+* //   1: 2
+* //   2: 3
+* forEach(0, (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0]
+* //   0: 1
+* @example //es5
+* var items = Chirashi.forEach([0, 1, 2], function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0, 1, 2]
+* // logs:
+* //   2: 3
+* //   1: 2
+* //   0: 1
+* Chirashi.forEach(items, function (item, i) { console.log(i+': '+(item + 1)) }, true) //returns: [0, 1, 2]
+* // logs:
+* //   0: 1
+* //   1: 2
+* //   2: 3
+* Chirashi.forEach(0, function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0]
+* // logs:
+* //   0: 1
+*/
+function forEach(items, callback) {
+  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-/** Navigator's vendor in lower case. */
-var vendor = navigator && navigator.vendor && navigator.vendor.toLowerCase();
+  if (!items) return [];
 
-function _testUA(uaRegex, vendorRegex) {
-  return new RegExp('/' + uaRegex + '/i').test(ua) && (!vendorRegex || new RegExp('/' + vendorRegex + '/').test(vendor));
+  if (!(items instanceof Array)) {
+    if (!(items instanceof window.NodeList || items instanceof window.HTMLCollection)) {
+      items = [items];
+    }
+  }
+
+  if (!forceOrder) {
+    var i = items.length;
+    while (i--) {
+      callback(items[i], i);
+    }
+  } else {
+    var _i = -1;
+    var len = items.length;
+    while (++_i < len) {
+      callback(items[_i], _i);
+    }
+  }
+
+  return items;
 }
 
-/** Variable true if the device is running Android based on User Agent. */
-var isAndroid = _testUA('android');
+/**
+* Callback to apply on item.
+* @callback forEachCallback
+* @param {*} item
+* @param {number} index - Index of item in items.
+*/
 
-/** Variable true if the device is an Android Tablet based on User Agent. */
-var isAndroidTablet = isAndroid && !_testUA('mobile');
-
-/** Variable true if the browser is Chrome or Chromium based on User Agent. */
-var isChrome = _testUA('chrome|chromium', 'google inc');
-
-/** Variable true if the browser is Firefox based on User Agent. */
-var isFirefox = _testUA('firefox');
-
-/** Version number if the browser is Internet Explorer or false based on User Agent. */
-var isIE = ua.indexOf('msie') !== -1 ? +ua.split('msie')[1] : false;
-
-/** Variable true if the device is running iOS based on User Agent. */
-var isIOS = _testUA('iphone|ipad|ipod');
-
-/** Variable true if the device is an iPad based on User Agent. */
-var isIPad = _testUA('ipad');
-
-/** Variable true if the device is an iPhone based on User Agent. */
-var isIPhone = _testUA('iphone');
-
-/** Variable true if the device is an iPod based on User Agent. */
-var isIPod = _testUA('ipod');
-
-/** Variable true if the device is running Windows based on User Agent. */
-var isWindows = /win/i.test('navigator' in window && 'appVersion' in window.navigator && window.navigator.appVersion.toLowerCase() || '');
-
-/** Variable true if the device handle touches events. */
-var isTouchable = !!('ontouchstart' in window || window.DocumentTouch && document instanceof window.DocumentTouch);
-
-/** Variable true if the device is a mobile based on User Agent. */
-var isMobile = isIOS || isAndroid || isWindows && isTouchable;
-
-/** Variable true if the browser is Safari based on User Agent. */
-var isSafari = _testUA('safari', 'apple computer');
-
-/** Variable true if the device is a Windows Phone based on User Agent. */
-var isWindowsPhone = isWindows && _testUA('phone');
-
-/** Variable true if the device is a Windows Tablet based on User Agent. */
-var isWindowsTablet = isWindows && !isWindowsPhone && isTouchable;
-
-/** Variable true if the device is a tablet based on User Agent. */
-var isTablet = isIPad || isAndroidTablet || isWindowsTablet;
+/**
+ * Test if element is a dom element. Doesn't resolve selectors.
+ * @param {*} element - The element to test.
+ * @return {bool} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
+ * @example //esnext
+ * import { createElement, append, isDomElement } from 'chirashi'
+ * const sushi = createElement('.sushi')
+ * append(document.body, sushi)
+ * isDomElement(window) //returns: true
+ * isDomElement(sushi) //returns: true
+ * isDomElement('.sushi') //returns: false
+ * @example //es5
+ * var sushi = Chirashi.createElement('.sushi')
+ * Chirashi.append(document.body, sushi)
+ * Chirashi.isDomElement(window) //returns: true
+ * Chirashi.isDomElement(sushi) //returns: true
+ * Chirashi.isDomElement('.sushi') //returns: false
+ */
+function isDomElement(element) {
+  return element instanceof window.HTMLElement || element === window || element === document || element instanceof window.SVGElement || element instanceof window.Text;
+}
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -202,20 +236,7 @@ var asyncGenerator = function () {
 
 
 
-var defineProperty = function (obj, key, value) {
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value: value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
 
-  return obj;
-};
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -318,109 +339,6 @@ var toConsumableArray = function (arr) {
   }
 };
 
-/** Browser prefix for styling. */
-var prefix = ([].concat(toConsumableArray(window.getComputedStyle(document.documentElement, ''))).join('').match(/-(moz|webkit|ms)-/) || window.styles.OLink === '' && ['', 'o'])[1];
-
-var property = prefix + 'Transform';
-document.documentElement.style[property] = 'matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)';
-
-/** Variable true if the browser supports 3d css transformations. */
-var support3d = !!document.documentElement.style[property];
-
-document.documentElement.style[property] = '';
-
-/**
-* Iterates over items and apply callback on each one.
-* @param {*} items - The iterable.
-* @param {forEachCallback} callback - The callback to call for each iteratee.
-* @param {bool} [forceOrder=false] - Respect items order.
-* @return {Array} items for chaining.
-* @example //esnext
-* import { forEach } from 'chirashi'
-*
-* const items = forEach([0, 1, 2], (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0, 1, 2]
-* // logs:
-* //   2: 3
-* //   1: 2
-* //   0: 1
-* forEach(items, (item, i) => console.log(`${i}: ${item + 1}`), true) //returns: [0, 1, 2]
-* // logs:
-* //   0: 1
-* //   1: 2
-* //   2: 3
-* forEach(0, (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0]
-* //   0: 1
-* @example //es5
-* var items = Chirashi.forEach([0, 1, 2], function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0, 1, 2]
-* // logs:
-* //   2: 3
-* //   1: 2
-* //   0: 1
-* Chirashi.forEach(items, function (item, i) { console.log(i+': '+(item + 1)) }, true) //returns: [0, 1, 2]
-* // logs:
-* //   0: 1
-* //   1: 2
-* //   2: 3
-* Chirashi.forEach(0, function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0]
-* // logs:
-* //   0: 1
-*/
-function forEach(items, callback) {
-  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  if (!items) return [];
-
-  if (!(items instanceof Array)) {
-    if (!(items instanceof window.NodeList || items instanceof window.HTMLCollection)) {
-      items = [items];
-    }
-  }
-
-  if (!forceOrder) {
-    var i = items.length;
-    while (i--) {
-      callback(items[i], i);
-    }
-  } else {
-    var _i = -1;
-    var len = items.length;
-    while (++_i < len) {
-      callback(items[_i], _i);
-    }
-  }
-
-  return items;
-}
-
-/**
-* Callback to apply on item.
-* @callback forEachCallback
-* @param {*} item
-* @param {number} index - Index of item in items.
-*/
-
-/**
- * Test if element is a dom element. Doesn't resolve selectors.
- * @param {*} element - The element to test.
- * @return {bool} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
- * @example //esnext
- * import { createElement, append, isDomElement } from 'chirashi'
- * const sushi = createElement('.sushi')
- * append(document.body, sushi)
- * isDomElement(window) //returns: true
- * isDomElement(sushi) //returns: true
- * isDomElement('.sushi') //returns: false
- * @example //es5
- * var sushi = Chirashi.createElement('.sushi')
- * Chirashi.append(document.body, sushi)
- * Chirashi.isDomElement(window) //returns: true
- * Chirashi.isDomElement(sushi) //returns: true
- * Chirashi.isDomElement('.sushi') //returns: false
- */
-function isDomElement(element) {
-  return element instanceof window.HTMLElement || element === window || element === document || element instanceof window.SVGElement || element instanceof window.Text;
-}
-
 var breakingMethods = ['push', 'splice', 'unshift'];
 
 /**
@@ -466,28 +384,26 @@ function getElements(input) {
 
       output = parsedElements;
     })();
-  } else if (input instanceof window.NodeList) {
+  } else if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
     output = [].concat(toConsumableArray(input));
   } else {
     output = isDomElement(input) ? [input] : [];
   }
 
-  if (!('_chrsh-valid' in output)) {
-    output.chrshPush = function (input) {
-      this.push.apply(this, toConsumableArray(getElements(input)));
-      this['_chrsh-valid'] = true;
+  output.chrshPush = function (input) {
+    this.push.apply(this, toConsumableArray(getElements(input)));
+    this['_chrsh-valid'] = true;
 
-      return this;
+    return this;
+  };
+
+  forEach(breakingMethods, function (method) {
+    output[method] = function () {
+      this['_chrsh-valid'] = false;
+
+      return Array.prototype[method].apply(this, arguments);
     };
-
-    forEach(breakingMethods, function (method) {
-      output[method] = function () {
-        this['_chrsh-valid'] = false;
-
-        return Array.prototype[method].apply(this, arguments);
-      };
-    });
-  }
+  });
 
   output['_chrsh-valid'] = true;
 
@@ -641,8 +557,12 @@ function getElement(input) {
   return isDomElement(input) && input;
 }
 
-function _stringToArray(input) {
-  return typeof input === 'string' ? input.split(/[,\s]+/g) : input;
+function _stringToArray(input, prefix) {
+  var output = typeof input === 'string' ? input.split(/[,\s]+/g) : input;
+
+  return prefix ? output.map(function (string) {
+    return '' + prefix + string;
+  }) : output;
 }
 
 function _updateClassList(elements, method, classes) {
@@ -651,7 +571,7 @@ function _updateClassList(elements, method, classes) {
   return forElements(elements, function (element) {
     var _element$classList;
 
-    if (!element.classList[method]) return;
+    if (!element.classList) return;
 
     (_element$classList = element.classList)[method].apply(_element$classList, toConsumableArray(classes));
   });
@@ -680,11 +600,49 @@ function addClass(elements, classes) {
   return _updateClassList(elements, 'add', classes);
 }
 
-function _applyForEach(elements, method, args) {
+/**
+ * Apply props as key value pairs on each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {object} - The props key value pairs.
+ * @return {Array} elements - The elements for chaining.
+ * @example //esnext
+ * import { createElement, setProp, getProp } from 'chirashi'
+ * const maki = createElement('input.maki')
+ * setProp(maki, { value: 'こんにちは世界' })
+ * getProp(maki, 'value') //returns: こんにちは世界
+ * @example //es5
+ * var maki = Chirashi.createElement('input.maki')
+ * Chirashi.setProp(maki, { value: 'こんにちは世界' })
+ * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
+ */
+function setProp(elements, props) {
   return forElements(elements, function (element) {
-    if (!element[method]) return;
+    return Object.assign(element, props);
+  });
+}
 
-    forEach(args, element[method].bind(element));
+/**
+ * Iterates over data-attributes as key value pairs and apply on each element of elements.
+ * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {object} - The data-attributes key value pairs.
+ * @return {Array} elements - The elements for chaining.
+ * @example //esnext
+ * import { createElement, setData } from 'chirashi'
+ * const maki = createElement('.maki')
+ * setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ */
+function setData(elements, dataAttributes) {
+  return forElements(elements, function (element) {
+    forIn(dataAttributes, function (name, value) {
+      element.setAttribute(name.indexOf('data') === 0 ? name : 'data-' + name, value);
+    });
   });
 }
 
@@ -706,21 +664,29 @@ function _applyForEach(elements, method, args) {
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
 function setAttr(elements, attributes) {
+  var props = {};
+  var dataAttributes = {};
+
   forIn(attributes, function (name, value) {
-    if (value instanceof Array) {
-      attributes[name] = value.join(' ');
-    } else if (typeof value !== 'string') {
-      attributes[name] = JSON.stringify(value);
+    if (typeof value !== 'string' && !(value instanceof Array)) {
+      value = JSON.stringify(value);
+    }
+
+    if (name.indexOf('data') === 0) {
+      dataAttributes[name] = value;
+    } else {
+      props[name] = value;
     }
   });
 
-  return _applyForEach(elements, 'setAttribute', attributes);
+  setProp(elements, props);
+
+  return setData(elements, dataAttributes);
 }
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
  * @param {string} string - The html string, tag or css selector.
- * @param {object} [attributes={}] - Object associating attribute name to value.
  * @return {HTMLElement | SVGElement} element - The dom element created from the string.
  * @example //esnext
  * import { createElement } from 'chirashi'
@@ -743,21 +709,15 @@ function setAttr(elements, attributes) {
  * Chirashi.closest('.cheese', '.sushi') //returns: false
  */
 function createElement(string) {
-  var attributes = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+  var attributes = {};
+  var classes = [];
 
   if (string.indexOf('<') === -1) {
     var core = null;
 
-    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-="'#]+[\]]?/g), function (segment) {
+    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-_+]+(=["'a-zA-Z0-9-_+\.]+\]?)?/g), function (segment) {
       if (segment.indexOf('.') === 0) {
-        if (!('class' in attributes)) {
-          attributes.class = segment.slice(1);
-        } else if (attributes.class instanceof Array) {
-          attributes.class = attributes.class.join(' ');
-          attributes.class += ' ' + segment.slice(1);
-        } else {
-          attributes.class += ' ' + segment.slice(1);
-        }
+        classes.push(segment.slice(1));
       } else if (segment.indexOf('#') === 0) {
         attributes.id = segment.slice(1);
       } else if (segment.indexOf('[') === 0) {
@@ -777,8 +737,8 @@ function createElement(string) {
   temp.innerHTML = string;
 
   var element = temp.firstChild;
-
   setAttr(element, attributes);
+  addClass(element, classes);
 
   return element;
 }
@@ -787,7 +747,6 @@ function createElement(string) {
  * Appends each node to element.
  * @param {string | HTMLElement | SVGElement} element - Selector or element.
  * @param {Array | string | HTMLElement | SVGElement | Text} nodes - Array of dom elements or string to create it using createElement.
- * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation so length should match number of strings in nodes ).
  * @return {HTMLElement | SVGElement} element - The element for chaining.
  * @example //esnext
  * import { createElement, append } from 'chirashi'
@@ -799,22 +758,17 @@ function createElement(string) {
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * var avocado = Chirashi.createElement('.avocado')
- * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function append(element, nodes) {
-  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
   element = getElement(element);
 
   if (!element || !element.appendChild) return;
 
-  var attributeIndex = 0;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributes[attributeIndex++] || {});
-    }
-
-    if (isDomElement(node)) element.appendChild(node);
+      element.appendChild(createElement(node));
+    } else if (isDomElement(node)) element.appendChild(node);
   }, true);
 
   return element;
@@ -838,7 +792,7 @@ function append(element, nodes) {
 function getProp(element, property) {
   element = getElement(element);
 
-  return !!element && element[property];
+  return element ? element[property] : null;
 }
 
 /**
@@ -983,6 +937,8 @@ function find(elements, selector) {
   var found = [];
 
   forElements(elements, function (element) {
+    if (!('querySelectorAll' in element)) return;
+
     found.push.apply(found, toConsumableArray(element.querySelectorAll(selector)));
   });
 
@@ -1019,25 +975,6 @@ function findOne(element, selector) {
 }
 
 /**
- * Get value for named attribute of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
- * @param {string} name - The attribute's name.
- * @return {string} value - The value for the attribute.
- * @example //esnext
- * import { createElement, getAttr } from 'chirashi'
- * const maki = createElement('.maki[data-fish="salmon"]')
- * getAttr(maki, 'data-fish') //returns: "salmon"
- * @example //es5
- * const maki = Chirashi.createElement('.maki[data-fish="salmon"]')
- * Chirashi.getAttr(maki, 'data-fish') //returns: "salmon"
- */
-function getAttr(element, name) {
-  element = getElement(element);
-
-  return !!element && 'getAttribute' in element ? element.getAttribute(name) : null;
-}
-
-/**
  * Alias on getAttr prefixing name with 'data-'.
  * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
  * @param {string} name - The data-attribute's name.
@@ -1051,7 +988,24 @@ function getAttr(element, name) {
  * Chirashi.getData(maki, 'fish') //returns: "salmon"
  */
 function getData(element, name) {
-  return getAttr(element, 'data-' + name);
+  return element.getAttribute(name.indexOf('data') === 0 ? name : 'data-' + name);
+}
+
+/**
+ * Get value for named attribute of element.
+ * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
+ * @param {string} name - The attribute's name.
+ * @return {string} value - The value for the attribute.
+ * @example //esnext
+ * import { createElement, getAttr } from 'chirashi'
+ * const maki = createElement('.maki[data-fish="salmon"]')
+ * getAttr(maki, 'data-fish') //returns: "salmon"
+ * @example //es5
+ * const maki = Chirashi.createElement('.maki[data-fish="salmon"]')
+ * Chirashi.getAttr(maki, 'data-fish') //returns: "salmon"
+ */
+function getAttr(element, name) {
+  return name.indexOf('data') === 0 ? getData(element, name) : getProp(element, name);
 }
 
 /**
@@ -1147,18 +1101,15 @@ function indexInParent(element) {
  * Chirashi.insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertAfter(element, nodes) {
-  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
   element = getElement(element);
 
-  if (!element || !('parentNode' in element) || !('insertBefore' in element.parentNode)) return;
+  if (!element || !('parentNode' in element)) return;
 
   var parent = element.parentNode;
 
-  var attributeIndex = 0;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributes[attributeIndex++] || {});
+      node = createElement(node);
     }
 
     if (isDomElement(node)) parent.insertBefore(node, element.nextElementSibling);
@@ -1186,18 +1137,15 @@ function insertAfter(element, nodes) {
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertBefore(element, nodes) {
-  var attributes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
   element = getElement(element);
 
-  if (!element || !('parentNode' in element) || !('insertBefore' in element.parentNode)) return;
+  if (!element || !('parentNode' in element)) return;
 
   var parent = element.parentNode;
 
-  var attributeIndex = 0;
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
-      node = createElement(node, attributes[attributeIndex++] || {});
+      node = createElement(node);
     }
 
     if (isDomElement(node)) parent.insertBefore(node, element);
@@ -1299,6 +1247,16 @@ function remove(elements) {
   });
 }
 
+function _applyForEach(elements, method, args) {
+  return forElements(elements, function (element) {
+    if (!element[method]) return;
+
+    forEach(args, function (arg) {
+      element[method](arg);
+    });
+  });
+}
+
 /**
  * Iterates over attributes and removes it from each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
@@ -1316,9 +1274,7 @@ function remove(elements) {
  * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  */
 function removeAttr(elements, attributes) {
-  if (typeof attributes === 'string') attributes = attributes.split(/[,\s]+/g);
-
-  return _applyForEach(elements, 'removeAttribute', attributes);
+  return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes));
 }
 
 /**
@@ -1339,50 +1295,23 @@ function removeClass(elements, classes) {
 }
 
 /**
- * Iterates over data-attributes as key value pairs and apply on each element of elements.
- * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The data-attributes key value pairs.
+ * Iterates over attributes and removes it from each element of elements.
+ * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {Array | string} attributes - Array of attributes' name, string of attributes' name seperated by space and/or comas or name of a single attribute.
  * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setData } from 'chirashi'
+ * import { createElement, append, removeAttr } from 'chirashi'
  * const maki = createElement('.maki')
- * setData(maki, {
- *   fish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
+ * append(document.body, maki)
+ * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
- * Chirashi.setData(maki, {
- *   fish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
+ * Chirashi.append(document.body, maki)
+ * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  */
-function setData(elements, dataAttributes) {
-  var attributes = {};
-  forIn(dataAttributes, function (name, value) {
-    attributes['data-' + name] = value;
-  });
-
-  setAttr(elements, attributes);
-}
-
-/**
- * Apply props as key value pairs on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The props key value pairs.
- * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setProp, getProp } from 'chirashi'
- * const maki = createElement('input.maki')
- * setProp(maki, { value: 'こんにちは世界' })
- * getProp(maki, 'value') //returns: こんにちは世界
- * @example //es5
- * var maki = Chirashi.createElement('input.maki')
- * Chirashi.setProp(maki, { value: 'こんにちは世界' })
- * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
- */
-function setProp(elements, props) {
-  return forElements(elements, function (element) {
-    return Object.assign(element, props);
-  });
+function removeAttr$1(elements, attributes) {
+  return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes, 'data-'));
 }
 
 /**
@@ -1407,7 +1336,7 @@ function setHtml(elements, string) {
 /**
  * Iterates over classes and toggle it on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
- * @param {string | Array} classes - Array of classes or string of classes seperated with comma and/or spaces.
+ * @param {string | Array | Object} classes - Array of classes or string of classes seperated with comma and/or spaces.
  * @return {Array} elements - The elements for chaining.
  * @example //esnext
  * import { createElement, toggleClass } from 'chirashi'
@@ -1419,22 +1348,32 @@ function setHtml(elements, string) {
  * var sushi = Chirashi.createElement('.salmon.sushi') //returns: <div class="salmon sushi"></div>
  * Chirashi.toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
  */
-function toggleClass(elements, classes) {
-  if ((typeof classes === 'undefined' ? 'undefined' : _typeof(classes)) === 'object') {
-    return forElements(elements, function (element) {
-      if (!element.classList.toggle) return;
+function toggleClass(elements, input) {
+  if (input instanceof Array || typeof input === 'string') {
+    var _ret = function () {
+      var classes = _stringToArray(input);
 
-      forIn(classes, function (className, condition) {
-        element.classList.toggle(className, condition(element));
-      });
-    });
+      return {
+        v: forElements(elements, function (element) {
+          if (!element.classList) return;
+
+          forEach(classes, function (className) {
+            element.classList.toggle(className);
+          });
+        })
+      };
+    }();
+
+    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
   } else {
-    classes = _stringToArray(classes);
-
     return forElements(elements, function (element) {
-      if (!element.classList.toggle) return;
+      if (!element.classList) return;
 
-      forEach(classes, element.classList.toggle.bind(element.classList));
+      forIn(input, function (classes, condition) {
+        forEach(_stringToArray(classes), function (className) {
+          element.classList.toggle(className, condition(element));
+        });
+      });
     });
   }
 }
@@ -1443,8 +1382,6 @@ function _setEvents(elements, method, input) {
   method += 'EventListener';
 
   return forElements(elements, function (element) {
-    if (!element[method]) return;
-
     forIn(input, function (events, callback) {
       forEach(_stringToArray(events), function (event) {
         return element[method](event, callback);
@@ -1461,7 +1398,13 @@ function _setEvents(elements, method, input) {
  * @return {Array} elements - The iterable for chaining.
  */
 function on(elements, input) {
-  return _setEvents(elements, 'add', input);
+  elements = _setEvents(elements, 'add', input);
+
+  return {
+    off: function off(element) {
+      _setEvents(element || elements, 'remove', input);
+    }
+  };
 }
 
 /**
@@ -1469,17 +1412,6 @@ function on(elements, input) {
 * @callback eventCallback
 * @param {Event} event - Triggered event.
 */
-
-/**
- * Bind events listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {string | Array} events - Array of events to listen or string of events seperated with comma and/or spaces.
- * @param {eventCallback} callback - The callback used for event binding.
- * @return {Array} elements - The iterable for chaining.
- */
-function off$1(elements, input) {
-  return _setEvents(elements, 'remove', input);
-}
 
 /**
  * Bind events listener on delegate and execute callback when target matches selector (targets doesn't have to be in the DOM at binding).
@@ -1529,12 +1461,10 @@ function bind(selector, input) {
     };
   });
 
-  on(delegate, eventsObj);
+  var bound = on(delegate, eventsObj);
 
   return {
-    unbind: function unbind() {
-      off$1(delegate, eventsObj);
-    }
+    unbind: bound.off
   };
 }
 
@@ -1546,87 +1476,6 @@ function bind(selector, input) {
 */
 
 /**
- * Bind hover listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {eventCallback} enter - The enter callback.
- * @param {eventCallback} leave - The leave callback.
- * @return {Object} object - An object with off method for unbinding.
- * @return {function} object.off - The off method.
- */
-function hover(elements, enter, leave) {
-  var events = {
-    mouseenter: enter,
-    mouseleave: leave
-  };
-
-  on(elements, events);
-
-  return {
-    off: function off() {
-      off$1(elements, events);
-    }
-  };
-}
-
-/**
- * Bind hover listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {eventCallback} eachCallback - The callback on each load event
- * @param {eventCallback} allCallback - The callback when all elements have been loaded
- * @param {bool} [once] = true - Trigger only once for each media if true
- * @param {bool} [testSrc] = true - If true callback will be called with error when an element doesn't have src
- * @return {object} offObject - An object with off method for unbinding
- * @return {object.off} off - off method
- */
-function load(elements, eachCallback, allCallback) {
-  var once = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-  var testSrc = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
-
-  elements = getElements(elements);
-
-  if (!elements || elements.length === 0) {
-    if (allCallback) allCallback();
-
-    return;
-  }
-
-  var n = {
-    value: elements.length
-  };
-
-  var callback = function callback(event, element, error) {
-    if (event) {
-      element = event.target;
-      if (event.type === 'error') error = event;
-    }
-
-    if (once) off$1(element, 'load loadedmetadata error', callback);
-
-    if (eachCallback) eachCallback(element, error);
-
-    if (! --n.value && allCallback) allCallback();
-  };
-
-  forEach(elements, function (element) {
-    if (testSrc && !element.src) {
-      callback(null, element, 'image without src');
-    } else if (element.naturalWidth || element.loadedmetadata) {
-      callback(null, element, null);
-    } else {
-      on(element, 'load loadedmetadata error', callback);
-    }
-  });
-
-  return {
-    off: function off() {
-      forEach(elements, function (element) {
-        return off$1(element, 'load loadedmetadata error', callback);
-      });
-    }
-  };
-}
-
-/**
  * Bind events listener on each element of elements and unbind after first triggered.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
  * @param {string} events - The events that should be bound seperated with spaces
@@ -1634,19 +1483,22 @@ function load(elements, eachCallback, allCallback) {
  * @return {object} offObject - An object with off method for unbinding
  * @return {object.off} off - off method
  */
-function once(elements, events, callback) {
-  var innerCallback = function innerCallback(event) {
-    callback(event);
+function once(elements, input) {
+  var listener = void 0;
+  var eventsObj = {};
 
-    off$1(elements, events, innerCallback);
-  };
+  forIn(input, function (events, callback) {
+    eventsObj[events] = function (event) {
+      callback(event);
 
-  on(elements, events, innerCallback);
+      listener.off();
+    };
+  });
+
+  listener = on(elements, eventsObj);
 
   return {
-    cancel: function cancel() {
-      off$1(elements, events, innerCallback);
-    }
+    cancel: listener.off
   };
 }
 
@@ -1655,7 +1507,7 @@ function once(elements, events, callback) {
  * @param {eventCallback} callback - The callback.
  */
 function ready(callback) {
-  on(document, {
+  return once(document, {
     'DOMContentLoaded': callback
   });
 }
@@ -1681,19 +1533,54 @@ function trigger(elements, events) {
 
   options = _extends({}, options, defaults$1);
 
-  if (typeof events === 'string') events = events.split(/[,\s]+/g);
-
-  forEach(events, function (event) {
+  forEach(_stringToArray(events), function (event) {
     event = new window.CustomEvent(event, options);
 
     forEach(elements, function (element) {
-      if (!element.dispatchEvent) return;
-
-      element.dispatchEvent(event);
+      return element.dispatchEvent(event);
     });
   });
 
   return elements;
+}
+
+var unitless = ['zIndex', 'z-index', 'zoom', 'font-weight', 'lineHeight', 'line-height', 'counterReset', 'counter-reset', 'counterIncrement', 'counter-increment', 'volume', 'stress', 'pitchRange', 'pitch-range', 'richness', 'opacity'];
+
+/**
+* Set the provided style to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} style - The style options as object linking value to property
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
+function setStyle(elements, style) {
+  forIn(style, function (prop, value) {
+    if (unitless.indexOf(prop) === -1 && typeof value === 'number') {
+      style[prop] += 'px';
+    }
+  });
+
+  return forElements(elements, function (element) {
+    if (!element.style) return;
+
+    Object.assign(element.style, style);
+  });
+}
+
+/**
+* Set the provided style to elements
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+* @param {object} style - The style options as object linking value to property
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+*/
+function clearStyle(elements, props) {
+  props = _stringToArray(props);
+
+  var style = {};
+  forEach(props, function (prop) {
+    return style[prop] = '';
+  });
+
+  return setStyle(elements, style);
 }
 
 /**
@@ -1746,28 +1633,6 @@ function getStyle(element, property) {
   return ret.indexOf('px') === -1 ? ret : parseFloat(ret);
 }
 
-var unitless = ['zIndex', 'z-index', 'zoom', 'font-weight', 'lineHeight', 'line-height', 'counterReset', 'counter-reset', 'counterIncrement', 'counter-increment', 'volume', 'stress', 'pitchRange', 'pitch-range', 'richness', 'opacity'];
-
-/**
-* Set the provided style to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} style - The style options as object linking value to property
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
-function setStyle(elements, style) {
-  forIn(style, function (prop, value) {
-    if (unitless.indexOf(prop) === -1 && typeof value === 'number') {
-      style[prop] += 'px';
-    }
-  });
-
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    Object.assign(element.style, style);
-  });
-}
-
 /**
  * Hide each element of elements using visibility.
  * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
@@ -1775,237 +1640,6 @@ function setStyle(elements, style) {
  */
 function hide(elements) {
   return setStyle(elements, { visibility: 'hidden' });
-}
-
-function _applyPropertyToMatrix(property, value, matrix, support3d) {
-  var indexes = void 0,
-      cosValue = void 0,
-      sinValue = void 0,
-      tanValue = void 0;
-
-  switch (property) {
-    case 'x':
-      matrix[support3d ? 12 : 4] += value;
-      break;
-
-    case 'y':
-      matrix[support3d ? 13 : 5] += value;
-      break;
-
-    case 'z':
-      if (support3d) matrix[14] += value;
-      break;
-
-    case 'rotate':
-      cosValue = Math.cos(value);
-      sinValue = Math.sin(value);
-
-      matrix[0] *= cosValue;
-      matrix[1] += sinValue;
-
-      if (support3d) {
-        matrix[4] -= sinValue;
-        matrix[5] *= cosValue;
-      } else {
-        matrix[2] -= sinValue;
-        matrix[3] *= cosValue;
-      }
-
-      break;
-
-    case 'rotateX':
-    case 'rotateY':
-    case 'rotateZ':
-      if (support3d) {
-        cosValue = Math.cos(value);
-        sinValue = Math.sin(value);
-
-        if (property === 'rotateX') {
-          indexes = [5, 6, 9, 10];
-        } else if (property === 'rotateY') {
-          indexes = [0, 8, 2, 10];
-        } else {
-          indexes = [0, 1, 4, 5];
-        }
-
-        matrix[indexes[0]] *= cosValue;
-        matrix[indexes[1]] += sinValue;
-        matrix[indexes[2]] -= sinValue;
-        matrix[indexes[3]] *= cosValue;
-      }
-
-      break;
-
-    case 'scale':
-      matrix[0] *= value;
-      matrix[support3d ? 5 : 3] *= value;
-      break;
-
-    case 'scaleX':
-      matrix[0] *= value;
-      break;
-
-    case 'scaleY':
-      matrix[support3d ? 5 : 3] *= value;
-      break;
-
-    case 'scaleZ':
-      if (support3d) matrix[10] *= value;
-      break;
-
-    case 'skew':
-      tanValue = Math.tan(value);
-
-      matrix[1] += tanValue;
-      matrix[support3d ? 4 : 2] += tanValue;
-
-      break;
-
-    case 'skewX':
-      matrix[support3d ? 4 : 2] += Math.tan(value);
-      break;
-
-    case 'skewY':
-      matrix[1] += Math.tan(value);
-      break;
-  }
-}
-
-/**
- * Convert a transformation as object to a 3d matrix as object
- * @param {object} transformation - The transformation object
- * @return {Array} matrix - The 3d matrix
- */
-function getTransformMatrix(transformation) {
-  var support3d = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
-
-  var matrix = support3d ? [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1] : [1, 0, 0, 1, 0, 0];
-
-  forIn(transformation, function (prop, value) {
-    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-      forIn(value, function (subProp, subValue) {
-        _applyPropertyToMatrix(prop + subProp.toUpperCase(), subValue, matrix, support3d);
-      });
-    } else {
-      _applyPropertyToMatrix(prop, value, matrix, support3d);
-    }
-  });
-
-  forEach(matrix, function (item, index) {
-    matrix[index] = +item.toFixed(2);
-  });
-
-  return matrix;
-}
-
-function _applyTransform(elements, transform) {
-  var keep = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  if (keep) {
-    return forElements(elements, function (element) {
-      element.style[prefix + 'transform'] += ' ' + transform;
-    });
-  } else {
-    return setStyle(elements, defineProperty({}, prefix + 'transform', transform));
-  }
-}
-
-function _applyMatrix(elements, matrix) {
-  return _applyTransform(elements, 'matrix(' + matrix.join(',') + ')');
-}
-
-/**
-* Apply the provided transformation as a 2d matrix on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {object.rotate} rotate - rotate option
-* @param {object.rotate.x} x - rotateX option
-* @param {object.rotate.y} y - rotateY option
-* @param {object.rotateX} rotateX - rotateX option
-* @param {object.rotateY} rotateY - rotateY option
-* @param {object.rotate} rotate - rotate option
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {object.skew} skew - skew option
-* @param {object.skew.x} x - skewX option
-* @param {object.skew.y} y - skewY option
-* @param {object.skewX} skewX - skewX option
-* @param {object.skewY} skewY - skewY option
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function matrix2d(elements, transformation) {
-  return _applyMatrix(elements, getTransformMatrix(transformation, false));
-}
-
-/**
-* Apply the provided transformation as a 3d matrix on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {object.z} z - translateZ option
-* @param {object.rotate} rotate - rotate option
-* @param {object.rotate.x} x - rotateX option
-* @param {object.rotate.y} y - rotateY option
-* @param {object.rotate.z} z - rotateZ option
-* @param {object.rotateX} rotateX - rotateX option
-* @param {object.rotateY} rotateY - rotateY option
-* @param {object.rotateZ} rotateZ - rotateZ option
-* @param {object.rotate} rotate - rotate option
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scale.z} z - scaleZ option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {object.scaleZ} scaleZ - scaleZ option
-* @param {object.skew} skew - skew option
-* @param {object.skew.x} x - skewX option
-* @param {object.skew.y} y - skewY option
-* @param {object.skewX} skewX - skewX option
-* @param {object.skewY} skewY - skewY option
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function matrix3d(elements, transformation) {
-  return _applyMatrix(elements, getTransformMatrix(transformation));
-}
-
-/**
-* Apply the provided transformation as a matrix (3d if supported) on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {object.z} z - translateZ option
-* @param {object.rotate} rotate - rotate option
-* @param {object.rotate.x} x - rotateX option
-* @param {object.rotate.y} y - rotateY option
-* @param {object.rotate.z} z - rotateZ option
-* @param {object.rotateX} rotateX - rotateX option
-* @param {object.rotateY} rotateY - rotateY option
-* @param {object.rotateZ} rotateZ - rotateZ option
-* @param {object.rotate} rotate - rotate option
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scale.z} z - scaleZ option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {object.scaleZ} scaleZ - scaleZ option
-* @param {object.skew} skew - skew option
-* @param {object.skew.x} x - skewX option
-* @param {object.skew.y} y - skewY option
-* @param {object.skewX} skewX - skewX option
-* @param {object.skewY} skewY - skewY option
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function matrix(elements, transformation) {
-  return support3d ? matrix3d(elements, transformation) : matrix2d(elements, transformation);
 }
 
 /**
@@ -2041,119 +1675,6 @@ function position(element) {
   };
 }
 
-function _capitalize(input) {
-  return input.slice(0, 1).toUpperCase() + input.slice(1);
-}
-
-function _flattenObject(object, defaults$$1) {
-  var flatten = {};
-
-  forIn(object, function (key, value) {
-    if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
-      forIn(value, function (subKey, subValue) {
-        flatten[key + _capitalize(subKey)] = subValue;
-      });
-    } else {
-      flatten[key] = value;
-    }
-  });
-
-  return _extends({}, flatten, defaults$$1);
-}
-
-/**
-* Apply the provided scale transformation on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function scale2d(elements, transformation, keep) {
-  var _console;
-
-  var transform = _flattenObject(transformation, { scaleX: 1, scaleY: 1 });
-
-  (_console = console).log.apply(_console, toConsumableArray(transform));
-
-  return _applyTransform(elements, 'scale(' + transform.scaleX + ',' + transform.scaleY + ')', keep);
-}
-
-/**
-* Apply the provided 3d scale transformation on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scale.z} z - scaleZ option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {object.scaleZ} scaleZ - scaleZ option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function scale3d(elements, transformation, keep) {
-  var scaleX = void 0;
-  if ('scaleX' in transformation) {
-    scaleX = transformation.scaleX;
-  } else if ('scale' in transformation) {
-    if ('x' in transformation.scale) {
-      scaleX = transformation.scale.x;
-    } else {
-      scaleX = transformation.scale;
-    }
-  } else {
-    scaleX = 1;
-  }
-
-  var scaleY = void 0;
-  if ('scaleY' in transformation) {
-    scaleY = transformation.scaleY;
-  } else if ('scale' in transformation) {
-    if ('y' in transformation.scale) {
-      scaleY = transformation.scale.y;
-    } else {
-      scaleY = transformation.scale;
-    }
-  } else {
-    scaleY = 1;
-  }
-
-  var scaleZ = void 0;
-  if ('scaleZ' in transformation) {
-    scaleZ = transformation.scaleZ;
-  } else if ('scale' in transformation && 'z' in transformation.scale) {
-    scaleZ = transformation.scale.z;
-  } else {
-    scaleZ = 1;
-  }
-
-  return _applyTransform(elements, 'scale3d(' + scaleX + ',' + scaleY + ',' + scaleZ + ')', keep);
-}
-
-/**
-* Apply the provided scale transformation (3d if supported) on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.scale} scale - scale option
-* @param {object.scale.x} x - scaleX option
-* @param {object.scale.y} y - scaleY option
-* @param {object.scale.z} z - scaleZ option
-* @param {object.scaleX} scaleX - scaleX option
-* @param {object.scaleY} scaleY - scaleY option
-* @param {object.scaleZ} scaleZ - scaleZ option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function scale(elements, transformation, keep) {
-  return support3d ? scale3d(elements, transformation, keep) : scale2d(elements, transformation, keep);
-}
-
 /**
 * Return the screen relative position of an element
 * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
@@ -2177,9 +1698,10 @@ function setHeight(elements, height) {
 
 /**
 * Set the provided size to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} size - The size as an object with width and height
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector.
+* @param {number} width - The width value.
+* @param {number} height - The height value.
+* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining.
 */
 function setSize(elements, width, height) {
   return setStyle(elements, { width: width, height: height });
@@ -2204,59 +1726,72 @@ function show(elements) {
   return setStyle(elements, { visibility: 'visible' });
 }
 
-/**
-* Apply the provided translate transformation on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function translate2d(elements, transformation, keep) {
-  var x = 'x' in transformation ? transformation.x : 0;
-  var y = 'y' in transformation ? transformation.y : 0;
-
-  if (typeof x === 'number') x += 'px';
-  if (typeof y === 'number') y += 'px';
-
-  return _applyTransform(elements, 'translate(' + x + ',' + y + ')', keep);
-}
-
-/**
-* Apply the provided 3d translate transformation on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {object.z} z - translateZ option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function translate3d(elements, transformation, keep) {
+function _transformMatrix(transformation) {
   var x = 'x' in transformation ? transformation.x : 0;
   var y = 'y' in transformation ? transformation.y : 0;
   var z = 'z' in transformation ? transformation.z : 0;
 
-  if (typeof x === 'number') x += 'px';
-  if (typeof y === 'number') y += 'px';
-  if (typeof z === 'number') z += 'px';
+  var scaleX = void 0,
+      scaleY = void 0,
+      scaleZ = void 0;
+  if ('scale' in transformation) {
+    if (_typeof(transformation.scale) === 'object') {
+      scaleX = 'x' in transformation.scale ? transformation.scale.x : 1;
+      scaleY = 'y' in transformation.scale ? transformation.scale.y : 1;
+      scaleZ = 'z' in transformation.scale ? transformation.scale.z : 1;
+    } else {
+      scaleX = scaleY = transformation.scale;
+      scaleZ = 1;
+    }
+  } else {
+    scaleX = scaleY = scaleZ = 1;
+  }
 
-  return _applyTransform(elements, 'translate3d(' + x + ',' + y + ',' + z + ')', keep);
-}
+  var rotateX = void 0,
+      rotateY = void 0,
+      rotateZ = void 0;
+  if ('rotate' in transformation) {
+    if (_typeof(transformation.rotate) === 'object') {
+      rotateX = 'x' in transformation.rotate ? transformation.rotate.x : 0;
+      rotateY = 'y' in transformation.rotate ? transformation.rotate.y : 0;
+      rotateZ = 'z' in transformation.rotate ? transformation.rotate.z : 0;
+    } else {
+      rotateX = rotateY = 0;
+      rotateZ = transformation.rotate;
+    }
+  } else {
+    rotateX = rotateY = rotateZ = 0;
+  }
 
-/**
-* Apply the provided translate transformation (3d if supported) on each element of elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} transformation - The transformation object
-* @param {object.x} x - translateX option
-* @param {object.y} y - translateY option
-* @param {object.z} z - translateZ option
-* @param {bool} [keep] - Preserve previous transformation
-* @return {string | Array | NodeList | HTMLCollection} elements for chaining
-*/
-function translate(elements, transformation, keep) {
-  return support3d ? translate3d(elements, transformation, keep) : translate2d(elements, transformation, keep);
+  var skewX = void 0,
+      skewY = void 0;
+  if ('skew' in transformation) {
+    if (_typeof(transformation.skew) === 'object') {
+      skewX = 'x' in transformation.skew ? transformation.skew.x : 0;
+      skewY = 'y' in transformation.skew ? transformation.skew.y : 0;
+    } else {
+      skewX = skewY = transformation.skew;
+    }
+  } else {
+    skewX = skewY = 0;
+  }
+
+  var cosRotateX = Math.cos(rotateX);
+  var sinRotateX = Math.sin(rotateX);
+  var cosRotateY = Math.cos(rotateY);
+  var sinRotateY = Math.sin(rotateY);
+  var cosRotateZ = Math.cos(rotateZ);
+  var sinRotateZ = Math.sin(rotateZ);
+  var tanSkewX = Math.tan(skewX);
+  var tanSkewY = Math.tan(skewY);
+
+  var matrix = [scaleX * cosRotateY * cosRotateZ, sinRotateZ + tanSkewY, -sinRotateY, 0, -sinRotateZ + tanSkewX, scaleY * cosRotateX * cosRotateZ, sinRotateX, 0, sinRotateY, -sinRotateX, scaleZ * cosRotateX * cosRotateY, 0, x, y, z, 1];
+
+  forEach(matrix, function (item, index) {
+    matrix[index] = +item.toFixed(2);
+  });
+
+  return matrix;
 }
 
 /**
@@ -2266,193 +1801,10 @@ function translate(elements, transformation, keep) {
  * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
  */
 function transform(elements, transformation) {
-  // if skew or rotation use matrix
-  if ('skew' in transformation || 'skewX' in transformation || 'skewY' in transformation || 'rotate' in transformation || 'rotateX' in transformation || 'rotateY' in transformation || 'rotateZ' in transformation) {
-    return matrix(elements, transformation);
-  } else {
-    var translation = 'x' in transformation || 'y' in transformation || 'z' in transformation; // don't crush translate property
-
-    if (translation) {
-      return translate(elements, transformation);
-    }
-
-    if ('scale' in transformation || 'scaleX' in transformation || 'scaleY' in transformation || 'scaleZ' in transformation) {
-      return scale(elements, transformation, translation);
-    }
-  }
-}
-
-/**
- * Return value if in the range, max if greater, min if lower
- * @param {number} value - The tested value
- * @param {number} [min=0] - The minimum value
- * @param {number} [max=1] - The maximum value
- * @return {function} value - A random interger between min and max or max if value isn't a number
- */
-function clamp(value) {
-  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-  var max = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 1;
-
-  return isNaN(value) ? max : Math.min(Math.max(value, min), max);
-}
-
-/**
- * Execute callback once for all fired during a waiting time.
- * @param {function} callback - The callback function
- * @param {number} wait - The waiting time in milliseconds
- * @param {bool} [immediate=false] - Execute callback on first trigger
- * @return {function} debounced - The debounced callback with cancel method
- */
-function debounce(callback, wait) {
-  var immediate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  var canCall = immediate;
-  var timeout = void 0;
-
-  var applyCallback = function applyCallback(args) {
-    canCall = false;
-    callback.apply(undefined, toConsumableArray(args));
-
-    timeout = setTimeout(function () {
-      canCall = immediate;
-    }, wait);
-  };
-
-  var debounced = function debounced() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    clearTimeout(timeout);
-
-    if (canCall) {
-      applyCallback(args);
-    } else {
-      timeout = setTimeout(applyCallback.bind(null, args), wait);
-    }
-
-    debounced.cancel = function () {
-      clearTimeout(timeout);
-      canCall = true;
-      timeout = null;
-    };
-  };
-
-  return debounced;
-}
-
-/**
- * Cache callbacks result for arguments and return cached results when called with the same ones
- * @param {function} callback - The function to call
- * @return {function} memoized - The memoized callback
- */
-function memoize(callback) {
-  var cache = {};
-
-  return function () {
-    var args = JSON.stringify(arguments);
-
-    if (!(args in cache)) {
-      cache[args] = callback.call.apply(callback, [this].concat(Array.prototype.slice.call(arguments)));
-    }
-
-    return cache[args];
-  };
-}
-
-/**
- * Return a random number between two values
- * @param {number} max - The maximum value
- * @param {number} [min=0] - The minimum value
- * @return {function} value - A random value between min and max
- */
-function randomBetween(max) {
-  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-  return Math.random() * (max - min) + min;
-}
-
-/**
- * Return a random integer between two integers
- * @param {number} max - The maximum integer
- * @param {number} [min=0] - The minimum integer
- * @return {function} value - A random interger between min and max
- */
-function randomIntBetween(max) {
-  var min = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-  return ~~(Math.random() * (max - min + 1)) + min;
-}
-
-/**
- * Execute callback at most once in wait time.
- * @param {function} callback - The callback function
- * @param {number} wait - The waiting time in milliseconds
- * @param {bool} [leading=false] - Execute callback on first trigger
- * @param {bool} [trailing=false] - Execute callback wait time after last execution
- * @return {function} throttled - The throttled callback with cancel method
- */
-function throttle(callback, wait) {
-  var leading = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-  var trailing = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
-
-  var last = 0;
-  var timeout = void 0;
-
-  var applyCallback = function applyCallback(args) {
-    timeout = null;
-    last = leading ? window.performance.now() : 0;
-    callback.apply(undefined, toConsumableArray(args));
-  };
-
-  var throttled = function throttled() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    var now = window.performance.now();
-
-    if (!last && !leading) last = now;
-
-    var remaining = wait - (now - last);
-
-    if (remaining < 0 || remaining > wait) {
-      applyCallback(args);
-    } else if (trailing && !timeout) {
-      timeout = setTimeout(applyCallback.bind(null, args), remaining);
-    }
-
-    throttled.cancel = function () {
-      clearTimeout(timeout);
-      last = 0;
-      timeout = null;
-    };
-  };
-
-  return throttled;
+  setStyle(elements, { transform: 'matrix3d(' + _transformMatrix(transformation).join(',') + ')' });
 }
 
 var index = {
-  isAndroid: isAndroid,
-  isAndroidTablet: isAndroidTablet,
-  isChrome: isChrome,
-  isFirefox: isFirefox,
-  isIE: isIE,
-  isIOS: isIOS,
-  isIPad: isIPad,
-  isIPhone: isIPhone,
-  isIPod: isIPod,
-  isMobile: isMobile,
-  isSafari: isSafari,
-  isTablet: isTablet,
-  isTouchable: isTouchable,
-  isWindows: isWindows,
-  isWindowsPhone: isWindowsPhone,
-  isWindowsTablet: isWindowsTablet,
-  prefix: prefix,
-  support3d: support3d,
-  ua: ua,
-  vendor: vendor,
   forEach: forEach,
   forElements: forElements,
   forIn: forIn,
@@ -2482,50 +1834,32 @@ var index = {
   remove: remove,
   removeAttr: removeAttr,
   removeClass: removeClass,
+  removeData: removeAttr$1,
   setAttr: setAttr,
   setData: setData,
   setHtml: setHtml,
   setProp: setProp,
   toggleClass: toggleClass,
   bind: bind,
-  drag: drag,
-  hover: hover,
-  load: load,
-  off: off$1,
   on: on,
   once: once,
   ready: ready,
   trigger: trigger,
+  clearStyle: clearStyle,
   getHeight: getHeight,
   getSize: getSize,
   getStyle: getStyle,
   getWidth: getWidth,
   hide: hide,
-  matrix: matrix,
-  matrix2d: matrix2d,
-  matrix3d: matrix3d,
   offset: offset,
   position: position,
-  scale: scale,
-  scale2d: scale2d,
-  scale3d: scale3d,
   screenPosition: screenPosition,
   setHeight: setHeight,
   setSize: setSize,
   setStyle: setStyle,
   setWidth: setWidth,
   show: show,
-  transform: transform,
-  translate: translate,
-  translate2d: translate2d,
-  translate3d: translate3d,
-  clamp: clamp,
-  debounce: debounce,
-  memoize: memoize,
-  randomBetween: randomBetween,
-  randomIntBetween: randomIntBetween,
-  throttle: throttle,
-  getTransformMatrix: getTransformMatrix
+  transform: transform
 };
 
 return index;

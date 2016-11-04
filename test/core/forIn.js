@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#forIn', () => {
@@ -9,7 +9,7 @@ window.describe('chirashi#forIn', () => {
   }
 
   window.it('should be defined as a function', () => {
-    assert.equal(typeof Chirashi.forIn, 'function')
+    assert.isFunction(Chirashi.forIn)
   })
 
   window.it('should execute callback on keys of object', () => {

@@ -6,7 +6,7 @@ import _stringToArray from '../internals/_stringToArray'
 /**
  * Iterates over classes and toggle it on each element of elements.
  * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
- * @param {string | Array} classes - Array of classes or string of classes seperated with comma and/or spaces.
+ * @param {string | Array | Object} classes - Array of classes or string of classes seperated with comma and/or spaces.
  * @return {Array} elements - The elements for chaining.
  * @example //esnext
  * import { createElement, toggleClass } from 'chirashi'
@@ -18,22 +18,26 @@ import _stringToArray from '../internals/_stringToArray'
  * var sushi = Chirashi.createElement('.salmon.sushi') //returns: <div class="salmon sushi"></div>
  * Chirashi.toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
  */
-export default function toggleClass (elements, classes) {
-  if (typeof classes === 'object') {
-    return forElements(elements, element => {
-      if (!element.classList.toggle) return
+export default function toggleClass (elements, input) {
+  if (input instanceof Array || typeof input === 'string') {
+    const classes = _stringToArray(input)
 
-      forIn(classes, (className, condition) => {
-        element.classList.toggle(className, condition(element))
+    return forElements(elements, element => {
+      if (!element.classList) return
+
+      forEach(classes, className => {
+        element.classList.toggle(className)
       })
     })
   } else {
-    classes = _stringToArray(classes)
-
     return forElements(elements, element => {
-      if (!element.classList.toggle) return
+      if (!element.classList) return
 
-      forEach(classes, element.classList.toggle.bind(element.classList))
+      forIn(input, (classes, condition) => {
+        forEach(_stringToArray(classes), className => {
+          element.classList.toggle(className, condition(element))
+        })
+      })
     })
   }
 }

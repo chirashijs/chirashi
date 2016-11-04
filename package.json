@@ -35,6 +35,7 @@
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-es2015-loose-rollup": "^7.0.0",
     "babel-preset-es2015-rollup": "^1.2.0",
+    "chai": "^3.5.0",
     "esdoc": "^0.4.8",
     "istanbul-instrumenter-loader": "^1.0.0",
     "karma": "^1.3.0",

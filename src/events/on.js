@@ -8,7 +8,13 @@ import _setEvents from '../internals/_setEvents'
  * @return {Array} elements - The iterable for chaining.
  */
 export default function on (elements, input) {
-  return _setEvents(elements, 'add', input)
+  elements = _setEvents(elements, 'add', input)
+
+  return {
+    off (element) {
+      _setEvents(element || elements, 'remove', input)
+    }
+  }
 }
 
 /**

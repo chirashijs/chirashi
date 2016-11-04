@@ -1,0 +1,4 @@
+
+> chirashi@5.0.0 dev /Users/alex/Dev/Chirashi/chirashi
+> karma start
+

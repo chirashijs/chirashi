@@ -1,5 +1,5 @@
+import forIn from '../core/forIn'
 import on from './on'
-import off from './off'
 
 /**
  * Bind events listener on each element of elements and unbind after first triggered.
@@ -9,18 +9,21 @@ import off from './off'
  * @return {object} offObject - An object with off method for unbinding
  * @return {object.off} off - off method
  */
-export default function once (elements, events, callback) {
-  const innerCallback = (event) => {
-    callback(event)
+export default function once (elements, input) {
+  let listener
+  const eventsObj = {}
 
-    off(elements, events, innerCallback)
-  }
+  forIn(input, (events, callback) => {
+    eventsObj[events] = event => {
+      callback(event)
 
-  on(elements, events, innerCallback)
+      listener.off()
+    }
+  })
+
+  listener = on(elements, eventsObj)
 
   return {
-    cancel () {
-      off(elements, events, innerCallback)
-    }
+    cancel: listener.off
   }
 }

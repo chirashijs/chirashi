@@ -1,9 +1,9 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#transform', () => {
   window.it('should be a function', () => {
-    assert.equal(typeof Chirashi.transform, 'function')
+    assert.isFunction(Chirashi.transform)
   })
 
   window.it('should return transform matrix from transformation', () => {

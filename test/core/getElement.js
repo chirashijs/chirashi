@@ -1,9 +1,9 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#getElement', () => {
   window.it('should return a function', () => {
-    assert.equal(typeof Chirashi.getElement, 'function')
+    assert.isFunction(Chirashi.getElement)
   })
 
   window.it('should return element', () => {
@@ -15,7 +15,7 @@ window.describe('chirashi#getElement', () => {
     assert.equal(yakitori, Chirashi.getElement('a'), 'should work for tag selector')
     assert.equal(yakitori, Chirashi.getElement('.yakitori'), 'should work for class selector')
     assert.equal(yakitori, Chirashi.getElement([yakitori, 'yakitori']), 'should return first for array')
-    assert.equal(null, Chirashi.getElement('.unknown'), 'should return null for unknown')
+    assert.isNull(Chirashi.getElement('.unknown'), 'should return null for unknown')
 
     document.body.removeChild(yakitori)
   })

@@ -5,6 +5,8 @@ export default function _applyForEach (elements, method, args) {
   return forElements(elements, element => {
     if (!element[method]) return
 
-    forEach(args, element[method].bind(element))
+    forEach(args, arg => {
+      element[method](arg)
+    })
   })
 }

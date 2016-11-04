@@ -1,5 +1,3 @@
-import getAttr from './getAttr'
-
 /**
  * Alias on getAttr prefixing name with 'data-'.
  * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
@@ -14,5 +12,5 @@ import getAttr from './getAttr'
  * Chirashi.getData(maki, 'fish') //returns: "salmon"
  */
 export default function getData (element, name) {
-  return getAttr(element, `data-${name}`)
+  return element.getAttribute(name.indexOf('data') === 0 ? name : `data-${name}`)
 }

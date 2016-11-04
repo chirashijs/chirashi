@@ -27,6 +27,8 @@ export default function find (elements, selector) {
   let found = []
 
   forElements(elements, element => {
+    if (!('querySelectorAll' in element)) return
+
     found.push(...element.querySelectorAll(selector))
   })
 

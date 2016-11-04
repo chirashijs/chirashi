@@ -44,28 +44,26 @@ export default function getElements (input) {
     })
 
     output = parsedElements
-  } else if (input instanceof window.NodeList) {
+  } else if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
     output = [...input]
   } else {
     output = isDomElement(input) ? [input] : []
   }
 
-  if (!('_chrsh-valid' in output)) {
-    output.chrshPush = function (input) {
-      this.push(...getElements(input))
-      this['_chrsh-valid'] = true
+  output.chrshPush = function (input) {
+    this.push(...getElements(input))
+    this['_chrsh-valid'] = true
 
-      return this
-    }
-
-    forEach(breakingMethods, method => {
-      output[method] = function () {
-        this['_chrsh-valid'] = false
-
-        return Array.prototype[method].apply(this, arguments)
-      }
-    })
+    return this
   }
+
+  forEach(breakingMethods, method => {
+    output[method] = function () {
+      this['_chrsh-valid'] = false
+
+      return Array.prototype[method].apply(this, arguments)
+    }
+  })
 
   output['_chrsh-valid'] = true
 

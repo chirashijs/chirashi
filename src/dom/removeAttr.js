@@ -1,3 +1,4 @@
+import _stringToArray from '../internals/_stringToArray'
 import _applyForEach from '../internals/_applyForEach'
 
 /**
@@ -17,7 +18,5 @@ import _applyForEach from '../internals/_applyForEach'
  * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  */
 export default function removeAttr (elements, attributes) {
-  if (typeof attributes === 'string') attributes = attributes.split(/[,\s]+/g)
-
-  return _applyForEach(elements, 'removeAttribute', attributes)
+  return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes))
 }

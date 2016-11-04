@@ -1,11 +1,11 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#forEach', () => {
   const items = [0, 1, 2]
 
   window.it('should be defined as a function', () => {
-    assert.equal(typeof Chirashi.forEach, 'function')
+    assert.isFunction(Chirashi.forEach)
   })
 
   window.it('should execute callback on item', () => {
@@ -47,10 +47,13 @@ window.describe('chirashi#forEach', () => {
     assert.equal(items, Chirashi.forEach(items, () => {}), 'should return items')
 
     const emptyArray = Chirashi.forEach(null, () => {})
-    assert.ok(emptyArray instanceof Array && emptyArray.length === 0, 'should return empty array')
+    assert.isArray(emptyArray, 'should return empty array')
+    assert.lengthOf(emptyArray, 0, 'should return empty array')
 
     const singletonArray = Chirashi.forEach(1, () => {})
-    assert.ok(singletonArray instanceof Array && singletonArray.length === 1 && singletonArray[0] === 1, 'should return array with singleton')
+    assert.isArray(singletonArray, 'should return array with singleton')
+    assert.lengthOf(singletonArray, 1, 'should return array with singleton')
+    assert.equal(singletonArray, 1, 'should return array with singleton')
 
     document.body.removeChild(salmonMaki)
     document.body.removeChild(cheeseSalmonMaki)

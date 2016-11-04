@@ -3,7 +3,7 @@
 * @param {*} items - The iterable.
 * @param {forEachCallback} callback - The callback to call for each iteratee.
 * @param {bool} [forceOrder=false] - Respect items order.
-* @return {Array} items for chaining.
+* @return {Array | NodeList | HTMLCollection} items for chaining.
 * @example //esnext
 * import { forEach } from 'chirashi'
 *

@@ -1,10 +1,10 @@
 import forEach from '../core/forEach'
 import setAttr from './setAttr'
+import addClass from './addClass'
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
  * @param {string} string - The html string, tag or css selector.
- * @param {object} [attributes={}] - Object associating attribute name to value.
  * @return {HTMLElement | SVGElement} element - The dom element created from the string.
  * @example //esnext
  * import { createElement } from 'chirashi'
@@ -26,20 +26,16 @@ import setAttr from './setAttr'
  * console.log(level.value) //logs: 1
  * Chirashi.closest('.cheese', '.sushi') //returns: false
  */
-export default function createElement (string, attributes = {}) {
+export default function createElement (string) {
+  const attributes = {}
+  const classes = []
+
   if (string.indexOf('<') === -1) {
     let core = null
 
-    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-="'#]+[\]]?/g), segment => {
+    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-_+]+(=["'a-zA-Z0-9-_+\.]+\]?)?/g), segment => {
       if (segment.indexOf('.') === 0) {
-        if (!('class' in attributes)) {
-          attributes.class = segment.slice(1)
-        } else if (attributes.class instanceof Array) {
-          attributes.class = attributes.class.join(' ')
-          attributes.class += ` ${segment.slice(1)}`
-        } else {
-          attributes.class += ` ${segment.slice(1)}`
-        }
+        classes.push(segment.slice(1))
       } else if (segment.indexOf('#') === 0) {
         attributes.id = segment.slice(1)
       } else if (segment.indexOf('[') === 0) {
@@ -59,8 +55,8 @@ export default function createElement (string, attributes = {}) {
   temp.innerHTML = string
 
   let element = temp.firstChild
-
   setAttr(element, attributes)
+  addClass(element, classes)
 
   return element
 }

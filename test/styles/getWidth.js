@@ -1,9 +1,9 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#getWidth', () => {
   window.it('should be a function', () => {
-    assert.equal(typeof Chirashi.getWidth, 'function')
+    assert.isFunction(Chirashi.getWidth)
   })
 
   window.it('should return element\'s width as Number', () => {

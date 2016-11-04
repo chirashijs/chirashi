@@ -21,17 +21,16 @@ import createElement from './createElement'
  * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }])
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
-export default function insertBefore (element, nodes, attributes = []) {
+export default function insertBefore (element, nodes) {
   element = getElement(element)
 
-  if (!element || !('parentNode' in element) || !('insertBefore' in element.parentNode)) return
+  if (!element || !('parentNode' in element)) return
 
   const parent = element.parentNode
 
-  let attributeIndex = 0
   forEach(nodes, (node, index) => {
     if (typeof node === 'string') {
-      node = createElement(node, attributes[attributeIndex++] || {})
+      node = createElement(node)
     }
 
     if (isDomElement(node)) parent.insertBefore(node, element)

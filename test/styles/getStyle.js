@@ -1,9 +1,9 @@
-import assert from 'assert'
+import { assert } from 'chai'
 import Chirashi from '../../src'
 
 window.describe('chirashi#getStyle', () => {
   window.it('should be a function', () => {
-    assert.equal(typeof Chirashi.getStyle, 'function')
+    assert.isFunction(Chirashi.getStyle)
   })
 
   window.it('should return value for element\'s style property', () => {
