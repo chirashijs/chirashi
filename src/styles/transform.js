@@ -56,11 +56,55 @@ function _transformMatrix (transformation) {
 }
 
 /**
- * Set the provided transformation to all elements using a matrix if needed and 3d if supported.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {object} [transformation] - The transformation as an object
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * Compute and apply 3d transform matrix from provided transformation to each element of elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable or selector.
+ * @param {Transformation} transformation - The transformation as an object
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setHtml, transform } from 'chirashi'
+ * const wasabiPea = createElement('p')
+ * setHtml(wasabiPea, 'Wasabi')
+ * transform(wasabiPea, {}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {x: 5, y: 6, z: 7}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,5,6,7,1)">Wasabi</p>]
+ * transform(wasabiPea, {scale: 2}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,2,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {scale: {x: 2, y: 3, z: 4}}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {rotate: 45}) // returns: [<p style="transform: "matrix3d(0.53,0.85,0,0,-0.85,0.53,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {rotate: {x: 45, y: 20, z: 15}}) // returns: [<p style="transform: "matrix3d(-0.31,0.65,-0.91,0,-0.65,-0.4,0.85,0,0.91,-0.85,0.21,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {skew: 45}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,1.62,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,-0.13,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
+ * @example //es5
+ * var wasabiPea = Chirashi.createElement('p')
+ * Chirashi.setHtml(wasabiPea, 'Wasabi')
+ * Chirashi.transform(wasabiPea, {}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,5,6,7,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {scale: 2}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,2,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {scale: {x: 2, y: 3, z: 4}}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {rotate: 45}) // returns: [<p style="transform: "matrix3d(0.53,0.85,0,0,-0.85,0.53,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {rotate: {x: 45, y: 20, z: 15}}) // returns: [<p style="transform: "matrix3d(-0.31,0.65,-0.91,0,-0.65,-0.4,0.85,0,0.91,-0.85,0.21,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {skew: 45}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,1.62,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,-0.13,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
  */
 export default function transform (elements, transformation) {
-  setStyle(elements, {transform: `matrix3d(${_transformMatrix(transformation).join(',')})`})
+  return setStyle(elements, {transform: `matrix3d(${_transformMatrix(transformation).join(',')})`})
 }
+
+/**
+ * @typedef {Object} Transformation
+ * @property {number} [x=0] - Translation value on x axis in pixels.
+ * @property {number} [y=0] - Translation value on y axis in pixels.
+ * @property {number} [z=0] - Translation value on z axis in pixels.
+ * @property {(number|object)} [scale=1] - Scale value for x and y axes or object of values for axes.
+ * @property {number} [scale.x=1] - Scale value on x axis.
+ * @property {number} [scale.y=1] - Scale value on y axis.
+ * @property {number} [scale.z=1] - Scale value on z axis.
+ * @property {(number|object)} [rotate=0] - Rotation value for z axis in radians or object of values for axes.
+ * @property {number} [rotate.x=0] - Rotation value on x axis in radians.
+ * @property {number} [rotate.y=0] - Rotation value on y axis in radians.
+ * @property {number} [rotate.z=0] - Rotation value on z axis in radians.
+ * @property {(number|object)} [skew=0] - Skew value for x and y axes in radians or object of values for axes.
+ * @property {number} [skew.x=0] - Skew value on x axis in radians.
+ * @property {number} [skew.y=0] - Skew value on y axis in radians.
+ */

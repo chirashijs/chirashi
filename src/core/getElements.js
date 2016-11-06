@@ -1,11 +1,10 @@
-import forEach from './forEach'
+import _chirasizeArray from '../_internals/_chirasizeArray'
 import isDomElement from './isDomElement'
-
-const breakingMethods = ['push', 'splice', 'unshift']
+import forEach from './forEach'
 
 /**
-* Get recursively dom element from iterable or selector.
-* @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} input - The iterable, selector or elements.
+* Get dom element recursively from iterable or selector.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
 * @return {Array} domElements - The array of dom elements from elements.
 * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
 * @example //esnext
@@ -50,22 +49,5 @@ export default function getElements (input) {
     output = isDomElement(input) ? [input] : []
   }
 
-  output.chrshPush = function (input) {
-    this.push(...getElements(input))
-    this['_chrsh-valid'] = true
-
-    return this
-  }
-
-  forEach(breakingMethods, method => {
-    output[method] = function () {
-      this['_chrsh-valid'] = false
-
-      return Array.prototype[method].apply(this, arguments)
-    }
-  })
-
-  output['_chrsh-valid'] = true
-
-  return output
+  return _chirasizeArray(output)
 }

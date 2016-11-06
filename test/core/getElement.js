@@ -14,6 +14,7 @@ window.describe('chirashi#getElement', () => {
     assert.equal(yakitori, Chirashi.getElement(yakitori), 'should work for dom element')
     assert.equal(yakitori, Chirashi.getElement('a'), 'should work for tag selector')
     assert.equal(yakitori, Chirashi.getElement('.yakitori'), 'should work for class selector')
+    assert.equal(yakitori, Chirashi.getElement(document.querySelectorAll('.yakitori')), 'should work with NodeList')
     assert.equal(yakitori, Chirashi.getElement([yakitori, 'yakitori']), 'should return first for array')
     assert.isNull(Chirashi.getElement('.unknown'), 'should return null for unknown')
 

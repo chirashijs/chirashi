@@ -34,7 +34,7 @@ window.describe('chirashi#transform', () => {
     Chirashi.transform(wasabiPea, {skew: {x: 25, y: 45}})
     assert.equal(wasabiPea.style.transform.replace(/[\s]/g, ''), 'matrix3d(1,1.62,0,0,-0.13,1,0,0,0,0,1,0,0,0,0,1)', 'should support different axes skew as object')
 
-    Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3, z: 4}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}})
-    assert.equal(wasabiPea.style.transform.replace(/[\s]/g, ''), 'matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.86,0,5,6,7,1)', 'should support all together')
+    Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}})
+    assert.equal(wasabiPea.style.transform.replace(/[\s]/g, ''), 'matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)', 'should support all together')
   })
 })

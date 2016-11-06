@@ -25,6 +25,10 @@ window.describe('chirashi#createElement', () => {
 
   window.it('should return new element', () => {
     assert.isTrue(Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]').matches('a#sushi.link[data-href="chirashijs.org"][data-link]'), 'from css selector')
-    assert.isTrue(Chirashi.createElement('<h1>Hello World!</h1>').matches('h1'), 'from html string')
+    assert.isTrue(Chirashi.createElement('p').matches('p'), 'from simple tag')
+
+    const title = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>')
+    assert.isTrue(title.matches('h1'), 'from html string')
+    assert.isTrue(title.children[0].matches('strong'), 'with children')
   })
 })

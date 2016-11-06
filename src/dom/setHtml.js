@@ -3,8 +3,9 @@ import setProp from './setProp'
 /**
  * Set the inner html of elements.
  * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @return {string} htmlString - The html to insert.
- * @example //esnext
+ * @param {string} html - The html to insert.
+ * @return {Array} domElements - The removed elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
 * import { createElement, setHtml, getHtml } from 'chirashi'
 * const maki = createElement('p.maki')
@@ -15,6 +16,6 @@ import setProp from './setProp'
 * setHtml(maki, 'salmon') //returns: [<p class="maki">salmon</p>]
 * getHtml(maki) //returns: "salmon"
  */
-export default function setHtml (elements, string) {
-  return setProp(elements, {'innerHTML': string})
+export default function setHtml (elements, html) {
+  return setProp(elements, {'innerHTML': html})
 }

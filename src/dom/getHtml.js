@@ -2,8 +2,8 @@ import getProp from './getProp'
 
 /**
  * Get the inner html of an element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
- * @return {string} innerHTML - The inner html of the element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(string|null)} innerHTML - The inner html of the element or null if no element found.
  * @example //esnext
  * import { createElement, setHtml, getHtml } from 'chirashi'
  * const maki = createElement('p.maki')

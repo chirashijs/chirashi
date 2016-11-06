@@ -2,8 +2,8 @@
 * Iterates over items and apply callback on each one.
 * @param {*} items - The iterable.
 * @param {forEachCallback} callback - The callback to call for each iteratee.
-* @param {bool} [forceOrder=false] - Respect items order.
-* @return {Array | NodeList | HTMLCollection} items for chaining.
+* @param {boolean} [forceOrder=false] - Respect items order.
+ * @return {(Array|NodeList|HTMLCollection)} items for chaining.
 * @example //esnext
 * import { forEach } from 'chirashi'
 *

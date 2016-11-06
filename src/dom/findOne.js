@@ -2,9 +2,9 @@ import getElement from '../core/getElement'
 
 /**
  * Find the first element's child matching the selector.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {string} selector - The selector to match.
- * @return {HTMLElement | SVGElement} element - The first child of elements matching the selector.
+ * @return {(HTMLElement|SVGElement|null)} element - The first child of elements matching the selector or null.
  * @example //esnext
  * import { createElement, append, find } from 'chirashi'
  * const maki = createElement('.maki')

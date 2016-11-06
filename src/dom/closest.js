@@ -1,11 +1,11 @@
 import getElement from '../core/getElement'
 
 /**
- * Get closest element matching the tested selector or element traveling up the DOM tree from element to limit.
- * @param {string | HTMLElement | SVGElement | Text} element - Selector or element.
- * @param {string | HTMLElement | SVGElement | Text} tested - The selector or dom element to match.
- * @param {string | document | HTMLElement | SVGElement} [limit=document] - Returns false when this selector or element is reached.
- * @return {bool | HTMLElement | SVGElement | Text} matchedElement - The matched element or false.
+ * Get closest element matching the tested selector or tested element traveling up the DOM tree from element to limit.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - Selector or element.
+ * @param {(string|HTMLElement|SVGElement|Text)} tested - The selector or dom element to match.
+ * @param {(string|document|HTMLElement|SVGElement)} [limit=document] - Returns false when this selector or element is reached.
+ * @return {(boolean|HTMLElement|SVGElement|Text)} matchedElement - The matched element or false.
  * @example //esnext
  * import { createElement, append, closest } from 'chirashi'
  * const maki = createElement('.maki')

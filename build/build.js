@@ -38,9 +38,6 @@ rollup.rollup({
 })
 .then(function (bundle) {
   return write('dist/chirashi.common.js', bundle.generate({
-    globals: {
-      raf: 'raf'
-    },
     format: 'cjs',
     banner: banner
   }).code)

@@ -19,8 +19,8 @@ window.describe('chirashi#getWidth', () => {
       width: '200px'
     })
 
-    assert.equal(Chirashi.getWidth(div), 260, 'should return offset width')
-    assert.equal(Chirashi.getWidth(div, true), 220, 'should return client width')
+    assert.equal(Chirashi.getWidth(div, true), 260, 'should return offset width')
+    assert.equal(Chirashi.getWidth(div), 220, 'should return client width')
 
     document.body.removeChild(div)
   })

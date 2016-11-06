@@ -19,8 +19,8 @@ window.describe('chirashi#getSize', () => {
       width: '200px'
     })
 
-    const size = Chirashi.getSize(div)
-    const innerSize = Chirashi.getSize(div, true)
+    const size = Chirashi.getSize(div, true)
+    const innerSize = Chirashi.getSize(div)
 
     assert.equal(size.width, 260, 'should return offset width')
     assert.equal(size.height, 260, 'should return offset height')

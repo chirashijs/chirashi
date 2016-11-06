@@ -1,7 +1,7 @@
 /**
  * Test if element is a dom element. Doesn't resolve selectors.
  * @param {*} element - The element to test.
- * @return {bool} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
+ * @return {boolean} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
  * @example //esnext
  * import { createElement, append, isDomElement } from 'chirashi'
  * const sushi = createElement('.sushi')

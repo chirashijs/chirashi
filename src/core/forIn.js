@@ -4,7 +4,7 @@ import forEach from './forEach'
  * Iterates over object's keys and apply callback on each one.
  * @param {Object} object - The iterable.
  * @param {forInCallback} callback - The function to call for each key-value pair.
- * @param {bool} [forceOrder=false] - Respect keys order.
+ * @param {boolean} [forceOrder=false] - Respect keys order.
  * @return {Object} object - The iterable for chaining.
  * @example //esnext
  * import { forIn } from 'chirashi'
@@ -12,14 +12,14 @@ import forEach from './forEach'
  * forIn(californiaRoll, (key, value) => {
  *   console.log(`${key} -> ${value}`)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  * // price -> 4.25
  * // name -> California Roll
  * forIn(californiaRoll, (key, value) => {
  *   console.log(`${key} -> ${value}`)
  * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
@@ -28,14 +28,14 @@ import forEach from './forEach'
  * Chirashi.forIn(californiaRoll, (key, value) => {
  *   console.log(key + ' -> ' + value)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  * // price -> 4.25
  * // name -> California Roll
  * Chirashi.forIn(californiaRoll, (key, value) => {
  *   console.log(key + ' -> ' + value)
  * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']

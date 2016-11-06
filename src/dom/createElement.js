@@ -1,62 +1,48 @@
-import forEach from '../core/forEach'
-import setAttr from './setAttr'
-import addClass from './addClass'
+const regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(="([\w-_\.{}:']+)")?\])/g
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
  * @param {string} string - The html string, tag or css selector.
- * @return {HTMLElement | SVGElement} element - The dom element created from the string.
+ * @return {(HTMLElement|SVGElement)} element - The dom element created from the string.
  * @example //esnext
  * import { createElement } from 'chirashi'
- * const maki = createElement('.maki')
- * const cheese = createElement('.cheese')
- * append(maki, cheese)
- * append(document.body, maki)
- * let level = {}
- * closest(cheese, maki, level) //returns: <div class="maki"></div>
- * console.log(level.value) //logs: 1
- * closest('.cheese', '.sushi') //returns: false
+ * const maki = createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
+ * const greetings = createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * var cheese = Chirashi.createElement('.cheese')
- * Chirashi.append(maki, cheese)
- * Chirashi.append(document.body, maki)
- * var level = {}
- * Chirashi.closest(cheese, '.maki', level) //returns: <div class="maki"></div>
- * console.log(level.value) //logs: 1
- * Chirashi.closest('.cheese', '.sushi') //returns: false
+ * var maki = Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
+ * var greetings = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  */
 export default function createElement (string) {
-  const attributes = {}
-  const classes = []
-
   if (string.indexOf('<') === -1) {
     let core = null
 
-    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-_+]+(=["'a-zA-Z0-9-_+\.]+\]?)?/g), segment => {
-      if (segment.indexOf('.') === 0) {
-        classes.push(segment.slice(1))
-      } else if (segment.indexOf('#') === 0) {
-        attributes.id = segment.slice(1)
-      } else if (segment.indexOf('[') === 0) {
-        segment = segment.replace(/[\[\]]/g, '').split('=')
-        attributes[segment[0]] = segment.length > 1 ? segment[1].slice(1, -1) : ''
+    let attributes = ''
+    let className = ''
+
+    let segment
+    while ((segment = regex.exec(string))) {
+      if (typeof segment[5] !== 'undefined') { // attribute
+        attributes += ` ${segment[5]}${typeof segment[7] !== 'undefined' ? `="${segment[7]}"` : ''}`
       } else {
-        core = segment
+        if (segment[2] === '.') { // className
+          className += ` ${segment[3]}`
+        } else if (segment[2] === '#') { // id
+          attributes += ` id="${segment[3]}"`
+        } else { // tag
+          core = segment[3]
+        }
       }
-    })
+    }
 
     if (core === null) core = 'div'
 
-    string = `<${core}></${core}>`
+    string = `<${core}${className ? ` class="${className.slice(1)}"` : ''}${attributes}></${core}>`
   }
 
   let temp = document.createElement('div')
   temp.innerHTML = string
 
   let element = temp.firstChild
-  setAttr(element, attributes)
-  addClass(element, classes)
 
   return element
 }

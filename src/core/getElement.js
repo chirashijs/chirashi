@@ -2,8 +2,8 @@ import isDomElement from './isDomElement'
 
 /**
  * Get first dom element from iterable or selector.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} input - The iterable, selector or elements.
- * @return {window | document | HTMLElement | SVGElement | Text} element - The dom element from input.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
+ * @return {(window|document|HTMLElement|SVGElement|Text|boolean)} element - The dom element from input or false if no element found.
  * @example //esnext
  * import { createElement, append, getElement } from 'chirashi'
  * const sushi = createElement('.sushi')
@@ -29,7 +29,9 @@ import isDomElement from './isDomElement'
 export default function getElement (input) {
   if (typeof input === 'string') return document.querySelector(input)
 
-  if (input instanceof Array) return getElement(input[0])
+  if (input instanceof Array || input instanceof window.NodeList || input instanceof window.HTMLCollection) {
+    return getElement(input[0])
+  }
 
   return isDomElement(input) && input
 }

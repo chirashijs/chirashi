@@ -1,10 +1,12 @@
+import _chirasizeArray from '../_internals/_chirasizeArray'
 import forElements from '../core/forElements'
 
 /**
  * Iterates over each element of elements and returns an array containing all elements' children matching a selector.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {string} selector - The selector.
  * @return {Array} found - The elements' children matching the selector.
+ * @return {function} found.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, append, find } from 'chirashi'
  * const maki = createElement('.maki')
@@ -32,5 +34,5 @@ export default function find (elements, selector) {
     found.push(...element.querySelectorAll(selector))
   })
 
-  return found
+  return _chirasizeArray(found)
 }

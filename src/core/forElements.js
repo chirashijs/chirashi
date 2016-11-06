@@ -3,9 +3,9 @@ import getElements from './getElements'
 
 /**
  * Iterates over dom elements and apply callback on each one.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
  * @param {forElementsCallback} callback - The function to call for each element.
- * @param {bool} [forceOrder=false] - Respect elements order.
+ * @param {boolean} [forceOrder=false] - Respect elements order.
  * @return {Array} domElements - The array of dom elements from elements.
  * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext

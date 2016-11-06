@@ -19,8 +19,8 @@ window.describe('chirashi#getHeight', () => {
       width: '200px'
     })
 
-    assert.equal(Chirashi.getHeight(div), 260, 'should return offset height')
-    assert.equal(Chirashi.getHeight(div, true), 220, 'should return client height')
+    assert.equal(Chirashi.getHeight(div, true), 260, 'should return offset height')
+    assert.equal(Chirashi.getHeight(div), 220, 'should return client height')
 
     document.body.removeChild(div)
   })

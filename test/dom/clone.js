@@ -13,5 +13,6 @@ window.describe('chirashi#clone', () => {
     maki.appendChild(cheese)
 
     assert.deepEqual(maki, Chirashi.clone(maki))
+    assert.isFalse(Chirashi.clone(window))
   })
 })

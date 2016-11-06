@@ -2,8 +2,8 @@ import getElement from '../core/getElement'
 
 /**
  * Clones element.
- * @param {string | HTMLElement | SVGElement} element - Selector or element.
- * @return {string | HTMLElement | SVGElement} clone - element's clone.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @return {(string|HTMLElement|SVGElement|boolean)} clone - element's clone or false if element isn't a dom element or can't be cloned.
  * @example //esnext
  * import { createElement, append, clone } from 'chirashi'
  * const maki = createElement('.maki')
@@ -21,5 +21,5 @@ import getElement from '../core/getElement'
 export default function clone (element) {
   element = getElement(element)
 
-  return !!element && element.cloneNode(true)
+  return !!element && 'cloneNode' in element && element.cloneNode(true)
 }

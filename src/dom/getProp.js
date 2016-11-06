@@ -2,9 +2,9 @@ import getElement from '../core/getElement'
 
 /**
  * Get the value for the property name on the element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
  * @param {string} property - The name of the property.
- * @return {string} value - The value for the property.
+ * @return {*} value - The value for the property or null if no element found.
  * @example //esnext
  * import { createElement, append, getProp } from 'chirashi'
  * const maki = createElement('.maki')

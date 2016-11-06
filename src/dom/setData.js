@@ -1,11 +1,12 @@
-import forElements from '../core/forElements'
 import forIn from '../core/forIn'
+import setAttr from './setAttr'
 
 /**
  * Iterates over data-attributes as key value pairs and apply on each element of elements.
  * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The data-attributes key value pairs.
- * @return {Array} elements - The elements for chaining.
+ * @param {Object} - The data-attributes key value pairs.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, setData } from 'chirashi'
  * const maki = createElement('.maki')
@@ -19,9 +20,11 @@ import forIn from '../core/forIn'
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
 export default function setData (elements, dataAttributes) {
-  return forElements(elements, element => {
-    forIn(dataAttributes, (name, value) => {
-      element.setAttribute(name.indexOf('data') === 0 ? name : `data-${name}`, value)
-    })
+  const attributes = {}
+
+  forIn(dataAttributes, (name, value) => {
+    attributes[`data-${name}`] = value
   })
+
+  return setAttr(elements, attributes)
 }

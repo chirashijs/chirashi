@@ -13,8 +13,8 @@
 * Iterates over items and apply callback on each one.
 * @param {*} items - The iterable.
 * @param {forEachCallback} callback - The callback to call for each iteratee.
-* @param {bool} [forceOrder=false] - Respect items order.
-* @return {Array | NodeList | HTMLCollection} items for chaining.
+* @param {boolean} [forceOrder=false] - Respect items order.
+ * @return {(Array|NodeList|HTMLCollection)} items for chaining.
 * @example //esnext
 * import { forEach } from 'chirashi'
 *
@@ -78,28 +78,6 @@ function forEach(items, callback) {
 * @param {*} item
 * @param {number} index - Index of item in items.
 */
-
-/**
- * Test if element is a dom element. Doesn't resolve selectors.
- * @param {*} element - The element to test.
- * @return {bool} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
- * @example //esnext
- * import { createElement, append, isDomElement } from 'chirashi'
- * const sushi = createElement('.sushi')
- * append(document.body, sushi)
- * isDomElement(window) //returns: true
- * isDomElement(sushi) //returns: true
- * isDomElement('.sushi') //returns: false
- * @example //es5
- * var sushi = Chirashi.createElement('.sushi')
- * Chirashi.append(document.body, sushi)
- * Chirashi.isDomElement(window) //returns: true
- * Chirashi.isDomElement(sushi) //returns: true
- * Chirashi.isDomElement('.sushi') //returns: false
- */
-function isDomElement(element) {
-  return element instanceof window.HTMLElement || element === window || element === document || element instanceof window.SVGElement || element instanceof window.Text;
-}
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
@@ -236,7 +214,20 @@ var asyncGenerator = function () {
 
 
 
+var defineProperty = function (obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
 
+  return obj;
+};
 
 var _extends = Object.assign || function (target) {
   for (var i = 1; i < arguments.length; i++) {
@@ -339,11 +330,54 @@ var toConsumableArray = function (arr) {
   }
 };
 
-var breakingMethods = ['push', 'splice', 'unshift'];
+var _breakingMethods = ['push', 'splice', 'unshift'];
+
+function _chirasizeArray(array) {
+  array.chrshPush = function (input) {
+    this.push.apply(this, toConsumableArray(getElements(input)));
+    this['_chrsh-valid'] = true;
+
+    return this;
+  };
+
+  forEach(_breakingMethods, function (method) {
+    array[method] = function () {
+      this['_chrsh-valid'] = false;
+
+      return Array.prototype[method].apply(this, arguments);
+    };
+  });
+
+  array['_chrsh-valid'] = true;
+
+  return array;
+}
 
 /**
-* Get recursively dom element from iterable or selector.
-* @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} input - The iterable, selector or elements.
+ * Test if element is a dom element. Doesn't resolve selectors.
+ * @param {*} element - The element to test.
+ * @return {boolean} isDomElement - true if element is HTMLElement, SVGElement, window, document or Text.
+ * @example //esnext
+ * import { createElement, append, isDomElement } from 'chirashi'
+ * const sushi = createElement('.sushi')
+ * append(document.body, sushi)
+ * isDomElement(window) //returns: true
+ * isDomElement(sushi) //returns: true
+ * isDomElement('.sushi') //returns: false
+ * @example //es5
+ * var sushi = Chirashi.createElement('.sushi')
+ * Chirashi.append(document.body, sushi)
+ * Chirashi.isDomElement(window) //returns: true
+ * Chirashi.isDomElement(sushi) //returns: true
+ * Chirashi.isDomElement('.sushi') //returns: false
+ */
+function isDomElement(element) {
+  return element instanceof window.HTMLElement || element === window || element === document || element instanceof window.SVGElement || element instanceof window.Text;
+}
+
+/**
+* Get dom element recursively from iterable or selector.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
 * @return {Array} domElements - The array of dom elements from elements.
 * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
 * @example //esnext
@@ -390,31 +424,14 @@ function getElements(input) {
     output = isDomElement(input) ? [input] : [];
   }
 
-  output.chrshPush = function (input) {
-    this.push.apply(this, toConsumableArray(getElements(input)));
-    this['_chrsh-valid'] = true;
-
-    return this;
-  };
-
-  forEach(breakingMethods, function (method) {
-    output[method] = function () {
-      this['_chrsh-valid'] = false;
-
-      return Array.prototype[method].apply(this, arguments);
-    };
-  });
-
-  output['_chrsh-valid'] = true;
-
-  return output;
+  return _chirasizeArray(output);
 }
 
 /**
  * Iterates over dom elements and apply callback on each one.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
  * @param {forElementsCallback} callback - The function to call for each element.
- * @param {bool} [forceOrder=false] - Respect elements order.
+ * @param {boolean} [forceOrder=false] - Respect elements order.
  * @return {Array} domElements - The array of dom elements from elements.
  * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
@@ -468,7 +485,7 @@ function forElements(elements, callback) {
  * Iterates over object's keys and apply callback on each one.
  * @param {Object} object - The iterable.
  * @param {forInCallback} callback - The function to call for each key-value pair.
- * @param {bool} [forceOrder=false] - Respect keys order.
+ * @param {boolean} [forceOrder=false] - Respect keys order.
  * @return {Object} object - The iterable for chaining.
  * @example //esnext
  * import { forIn } from 'chirashi'
@@ -476,14 +493,14 @@ function forElements(elements, callback) {
  * forIn(californiaRoll, (key, value) => {
  *   console.log(`${key} -> ${value}`)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  * // price -> 4.25
  * // name -> California Roll
  * forIn(californiaRoll, (key, value) => {
  *   console.log(`${key} -> ${value}`)
  * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
@@ -492,14 +509,14 @@ function forElements(elements, callback) {
  * Chirashi.forIn(californiaRoll, (key, value) => {
  *   console.log(key + ' -> ' + value)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  * // price -> 4.25
  * // name -> California Roll
  * Chirashi.forIn(californiaRoll, (key, value) => {
  *   console.log(key + ' -> ' + value)
  * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * //logs:
+ * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
@@ -525,8 +542,8 @@ function forIn(object, callback) {
 
 /**
  * Get first dom element from iterable or selector.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} input - The iterable, selector or elements.
- * @return {window | document | HTMLElement | SVGElement | Text} element - The dom element from input.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
+ * @return {(window|document|HTMLElement|SVGElement|Text|boolean)} element - The dom element from input or false if no element found.
  * @example //esnext
  * import { createElement, append, getElement } from 'chirashi'
  * const sushi = createElement('.sushi')
@@ -552,7 +569,9 @@ function forIn(object, callback) {
 function getElement(input) {
   if (typeof input === 'string') return document.querySelector(input);
 
-  if (input instanceof Array) return getElement(input[0]);
+  if (input instanceof Array || input instanceof window.NodeList || input instanceof window.HTMLCollection) {
+    return getElement(input[0]);
+  }
 
   return isDomElement(input) && input;
 }
@@ -579,196 +598,109 @@ function _updateClassList(elements, method, classes) {
 
 /**
  * Iterates over classes and add it on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {string | Array} classes - Array of classes or string of classes seperated with comma and/or spaces.
- * @return {Array} elements - The elements for chaining.
+ * @param {(string|Array|NodeList|HTMLCollection|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
+ * @param {(string|string[])} classes - Array of classes or string of classes seperated with comma and/or spaces.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, addClass } from 'chirashi'
  * const maki = createElement('div')
  * addClass(maki, 'wasabi') //returns: <div class="wasabi"></div>
- * addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi cheese seaweed"></div>
- * addClass(maki, 'avocado salmon') //returns: <div class="wasabi cheese seaweed salmon avocado"></div>
- * addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi cheese seaweed salmon avocado tuna egg"></div>
+ * addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi seaweed cheese"></div>
+ * addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
+ * addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
  * @example //es5
  * var maki = Chirashi.createElement('div')
  * Chirashi.addClass(maki, 'wasabi') //returns: <div class="wasabi"></div>
- * Chirashi.addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi cheese seaweed"></div>
- * Chirashi.addClass(maki, 'avocado salmon') //returns: <div class="wasabi cheese seaweed salmon avocado"></div>
- * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi cheese seaweed salmon avocado tuna egg"></div>
+ * Chirashi.addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi seaweed cheese"></div>
+ * Chirashi.addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
+ * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
  */
 function addClass(elements, classes) {
   return _updateClassList(elements, 'add', classes);
 }
 
-/**
- * Apply props as key value pairs on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The props key value pairs.
- * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setProp, getProp } from 'chirashi'
- * const maki = createElement('input.maki')
- * setProp(maki, { value: 'こんにちは世界' })
- * getProp(maki, 'value') //returns: こんにちは世界
- * @example //es5
- * var maki = Chirashi.createElement('input.maki')
- * Chirashi.setProp(maki, { value: 'こんにちは世界' })
- * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
- */
-function setProp(elements, props) {
-  return forElements(elements, function (element) {
-    return Object.assign(element, props);
-  });
-}
-
-/**
- * Iterates over data-attributes as key value pairs and apply on each element of elements.
- * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The data-attributes key value pairs.
- * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setData } from 'chirashi'
- * const maki = createElement('.maki')
- * setData(maki, {
- *   fish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * Chirashi.setData(maki, {
- *   fish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- */
-function setData(elements, dataAttributes) {
-  return forElements(elements, function (element) {
-    forIn(dataAttributes, function (name, value) {
-      element.setAttribute(name.indexOf('data') === 0 ? name : 'data-' + name, value);
-    });
-  });
-}
-
-/**
- * Iterates over attributes as key value pairs and apply on each element of elements.
- * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {object} - The attributes key value pairs.
- * @return {Array} elements - The elements for chaining.
- * @example //esnext
- * import { createElement, setAttr } from 'chirashi'
- * const maki = createElement('.maki')
- * setAttr(maki, {
- *   dataFish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * Chirashi.setAttr(maki, {
- *   dataFish: 'salmon'
- * }) //returns: [<div class="maki" data-fish="salmon">]
- */
-function setAttr(elements, attributes) {
-  var props = {};
-  var dataAttributes = {};
-
-  forIn(attributes, function (name, value) {
-    if (typeof value !== 'string' && !(value instanceof Array)) {
-      value = JSON.stringify(value);
-    }
-
-    if (name.indexOf('data') === 0) {
-      dataAttributes[name] = value;
-    } else {
-      props[name] = value;
-    }
-  });
-
-  setProp(elements, props);
-
-  return setData(elements, dataAttributes);
-}
+var regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(="([\w-_\.{}:']+)")?\])/g;
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
  * @param {string} string - The html string, tag or css selector.
- * @return {HTMLElement | SVGElement} element - The dom element created from the string.
+ * @return {(HTMLElement|SVGElement)} element - The dom element created from the string.
  * @example //esnext
  * import { createElement } from 'chirashi'
- * const maki = createElement('.maki')
- * const cheese = createElement('.cheese')
- * append(maki, cheese)
- * append(document.body, maki)
- * let level = {}
- * closest(cheese, maki, level) //returns: <div class="maki"></div>
- * console.log(level.value) //logs: 1
- * closest('.cheese', '.sushi') //returns: false
+ * const maki = createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
+ * const greetings = createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * var cheese = Chirashi.createElement('.cheese')
- * Chirashi.append(maki, cheese)
- * Chirashi.append(document.body, maki)
- * var level = {}
- * Chirashi.closest(cheese, '.maki', level) //returns: <div class="maki"></div>
- * console.log(level.value) //logs: 1
- * Chirashi.closest('.cheese', '.sushi') //returns: false
+ * var maki = Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
+ * var greetings = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  */
 function createElement(string) {
-  var attributes = {};
-  var classes = [];
-
   if (string.indexOf('<') === -1) {
     var core = null;
 
-    forEach(string.match(/[#\.\[]?[a-zA-Z0-9-_+]+(=["'a-zA-Z0-9-_+\.]+\]?)?/g), function (segment) {
-      if (segment.indexOf('.') === 0) {
-        classes.push(segment.slice(1));
-      } else if (segment.indexOf('#') === 0) {
-        attributes.id = segment.slice(1);
-      } else if (segment.indexOf('[') === 0) {
-        segment = segment.replace(/[\[\]]/g, '').split('=');
-        attributes[segment[0]] = segment.length > 1 ? segment[1].slice(1, -1) : '';
+    var attributes = '';
+    var className = '';
+
+    var segment = void 0;
+    while (segment = regex.exec(string)) {
+      if (typeof segment[5] !== 'undefined') {
+        // attribute
+        attributes += ' ' + segment[5] + (typeof segment[7] !== 'undefined' ? '="' + segment[7] + '"' : '');
       } else {
-        core = segment;
+        if (segment[2] === '.') {
+          // className
+          className += ' ' + segment[3];
+        } else if (segment[2] === '#') {
+          // id
+          attributes += ' id="' + segment[3] + '"';
+        } else {
+          // tag
+          core = segment[3];
+        }
       }
-    });
+    }
 
     if (core === null) core = 'div';
 
-    string = '<' + core + '></' + core + '>';
+    string = '<' + core + (className ? ' class="' + className.slice(1) + '"' : '') + attributes + '></' + core + '>';
   }
 
   var temp = document.createElement('div');
   temp.innerHTML = string;
 
   var element = temp.firstChild;
-  setAttr(element, attributes);
-  addClass(element, classes);
 
   return element;
 }
 
 /**
  * Appends each node to element.
- * @param {string | HTMLElement | SVGElement} element - Selector or element.
- * @param {Array | string | HTMLElement | SVGElement | Text} nodes - Array of dom elements or string to create it using createElement.
- * @return {HTMLElement | SVGElement} element - The element for chaining.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @param {(Array|string|HTMLElement|SVGElement|Text)} nodes - Dom element, string or array of dom elements or strings. Strings will be passed to createElement then append.
+ * @return {(HTMLElement|SVGElement|boolean)} element - The element for chaining or false if nodes can't be appended.
  * @example //esnext
  * import { createElement, append } from 'chirashi'
  * const maki = createElement('.maki')
- * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * const avocado = createElement('.avocado')
- * append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
- * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * var avocado = Chirashi.createElement('.avocado')
  * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function append(element, nodes) {
   element = getElement(element);
 
-  if (!element || !element.appendChild) return;
+  if (!element || !element.appendChild) return false;
 
   forEach(nodes, function (node, index) {
     if (typeof node === 'string') {
       element.appendChild(createElement(node));
-    } else if (isDomElement(node)) element.appendChild(node);
+    } else if (isDomElement(node)) {
+      element.appendChild(node);
+    }
   }, true);
 
   return element;
@@ -776,9 +708,9 @@ function append(element, nodes) {
 
 /**
  * Get the value for the property name on the element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
  * @param {string} property - The name of the property.
- * @return {string} value - The value for the property.
+ * @return {*} value - The value for the property or null if no element found.
  * @example //esnext
  * import { createElement, append, getProp } from 'chirashi'
  * const maki = createElement('.maki')
@@ -797,8 +729,9 @@ function getProp(element, property) {
 
 /**
  * Returns an array of element's children.
- * @param {string | HTMLElement | SVGElement} element - Selector or element.
- * @return {Array} children - element's clone.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @return {(Array|boolean)} children - Array of element's children or false if elements has no children property or isn't a dom element.
+ * @return {function} children.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, append, children } from 'chirashi'
  * const maki = createElement('.maki')
@@ -812,13 +745,13 @@ function getProp(element, property) {
 function children(element) {
   var children = getProp(element, 'children');
 
-  return !!children && [].concat(toConsumableArray(children));
+  return !!children && _chirasizeArray([].concat(toConsumableArray(children)));
 }
 
 /**
  * Clones element.
- * @param {string | HTMLElement | SVGElement} element - Selector or element.
- * @return {string | HTMLElement | SVGElement} clone - element's clone.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @return {(string|HTMLElement|SVGElement|boolean)} clone - element's clone or false if element isn't a dom element or can't be cloned.
  * @example //esnext
  * import { createElement, append, clone } from 'chirashi'
  * const maki = createElement('.maki')
@@ -836,15 +769,15 @@ function children(element) {
 function clone(element) {
   element = getElement(element);
 
-  return !!element && element.cloneNode(true);
+  return !!element && 'cloneNode' in element && element.cloneNode(true);
 }
 
 /**
- * Get closest element matching the tested selector or element traveling up the DOM tree from element to limit.
- * @param {string | HTMLElement | SVGElement | Text} element - Selector or element.
- * @param {string | HTMLElement | SVGElement | Text} tested - The selector or dom element to match.
- * @param {string | document | HTMLElement | SVGElement} [limit=document] - Returns false when this selector or element is reached.
- * @return {bool | HTMLElement | SVGElement | Text} matchedElement - The matched element or false.
+ * Get closest element matching the tested selector or tested element traveling up the DOM tree from element to limit.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - Selector or element.
+ * @param {(string|HTMLElement|SVGElement|Text)} tested - The selector or dom element to match.
+ * @param {(string|document|HTMLElement|SVGElement)} [limit=document] - Returns false when this selector or element is reached.
+ * @return {(boolean|HTMLElement|SVGElement|Text)} matchedElement - The matched element or false.
  * @example //esnext
  * import { createElement, append, closest } from 'chirashi'
  * const maki = createElement('.maki')
@@ -881,8 +814,8 @@ function closest(element, tested) {
 
 /**
  * Iterates over elements, returning an array of all elements matching tested selector.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
- * @param {string | HTMLElement | SVGElement | Text} tested - The selector or dom element to match.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
+ * @param {(string|HTMLElement|SVGElement|Text)} tested - The selector or dom element to match.
  * @return {Array} matching - The array of filtered elements.
  * @example //esnext
  * import { createElement, append, filter } from 'chirashi'
@@ -891,30 +824,37 @@ function closest(element, tested) {
  * const salmonSushi = createElement('.salmon.sushi')
  * const tunaSushi = createElement('.tuna.sushi')
  * append(document.body, [salmonMaki, tunaMaki, salmonSushi, tunaSushi])
- * filter('div', '.salmon') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon"></div>]
- * filter([salmonMaki, tunaMaki, salmonSushi, tunaSushi], '.maki') //returns: [<div class="maki salmon"></div>, <div class="maki tuna"></div>]
- * filter('div', '.salmon') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon"></div>]
+ * filter('div', '.salmon') //returns: [<div class="salmon sushi"></div>, <div class="salmon maki"></div>]
+ * filter([salmonMaki, tunaMaki, salmonSushi, tunaSushi], '.maki') //returns: [<div class="salmon maki"></div>, <div class="tuna maki"></div>]
+ * filter('div', '.salmon') //returns: [<div class="salmon sushi"></div>, <div class="salmon maki"></div>]
  * @example //es5
- * const salmonMaki = Chirashi.createElement('.salmon.maki')
- * const tunaMaki = Chirashi.createElement('.tuna.maki')
- * const salmonSushi = Chirashi.createElement('.salmon.sushi')
- * const tunaSushi = Chirashi.createElement('.tuna.sushi')
+ * var salmonMaki = Chirashi.createElement('.salmon.maki')
+ * var tunaMaki = Chirashi.createElement('.tuna.maki')
+ * var salmonSushi = Chirashi.createElement('.salmon.sushi')
+ * var tunaSushi = Chirashi.createElement('.tuna.sushi')
  * Chirashi.append(document.body, [salmonMaki, tunaMaki, salmonSushi, tunaSushi])
- * Chirashi.filter('div', '.salmon') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon"></div>]
- * Chirashi.filter([salmonMaki, tunaMaki, salmonSushi, tunaSushi], '.maki') //returns: [<div class="maki salmon"></div>, <div class="maki tuna"></div>]
- * Chirashi.filter('div', '.salmon') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon"></div>]
+ * Chirashi.filter('div', '.salmon') //returns: [<div class="salmon sushi"></div>, <div class="salmon maki"></div>]
+ * Chirashi.filter([salmonMaki, tunaMaki, salmonSushi, tunaSushi], '.maki') //returns: [<div class="salmon maki"></div>, <div class="tuna maki"></div>]
+ * Chirashi.filter('div', '.salmon') //returns: [<div class="salmon sushi"></div>, <div class="salmon maki"></div>]
  */
 function filter(elements, tested) {
-  return getElements(elements).filter(function (element) {
-    return typeof tested === 'string' && 'matches' in element && element.matches(tested) || element === tested;
+  var matching = [];
+
+  forElements(elements, function (element) {
+    if (typeof tested === 'string' && 'matches' in element && element.matches(tested) || element === tested) {
+      matching.push(element);
+    }
   });
+
+  return _chirasizeArray(matching);
 }
 
 /**
  * Iterates over each element of elements and returns an array containing all elements' children matching a selector.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {string} selector - The selector.
  * @return {Array} found - The elements' children matching the selector.
+ * @return {function} found.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, append, find } from 'chirashi'
  * const maki = createElement('.maki')
@@ -942,14 +882,14 @@ function find(elements, selector) {
     found.push.apply(found, toConsumableArray(element.querySelectorAll(selector)));
   });
 
-  return found;
+  return _chirasizeArray(found);
 }
 
 /**
  * Find the first element's child matching the selector.
- * @param {string | Array | NodeList | HTMLCollection | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {string} selector - The selector to match.
- * @return {HTMLElement | SVGElement} element - The first child of elements matching the selector.
+ * @return {(HTMLElement|SVGElement|null)} element - The first child of elements matching the selector or null.
  * @example //esnext
  * import { createElement, append, find } from 'chirashi'
  * const maki = createElement('.maki')
@@ -975,27 +915,10 @@ function findOne(element, selector) {
 }
 
 /**
- * Alias on getAttr prefixing name with 'data-'.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
- * @param {string} name - The data-attribute's name.
- * @return {string} value - The value for the data-attribute.
- * @example //esnext
- * import { createElement, getData } from 'chirashi'
- * const maki = createElement('.maki[data-fish="salmon"]')
- * getData(maki, 'fish') //returns: "salmon"
- * @example //es5
- * const maki = Chirashi.createElement('.maki[data-fish="salmon"]')
- * Chirashi.getData(maki, 'fish') //returns: "salmon"
- */
-function getData(element, name) {
-  return element.getAttribute(name.indexOf('data') === 0 ? name : 'data-' + name);
-}
-
-/**
  * Get value for named attribute of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
  * @param {string} name - The attribute's name.
- * @return {string} value - The value for the attribute.
+ * @return {(string|boolean)} value - The value for the attribute or false if no element found.
  * @example //esnext
  * import { createElement, getAttr } from 'chirashi'
  * const maki = createElement('.maki[data-fish="salmon"]')
@@ -1005,13 +928,32 @@ function getData(element, name) {
  * Chirashi.getAttr(maki, 'data-fish') //returns: "salmon"
  */
 function getAttr(element, name) {
-  return name.indexOf('data') === 0 ? getData(element, name) : getProp(element, name);
+  element = getElement(element);
+
+  return !!element && element.getAttribute(name);
+}
+
+/**
+ * Alias on getAttr prefixing name with 'data-'.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @param {string} name - The data-attribute's name.
+ * @return {(string|boolean)} value - The value for the data-attribute or false if no element found.
+ * @example //esnext
+ * import { createElement, getData } from 'chirashi'
+ * const maki = createElement('.maki[data-fish="salmon"]')
+ * getData(maki, 'fish') //returns: "salmon"
+ * @example //es5
+ * const maki = Chirashi.createElement('.maki[data-fish="salmon"]')
+ * Chirashi.getData(maki, 'fish') //returns: "salmon"
+ */
+function getData(element, name) {
+  return getAttr(element, 'data-' + name);
 }
 
 /**
  * Get the inner html of an element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element.
- * @return {string} innerHTML - The inner html of the element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(string|null)} innerHTML - The inner html of the element or null if no element found.
  * @example //esnext
  * import { createElement, setHtml, getHtml } from 'chirashi'
  * const maki = createElement('p.maki')
@@ -1028,9 +970,9 @@ function getHtml(element) {
 
 /**
  * Iterates over classes and test if element has each.
- * @param {string | HTMLElement | SVGElement} element - The selector or dom element.
- * @param {string | Array} classes - Array of classes, classes seperated by coma and/or spaces or single class.
- * @return {bool} hasClass - Is true if element has all classes.
+ * @param {(string|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @param {(string|string[])} classes - Array of classes, classes seperated by coma and/or spaces or single class.
+ * @return {boolean} hasClass - Is true if element has all classes.
  * @example //esnext
  * import { createElement, hasClass } from 'chirashi'
  * const maki = createElement('.salmon.cheese.maki')
@@ -1056,18 +998,18 @@ function hasClass(element, classes) {
 
 /**
  * Returns index of element in parent's children.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @return {Number} index - The position of element in his parent's children.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(number|null)} index - The position of element in his parent's children or null if no element found.
  * @example //esnext
  * import { createElement, append, indexInParent } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * indexInParent('.cheese') //returns: 1
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.indexInParent('.cheese') //returns: 1
  */
 function indexInParent(element) {
@@ -1084,20 +1026,19 @@ function indexInParent(element) {
 
 /**
  * Insert nodes after element in his parent.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @param {Array | string | HTMLElement | SVGElement | Text} nodes - Array of dom elements or string to create it using createElement.
- * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation so length should match number of strings in nodes ).
- * @return {HTMLElement | SVGElement} element - The element for chaining.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @param {(Array|string|HTMLElement|SVGElement|Text)} nodes - Array of dom elements or string to create it using createElement.
+ * @return {(HTMLElement|SVGElement|undefined)} element - The element for chaining or undefined if no element found or element has no parent.
  * @example //esnext
  * import { createElement, append, insertAfter } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }])
+ * append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }])
+ * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * Chirashi.insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertAfter(element, nodes) {
@@ -1120,20 +1061,19 @@ function insertAfter(element, nodes) {
 
 /**
  * Insert nodes before element in his parent.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @param {Array | string | HTMLElement | SVGElement | Text} nodes - Array of dom elements or string to create it using createElement.
- * @param {Array} [attributes=[]] - The array of attributes' object ( only used with node creation so length should match number of strings in nodes ).
- * @return {HTMLElement | SVGElement} element - The element for chaining.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @param {(Array|string|HTMLElement|SVGElement|Text)} nodes - Array of dom elements or string to create it using createElement.
+ * @return {(HTMLElement|SVGElement|undefined)} element - The element for chaining or undefined if no element found or element has no parent.
  * @example //esnext
  * import { createElement, append, insertBefore } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }])
+ * append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }])
+ * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 function insertBefore(element, nodes) {
@@ -1156,20 +1096,20 @@ function insertBefore(element, nodes) {
 
 /**
  * Get the next sibling of element.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @return {HTMLElement | SVGElement | Text} nextElement - The element's next sibling.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(HTMLElement|SVGElement|Text|null)} nextElement - The element's next sibling or null if no element found.
  * @example //esnext
  * import { createElement, append, next } from 'chirashi'
  * const maki = createElement('.maki')
- * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * const avocado = createElement('.avocado')
- * append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * next(avocado) //returns: <div class="cheese" data-cheese="cream"></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
- * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * var avocado = Chirashi.createElement('.avocado')
- * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.next(avocado) //returns: <div class="cheese" data-cheese="cream"></div>
  */
 function next(element) {
@@ -1178,19 +1118,19 @@ function next(element) {
 
 /**
  * Returns the parent node of the element.
- * @param {string | document | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @return {document | HTMLElement | SVGElement} parentElement - The parent node.
+ * @param {(string|document|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(document|HTMLElement|SVGElement|null)} parentElement - The parent node or null if no element found.
  * @example //esnext
  * import { createElement, append, parent } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * append(maki
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * Chirashi.parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  */
 function parent(element) {
@@ -1199,20 +1139,20 @@ function parent(element) {
 
 /**
  * Get the previous sibling of element.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @return {HTMLElement | SVGElement | Text} previousElement - The element's previous sibling.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(HTMLElement|SVGElement|Text|null)} previousElement - The element's previous sibling or null if no element found.
  * @example //esnext
  * import { createElement, append, prev } from 'chirashi'
  * const maki = createElement('.maki')
- * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * const avocado = createElement('.avocado')
- * append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * prev(avocado) //returns: <div class="salmon" data-fish="salmon"></div>
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
- * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * var avocado = Chirashi.createElement('.avocado')
- * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.prev(avocado) //returns: <div class="salmon" data-fish="salmon"></div>
  */
 function prev(element) {
@@ -1221,22 +1161,23 @@ function prev(element) {
 
 /**
  * Iterates over elements and removes it from DOM.
- * @param {string | HTMLElement | SVGElement | Text} element - The selector or dom element.
- * @return {Array} elements - The removed elements.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {Array} domElements - The removed elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, append, remove } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * const avocado = createElement('.avocado')
- * append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, '.salmon', [{ 'data-fish': 'salmon' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
  * var avocado = Chirashi.createElement('.avocado')
- * Chirashi.append(maki, [avocado, '.cheese'], [{ 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
  */
 function remove(elements) {
@@ -1259,18 +1200,20 @@ function _applyForEach(elements, method, args) {
 
 /**
  * Iterates over attributes and removes it from each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {(string|Array|NodeList|HTMLCollection|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {Array | string} attributes - Array of attributes' name, string of attributes' name seperated by space and/or comas or name of a single attribute.
- * @return {Array} elements - The elements for chaining.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
  * import { createElement, append, removeAttr } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  */
 function removeAttr(elements, attributes) {
@@ -1279,16 +1222,17 @@ function removeAttr(elements, attributes) {
 
 /**
  * Iterates over classes and remove it from each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
- * @param {string | Array} classes - Array of classes or string of classes seperated with comma and/or spaces.
- * @return {Array} elements - The elements for chaining.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
+ * @param {(string|string[])} classes - Array of classes or string of classes seperated with comma and/or spaces.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
  * import { createElement, removeClass } from 'chirashi'
- * const maki = createElement('.salmon.cheese.maki') //returns: <div class="maki cheese salmon"></div>
- * removeClass(maki, 'cheese') //returns: [<div class="maki salmon"></div>]
+ * const maki = createElement('.maki.salmon.cheese.wasabi') //returns: <div class="maki salmon cheese wasabi"></div>
+ * removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
  * @example //es5
- * var maki = Chirashi.createElement('.salmon.cheese.maki') //returns: <div class="maki cheese salmon"></div>
- * Chirashi.removeClass(maki, 'cheese') //returns: [<div class="maki salmon"></div>]
+ * var maki = Chirashi.createElement('.maki.salmon.cheese.wasabi') //returns: <div class="maki salmon cheese wasabi"></div>
+ * Chirashi.removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
  */
 function removeClass(elements, classes) {
   return _updateClassList(elements, 'remove', classes);
@@ -1296,29 +1240,114 @@ function removeClass(elements, classes) {
 
 /**
  * Iterates over attributes and removes it from each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {Array | string} attributes - Array of attributes' name, string of attributes' name seperated by space and/or comas or name of a single attribute.
- * @return {Array} elements - The elements for chaining.
- * import { createElement, append, removeAttr } from 'chirashi'
+ * @param {(string|Array|NodeList|HTMLCollection|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
+ * @param {(string|string[])} attributes - Array of attributes' name, string of attributes' name seperated by space and/or comas or name of a single attribute.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, append, removeData } from 'chirashi'
  * const maki = createElement('.maki')
  * append(document.body, maki)
- * append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
- * removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
+ * append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * removeData('.salmon', 'fish') //returns: [<div class="salmon"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.maki')
  * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, ['.salmon', '.cheese'], [{ 'data-fish': 'salmon' }, { 'data-cheese': 'cream' }]) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
- * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
+ * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.removeData('.salmon', 'fish') //returns: [<div class="salmon"></div>]
  */
-function removeAttr$1(elements, attributes) {
+function removeData(elements, attributes) {
   return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes, 'data-'));
+}
+
+/**
+ * Iterates over attributes as key value pairs and apply on each element of elements.
+ * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {Object} - The attributes key value pairs.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setAttr } from 'chirashi'
+ * const maki = createElement('.maki')
+ * setAttr(maki, {
+ *   dataFish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.setAttr(maki, {
+ *   dataFish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ */
+function setAttr(elements, attributes) {
+  forIn(attributes, function (name, value) {
+    if (typeof value !== 'string' && !(value instanceof Array)) {
+      attributes[name] = JSON.stringify(value);
+    }
+  });
+
+  return forElements(elements, function (element) {
+    forIn(attributes, function (name, value) {
+      element.setAttribute(name, value);
+    });
+  });
+}
+
+/**
+ * Iterates over data-attributes as key value pairs and apply on each element of elements.
+ * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
+ * @param {Object} - The data-attributes key value pairs.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setData } from 'chirashi'
+ * const maki = createElement('.maki')
+ * setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.setData(maki, {
+ *   fish: 'salmon'
+ * }) //returns: [<div class="maki" data-fish="salmon">]
+ */
+function setData(elements, dataAttributes) {
+  var attributes = {};
+
+  forIn(dataAttributes, function (name, value) {
+    attributes['data-' + name] = value;
+  });
+
+  return setAttr(elements, attributes);
+}
+
+/**
+ * Apply props as key value pairs on each element of elements.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
+ * @param {Object} - The props key value pairs.
+ * @return {Array} domElements - The removed elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setProp, getProp } from 'chirashi'
+ * const maki = createElement('input.maki')
+ * setProp(maki, { value: 'こんにちは世界' })
+ * getProp(maki, 'value') //returns: こんにちは世界
+ * @example //es5
+ * var maki = Chirashi.createElement('input.maki')
+ * Chirashi.setProp(maki, { value: 'こんにちは世界' })
+ * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
+ */
+function setProp(elements, props) {
+  return forElements(elements, function (element) {
+    return Object.assign(element, props);
+  });
 }
 
 /**
  * Set the inner html of elements.
  * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @return {string} htmlString - The html to insert.
- * @example //esnext
+ * @param {string} html - The html to insert.
+ * @return {Array} domElements - The removed elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
 * import { createElement, setHtml, getHtml } from 'chirashi'
 * const maki = createElement('p.maki')
@@ -1329,24 +1358,41 @@ function removeAttr$1(elements, attributes) {
 * setHtml(maki, 'salmon') //returns: [<p class="maki">salmon</p>]
 * getHtml(maki) //returns: "salmon"
  */
-function setHtml(elements, string) {
-  return setProp(elements, { 'innerHTML': string });
+function setHtml(elements, html) {
+  return setProp(elements, { 'innerHTML': html });
 }
 
 /**
  * Iterates over classes and toggle it on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement | Text} elements - The iterable, selector or elements.
- * @param {string | Array | Object} classes - Array of classes or string of classes seperated with comma and/or spaces.
- * @return {Array} elements - The elements for chaining.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
+ * @param {(string|Array|Object)} classes - Array of classes or string of classes seperated with comma and/or spaces. Or object with keys being the string of classes seperated with comma and/or spaces and values function returning a booleanean.
+ * @return {Array} domElements - The removed elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
  * @example //esnext
- * import { createElement, toggleClass } from 'chirashi'
+ * import { createElement, toggleClass, clone, setData, getData } from 'chirashi'
  * const maki = createElement('.wasabi.salmon.maki') //returns: <div class="maki salmon wasabi"></div>
  * const sushi = createElement('.salmon.sushi') //returns: <div class="sushi salmon"></div>
  * toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
+ * const scdMaki = clone(maki)
+ * setData(maki, { for: 'leonard' })
+ * setData(scdMaki, { for: 'sheldon' })
+ * toggleClass([maki, scdMaki], {
+ *   cheese: element => {
+ *     return getData(element, 'for') !== 'leonard'
+ *   }
+ * }) //returns: [<div class="maki salmon cheese" data-for="sheldon"></div>, <div class="maki salmon" data-for="leonard"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.wasabi.salmon.maki') //returns: <div class="wasabi salmon maki"></div>
  * var sushi = Chirashi.createElement('.salmon.sushi') //returns: <div class="salmon sushi"></div>
  * Chirashi.toggleClass([maki, sushi], 'wasabi') //returns: [<div class="maki salmon"></div>, <div class="sushi salmon wasabi"></div>]
+ * var scdMaki = Chirashi.clone(maki)
+ * Chirashi.setData(maki, { for: 'leonard' })
+ * Chirashi.setData(scdMaki, { for: 'sheldon' })
+ * Chirashi.toggleClass([maki, scdMaki], {
+ *   cheese: function (element) {
+ *     return Chirashi.getData(element, 'for') !== 'leonard'
+ *   }
+ * }) //returns: [<div class="maki salmon cheese" data-for="sheldon"></div>, <div class="maki salmon" data-for="leonard"></div>]
  */
 function toggleClass(elements, input) {
   if (input instanceof Array || typeof input === 'string') {
@@ -1370,8 +1416,9 @@ function toggleClass(elements, input) {
       if (!element.classList) return;
 
       forIn(input, function (classes, condition) {
+        var toggle = condition(element);
         forEach(_stringToArray(classes), function (className) {
-          element.classList.toggle(className, condition(element));
+          element.classList.toggle(className, toggle);
         });
       });
     });
@@ -1392,17 +1439,54 @@ function _setEvents(elements, method, input) {
 
 /**
  * Bind events listener on each element of elements.
- * @param {string | Array | NodeList | HTMLCollection | window | document | HTMLElement | SVGElement} elements - The iterable, selector or elements.
- * @param {string | Array} events - Array of events to listen or string of events seperated with comma and/or spaces.
- * @param {eventCallback} callback - The callback used for event binding.
- * @return {Array} elements - The iterable for chaining.
+ * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
+ * @param {Object.<string, eventCallback>} input - An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks.
+ * @return {Object} object - An object with off method to remove events listeners.
+ * @return {offCallback} object.off - The off method.
+ * @example //esnext
+ * import { createElement, append, on, trigger } from 'chirashi'
+ * const maki = createElement('a.cheese.maki')
+ * const sushi = createElement('a.wasabi.sushi')
+ * append(document.body, [maki, sushi])
+ * const listener = on('.cheese, .wasabi', {
+ *   click(e, target) => {
+ *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': (e, target) => {
+ *     console.log('mouse in', target)
+ *   }
+ * })
+ * trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
+ * listener.off(maki, 'click') //remove click event listener on maki
+ * listener.off() //remove all listeners from all elements
+ * @example //es5
+ * var listener = Chirashi.bind('.cheese, .wasabi', {
+ *   'click': function (e, target) {
+ *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': function(e, target) {
+ *     console.log('mouse in', target)
+ *   }
+ * })
+ * var maki = Chirashi.createElement('a.cheese.maki')
+ * var sushi = Chirashi.createElement('a.wasabi.sushi')
+ * Chirashi.append(document.body, [maki, sushi])
+ * Chirashi.trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * Chirashi.trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
+ * listener.off(maki, 'click') //remove click event listener on maki
+ * listener.off() //remove all listeners from all elements
  */
 function on(elements, input) {
   elements = _setEvents(elements, 'add', input);
 
   return {
-    off: function off(element) {
-      _setEvents(element || elements, 'remove', input);
+    off: function off(offElements, events) {
+      _setEvents(offElements || elements, 'remove', events ? defineProperty({}, events, input[events]) : input);
     }
   };
 }
@@ -1414,17 +1498,26 @@ function on(elements, input) {
 */
 
 /**
+* Called to remove one or all events listeners of one or all elements.
+* @callback offCallback
+* @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement)} [offElements] - The iterable, selector or elements to unbind.
+* @param {string} [events] - The events to unbind. Must be provided in the same syntax as in input.
+*/
+
+/**
  * Bind events listener on delegate and execute callback when target matches selector (targets doesn't have to be in the DOM at binding).
  * @param {string} selector - The selector to match.
- * @param {string | Array} events - Array of events to listen or string of events seperated with comma and/or spaces.
- * @param {bindCallback} callback - The callback to execute when one event is triggered.
+ * @param {Object.<string, bindCallback>} input - An object in which keys are events to bind seperated with coma and/or spaces and values are bindCallbacks.
  * @return {Object} object - An object with unbind method for unbinding.
- * @return {function} object.unbind - The unbind method.
+ * @return {unbindCallback} object.unbind - The unbind method.
  * @example //esnext
  * import { createElement, append, bind, trigger } from 'chirashi'
  * const listener = bind('.cheese, .wasabi', {
- *   'click': (e, target) => {
+ *   click(e, target) => {
  *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': (e, target) => {
+ *     console.log('mouse in', target)
  *   }
  * })
  * const maki = createElement('a.cheese.maki')
@@ -1434,11 +1527,15 @@ function on(elements, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.unbind() //remove listeners
+ * listener.unbind('mouseenter mousemove') //remove mouseenter and mousemove listeners
+ * listener.unbind() //remove all listeners
  * @example //es5
  * var listener = Chirashi.bind('.cheese, .wasabi', {
  *   'click': function (e, target) {
  *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': function(e, target) {
+ *     console.log('mouse in', target)
  *   }
  * })
  * var maki = Chirashi.createElement('a.cheese.maki')
@@ -1448,7 +1545,8 @@ function on(elements, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * Chirashi.trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.unbind() //remove listeners
+ * listener.unbind('mouseenter mousemove') //remove mouseenter and mousemove listeners
+ * listener.unbind() //remove all listeners
  */
 function bind(selector, input) {
   var delegate = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.body;
@@ -1464,26 +1562,97 @@ function bind(selector, input) {
   var bound = on(delegate, eventsObj);
 
   return {
-    unbind: bound.off
+    unbind: function unbind(events) {
+      bound.off(delegate, events);
+    }
   };
 }
 
 /**
-* Callback to execute on event.
+* Callback to execute on event using delegate.
 * @callback bindCallback
 * @param {Event} event - Triggered event.
 * @param {HTMLElement | SVGElement} target - Target of the event.
 */
 
 /**
+* Called to unbind one or all events.
+* @callback unbindCallback
+* @param {string} [events] - The events to unbind. Must be provided in the same syntax as in input.
+*/
+
+/**
  * Bind events listener on each element of elements and unbind after first triggered.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {string} events - The events that should be bound seperated with spaces
- * @param {eventCallback} callback - The callback used for event binding
- * @return {object} offObject - An object with off method for unbinding
- * @return {object.off} off - off method
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable or selector
+ * @param {Object.<string, eventCallback>} input - An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks.
+ * @param {boolean} [eachElement=false] - If true only current target's events listeners will be removed after trigger.
+ * @param {boolean} [eachEvent=false] - If true only triggered event group of events listeners will be removed.
+ * @return {Object} cancelObject - An object with cancel method for unbinding.
+ * @return {Object.cancel} cancel - cancel method.
+ * @example //esnext
+ * import { createElement, append, once, trigger } from 'chirashi'
+ * const maki = createElement('a.cheese.maki')
+ * const sushi = createElement('a.wasabi.sushi')
+ * append(document.body, [maki, sushi])
+ * const listener = once('.cheese, .wasabi', {
+ *   click(e, target) => {
+ *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': (e, target) => {
+ *     console.log('mouse in', target)
+ *   }
+ * }, true, true)
+ * trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * // click event listener was auto-removed from maki
+ * trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
+ * // click event listener was auto-removed from sushi
+ * listener.cancel() //remove all listeners from all elements
+ * const listener2 = once('.cheese, .wasabi', {
+ *   click(e, target) => {
+ *     console.log('clicked', target)
+ *   }
+ * })
+ * trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * // all events listeners were auto-removed from all elements
+ * trigger(sushi, 'click') //simulate user's click
+ * // won't log anything
+ * @example //es5
+ * var maki = Chirashi.createElement('a.cheese.maki')
+ * var sushi = Chirashi.createElement('a.wasabi.sushi')
+ * Chirashi.append(document.body, [maki, sushi])
+ * var listener = Chirashi.once('.cheese, .wasabi', {
+ *   click: function (e, target) {
+ *     console.log('clicked', target)
+ *   },
+ *   'mouseenter mousemove': function (e, target) {
+ *     console.log('mouse in', target)
+ *   }
+ * }, true, true)
+ * Chirashi.trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * // click event listener was auto-removed from maki
+ * Chirashi.trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
+ * // click event listener was auto-removed from sushi
+ * listener.cancel() //remove all listeners from all elements
+ * var listener2 = Chirashi.once('.cheese, .wasabi', {
+ *   click: function (e, target) {
+ *     console.log('clicked', target)
+ *   }
+ * })
+ * Chirashi.trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * // all events listeners were auto-removed from all elements
+ * Chirashi.trigger(sushi, 'click') //simulate user's click
+ * // won't log anything
  */
 function once(elements, input) {
+  var eachElement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var eachEvent = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
+
   var listener = void 0;
   var eventsObj = {};
 
@@ -1491,7 +1660,7 @@ function once(elements, input) {
     eventsObj[events] = function (event) {
       callback(event);
 
-      listener.off();
+      listener.off(eachElement && event.currentTarget, eachEvent && events);
     };
   });
 
@@ -1505,11 +1674,28 @@ function once(elements, input) {
 /**
  * Execute callback when dom is ready.
  * @param {eventCallback} callback - The callback.
+ * @example //esnext
+ * import { ready } from 'chirashi'
+ * ready(() => {
+ *   console.log('Hello World!')
+ * })
+ * // Dom already complete or event fired.
+ * // LOGS: "Hello World!"
+ * @example //es5
+ * Chirashi.ready(function () {
+ *   console.log('Hello World!')
+ * })
+ * // Dom already complete or event fired.
+ * // LOGS: "Hello World!"
  */
 function ready(callback) {
-  return once(document, {
-    'DOMContentLoaded': callback
-  });
+  if (document.readyState === 'complete') {
+    callback();
+  } else {
+    once(document, {
+      'DOMContentLoaded': callback
+    });
+  }
 }
 
 var defaults$1 = {
@@ -1519,10 +1705,37 @@ var defaults$1 = {
 
 /**
  * Trigger events on elements with data
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable or selector
  * @param {string} events - The events that should be tiggered seperated with spaces
- * @param {object} data - The events' data
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * @param {Object} data - The events' data
+ * @return {(string|Array|NodeList|HTMLCollection)} elements - The iterable for chaining
+ * @example //esnext
+ * import { createElement, append, on, trigger } from 'chirashi'
+ * const maki = createElement('a.cheese.maki')
+ * const sushi = createElement('a.wasabi.sushi')
+ * append(document.body, [maki, sushi])
+ * const listener = on('.cheese, .wasabi', {
+ *   click(e, target) => {
+ *     console.log('clicked', target)
+ *   }
+ * })
+ * trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
+ * @example //es5
+ * var listener = Chirashi.bind('.cheese, .wasabi', {
+ *   'click': function (e, target) {
+ *     console.log('clicked', target)
+ *   }
+ * })
+ * var maki = Chirashi.createElement('a.cheese.maki')
+ * var sushi = Chirashi.createElement('a.wasabi.sushi')
+ * Chirashi.append(document.body, [maki, sushi])
+ * Chirashi.trigger(maki, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="maki cheese"></a>
+ * Chirashi.trigger(sushi, 'click') //simulate user's click
+ * // LOGS: "clicked" <a class="sushi wasabi"></a>
  */
 function trigger(elements, events) {
   var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
@@ -1547,11 +1760,64 @@ function trigger(elements, events) {
 var unitless = ['zIndex', 'z-index', 'zoom', 'font-weight', 'lineHeight', 'line-height', 'counterReset', 'counter-reset', 'counterIncrement', 'counter-increment', 'volume', 'stress', 'pitchRange', 'pitch-range', 'richness', 'opacity'];
 
 /**
-* Set the provided style to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} style - The style options as object linking value to property
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
+ * Set the provided style to elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {Object.<string, (number|string)>} style - The style options as object with keys the css property and values, string values or number. If the value is a number and property doesn't support unitless values, pixels will be used.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, setStyle, position } from 'chirashi'
+ *
+ * append(document.body, '.maki')
+ * append('.maki', '.salmon')
+ *
+ * setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   borderRadius: '50%',
+ *   background: 'black'
+ * }) // returns: [<div class="maki" style="display: block; position: absolute; top: 200px; left: 240px; width: 100px; height: 100px; border-radius: 50%; background: black;"><div class="salmon"></div></div>]
+ *
+ * const salmon = setStyle('.salmon', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 20,
+ *   left: 10,
+ *   width: 10,
+ *   height: 10,
+ *   borderRadius: '50%',
+ *   background: 'pink'
+ * }) // returns: [<div class="salmon" style="display: block; position: absolute; top: 20px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: pink;"></div>]
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * Chirashi.append('.maki', '.salmon')
+ *
+ * Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   borderRadius: '50%',
+ *   background: 'black'
+ * }) // returns: [<div class="maki" style="display: block; position: absolute; top: 200px; left: 240px; width: 100px; height: 100px; border-radius: 50%; background: black;"><div class="salmon"></div></div>]
+ *
+ * const salmon = Chirashi.setStyle('.salmon', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 20,
+ *   left: 10,
+ *   width: 10,
+ *   height: 10,
+ *   borderRadius: '50%',
+ *   background: 'pink'
+ * }) // returns: [<div class="salmon" style="display: block; position: absolute; top: 20px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: pink;"></div>]
+ */
 function setStyle(elements, style) {
   forIn(style, function (prop, value) {
     if (unitless.indexOf(prop) === -1 && typeof value === 'number') {
@@ -1567,62 +1833,181 @@ function setStyle(elements, style) {
 }
 
 /**
-* Set the provided style to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {object} style - The style options as object linking value to property
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
+ * Clear inline style properties from elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {Object.<string, string>} style - The style options as object with key the property and value the string value.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setStyle, clearStyle } from 'chirashi'
+ * const maki = createElement('a.cheese.maki')
+ * setStyle(maki, {
+ *   position: 'absolute',
+ *   top: 10,
+ *   width: 200,
+ *   height: 200,
+ *   background: 'red'
+ * })
+ * clearStyle(maki, ['position', top])
+ * clearStyle(maki, 'width, height, background')
+ * @example //es5
+ * var maki = Chirashi.createElement('a.cheese.maki')
+ * Chirashi.setStyle(maki, {
+ *   position: 'absolute',
+ *   top: 10,
+ *   width: 200,
+ *   height: 200,
+ *   background: 'red'
+ * })
+ * Chirashi.clearStyle(maki, ['position', top])
+ * Chirashi.clearStyle(maki, 'width, height, background')
+ */
 function clearStyle(elements, props) {
   props = _stringToArray(props);
 
   var style = {};
   forEach(props, function (prop) {
-    return style[prop] = '';
+    style[prop] = '';
   });
 
   return setStyle(elements, style);
 }
 
+function _getLength(element, direction, offset) {
+  return getProp(element, '' + (offset ? 'offset' : 'client') + direction);
+}
+
 /**
- * Get height in pixels of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
- * @return {number} height - The height in pixels
+ * Get element's height in pixels.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @param {boolean} [offset=false] - If true height will include scrollbar and borders to size.
+ * @return {number} height - The height in pixels.
+ * @example //esnext
+ * import { append, setStyle, getHeight } from 'chirashi'
+ * append(document.body, '.maki')
+ * const maki = setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * getHeight(maki, true) //returns: 260
+ * getHeight(maki) //returns: 220
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * Chirashi.getHeight(maki, true) //returns: 260
+ * Chirashi.getHeight(maki) //returns: 220
  */
 function getHeight(element) {
-  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  return getProp(element, inner ? 'clientHeight' : 'offsetHeight');
+  return _getLength(element, 'Height', offset);
 }
 
 /**
- * Get width in pixels of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
- * @return {number} width - The width in pixels
+ * Get element's width in pixels.
+ * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
+ * @param {boolean} [offset=false] - If true width will include scrollbar and borders to size.
+ * @return {number} width - The width in pixels.
+ * @example //esnext
+ * import { append, setStyle, getWidth } from 'chirashi'
+ * append(document.body, '.maki')
+ * const maki = setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * getWidth(maki, true) //returns: 260
+ * getWidth(maki) //returns: 220
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * Chirashi.getWidth(maki, true) //returns: 260
+ * Chirashi.getWidth(maki) //returns: 220
  */
 function getWidth(element) {
-  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
-  return getProp(element, inner ? 'clientWidth' : 'offsetWidth');
+  return _getLength(element, 'Width', offset);
 }
 
 /**
- * Get size in pixels of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
- * @return {number} size - The size in pixels
+ * Get element's size in pixels.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element
+ * @param {boolean} [offset=false] - If true size will include scrollbar and borders.
+ * @return {number} size - The size in pixels.
+ * @example //esnext
+ * import { append, setStyle, getSize } from 'chirashi'
+ * append(document.body, '.maki')
+ * const maki = setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * getSize(maki, true) //returns: { width: 260, height: 260 }
+ * getSize(maki) //returns: { width: 220, height: 220 }
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   border: '20px solid red',
+ *   padding: 10,
+ *   height: 200,
+ *   width: 200
+ * })
+ * Chirashi.getSize(maki, true) //returns: { width: 260, height: 260 }
+ * Chirashi.getSize(maki) //returns: { width: 220, height: 220 }
  */
 function getSize(element) {
-  var inner = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+  var offset = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
 
   return {
-    width: getWidth(element, inner),
-    height: getHeight(element, inner)
+    width: getWidth(element, offset),
+    height: getHeight(element, offset)
   };
 }
 
 /**
  * Get style property of element.
- * @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element
  * @return {number} value - The value for the property
+ * @example //esnext
+ * import { append, setStyle, getStyle } from 'chirashi'
+ * append(document.body, '.maki')
+ * const maki = setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'relative',
+ *   top: 10
+ * })
+ * getStyle(maki, 'display') //returns: "block"
+ * getStyle(maki, 'top') //returns: 10
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'relative',
+ *   top: 10
+ * })
+ * Chirashi.getStyle(maki, 'display') //returns: "block"
+ * Chirashi.getStyle(maki, 'top') //returns: 10
  */
 function getStyle(element, property) {
   element = getElement(element);
@@ -1635,20 +2020,65 @@ function getStyle(element, property) {
 
 /**
  * Hide each element of elements using visibility.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @return {string | Array | NodeList | HTMLCollection} elements for chaining
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, hide, getStyle }
+ * append(document.body, '.maki')
+ * const maki = hide('.maki')
+ * getStyle(maki, 'visibility') // returns: "hidden"
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.hide('.maki')
+ * Chirashi.getStyle(maki, 'visibility') // returns: "hidden"
  */
 function hide(elements) {
   return setStyle(elements, { visibility: 'hidden' });
 }
 
 /**
-* Return the top and left offset of an element. Offset is relative to web page
-* @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
-* @return {object} offset
-* @return {object.top} top offset
-* @return {object.left} left offset
-*/
+ * Returns the top and left offset of an element. Offset is relative to web page.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(Object|boolean)} offset - Offset object or false if no element found.
+ * @return {Object.top} top - Top offset in pixels.
+ * @return {Object.left} left - Left offset in pixels.
+ * @example //esnext
+ * import { setStyle, append, offset }
+ * setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ * append(document.body, '.sushi')
+ * const sushi = setStyle('.sushi', {
+ *   display: 'block',
+ *   width: 100,
+ *   height: 100,
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   background: 'red'
+ * })
+ * offset(sushi) // returns: { top: 200, left: 240 }
+ * @example //es5
+ * Chirashi.setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ * Chirashi.append(document.body, '.sushi')
+ * var sushi = Chirashi.setStyle('.sushi', {
+ *   display: 'block',
+ *   width: 100,
+ *   height: 100,
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   background: 'red'
+ * })
+ * Chirashi.offset(sushi) // returns: { top: 200, left: 240 }
+ */
 function offset(element) {
   element = getElement(element);
   if (!element) return false;
@@ -1662,10 +2092,80 @@ function offset(element) {
 }
 
 /**
-* Return the top and left position of an element. Position is relative to parent
-* @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
-* @return {object} position
-*/
+ * Return the top and left position of an element. Position is relative to parent.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(Object|boolean)} offset - Offset object or false if no element found.
+ * @return {Object.top} top - Top position in pixels.
+ * @return {Object.left} left - Left position in pixels.
+ * @example //esnext
+ * import { append, setStyle, position } from 'chirashi'
+ *
+ * setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * append(document.body, '.maki')
+ * append('.maki', '.salmon')
+ *
+ * setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   borderRadius: '50%',
+ *   background: 'black'
+ * })
+ *
+ * const salmon = setStyle('.salmon', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 20,
+ *   left: 10,
+ *   width: 10,
+ *   height: 10,
+ *   borderRadius: '50%',
+ *   background: 'pink'
+ * })
+ *
+ * position(salmon) // returns: { top: 20, left: 10 }
+ * @example //es5
+ * Chirashi.setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * Chirashi.append(document.body, '.maki')
+ * Chirashi.append('.maki', '.salmon')
+ *
+ * Chirashi.setStyle('.maki', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   borderRadius: '50%',
+ *   background: 'black'
+ * })
+ *
+ * var salmon = Chirashi.setStyle('.salmon', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 20,
+ *   left: 10,
+ *   width: 10,
+ *   height: 10,
+ *   borderRadius: '50%',
+ *   background: 'pink'
+ * })
+ *
+ * Chirashi.position(salmon) // returns: { top: 20, left: 10 }
+ */
 function position(element) {
   element = getElement(element);
 
@@ -1676,10 +2176,60 @@ function position(element) {
 }
 
 /**
-* Return the screen relative position of an element
-* @param {string | window | document | HTMLElement | SVGElement} element - The selector or dom element
-* @return {object} screenPosition
-*/
+ * Return the screen relative position of an element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(Object|boolean)} screenPosition - Element's screen position or false if no element found.
+ * @return {Object.bottom} bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box. Read only.
+ * @return {Object.height} height - Height of the rectangle box (This is identical to bottom minus top). Read only.
+ * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
+ * @return {Object.right} right - X-coordinate, relative to the viewport origin, of the right of the rectangle box. Read only.
+ * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
+ * @return {Object.width} width - Width of the rectangle box (This is identical to right minus left). Read only.
+ * @return {Object.x} x - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
+ * @return {Object.y} y - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
+ * @example esnext
+ * import { setStyle, append, screenPosition } from 'chirashi'
+ *
+ * setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * append(document.body, '.poulp')
+ *
+ * const poulp = setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * screenPosition(poulp) // returns: { top: 200, left: 240 }
+ * @example es5
+ * Chirashi.setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * Chirashi.append(document.body, '.poulp')
+ *
+ * var poulp = Chirashi.setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * Chirashi.screenPosition(poulp) // returns: { top: 200, left: 240 }
+ */
 function screenPosition(element) {
   element = getElement(element);
 
@@ -1687,43 +2237,112 @@ function screenPosition(element) {
 }
 
 /**
-* Set the provided height to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {number} height - The height
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
+ * Set the provided height to elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {(number|string)} height - The height as number or string. For number, unit used will be pixels.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, setHeight } from 'chirashi'
+ *
+ * append(document.body, '.maki')
+ *
+ * setHeight('.maki', 20) // returns: [<div class="maki" style="height: 20px;"></div>]
+ * setHeight('.maki', '100%') // returns: [<div class="maki" style="height: 100%;"></div>]
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ *
+ * Chirashi.setHeight('.maki', 20) // returns: [<div class="maki" style="height: 20px;"></div>]
+ * Chirashi.setHeight('.maki', '100%') // returns: [<div class="maki" style="height: 100%;"></div>]
+ */
 function setHeight(elements, height) {
   return setStyle(elements, { height: height });
 }
 
 /**
-* Set the provided size to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector.
-* @param {number} width - The width value.
-* @param {number} height - The height value.
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining.
-*/
+ * Set the provided size to elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {(number|string)} width - The width as number or string. For number, unit used will be pixels.
+ * @param {(number|string)} height - The height as number or string. For number, unit used will be pixels.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, setSize } from 'chirashi'
+ *
+ * append(document.body, '.maki')
+ *
+ * setSize('.maki', 20, '100%') // returns: [<div class="maki" style="width: 20px; height: 100%;"></div>]
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ *
+ * Chirashi.setSize('.maki', 20, '100%') // returns: [<div class="maki" style="width: 20px; height: 100%;"></div>]
+ */
 function setSize(elements, width, height) {
   return setStyle(elements, { width: width, height: height });
 }
 
 /**
-* Set the provided width to elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @param {number} width - The width
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
+ * Set the provided width to elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {(number|string)} width - The width as number or string. For number, unit used will be pixels.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, setWidth } from 'chirashi'
+ *
+ * append(document.body, '.maki')
+ *
+ * setWidth('.maki', 20) // returns: [<div class="maki" style="width: 20px;"></div>]
+ * setWidth('.maki', '100%') // returns: [<div class="maki" style="width: 100%;"></div>]
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ *
+ * Chirashi.setWidth('.maki', 20) // returns: [<div class="maki" style="width: 20px;"></div>]
+ * Chirashi.setWidth('.maki', '100%') // returns: [<div class="maki" style="width: 100%;"></div>]
+ */
 function setWidth(elements, width) {
   return setStyle(elements, { width: width });
 }
 
 /**
-* Reset visibility style attribute for elements
-* @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
-* @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
-*/
+ * Show each element of elements using visibility.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { append, show, getStyle }
+ * append(document.body, '.maki')
+ * const maki = show('.maki')
+ * getStyle(maki, 'visibility') // returns: "hidden"
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ * var maki = Chirashi.show('.maki')
+ * Chirashi.getStyle(maki, 'visibility') // returns: "visible"
+ */
 function show(elements) {
   return setStyle(elements, { visibility: 'visible' });
+}
+
+function _getValues(transformation, axes, name, defaultVal, defaultAxes) {
+  var values = {};
+
+  if (name in transformation) {
+    if (_typeof(transformation[name]) === 'object') {
+      forEach(axes, function (axe) {
+        values['' + name + axe.toUpperCase()] = axe in transformation[name] ? transformation[name][axe] : defaultVal;
+      });
+    } else {
+      forEach(axes, function (axe) {
+        values['' + name + axe.toUpperCase()] = defaultAxes[axe];
+      });
+    }
+  } else {
+    forEach(axes, function (axe) {
+      values['' + name + axe.toUpperCase()] = defaultVal;
+    });
+  }
+
+  return values;
 }
 
 function _transformMatrix(transformation) {
@@ -1731,50 +2350,19 @@ function _transformMatrix(transformation) {
   var y = 'y' in transformation ? transformation.y : 0;
   var z = 'z' in transformation ? transformation.z : 0;
 
-  var scaleX = void 0,
-      scaleY = void 0,
-      scaleZ = void 0;
-  if ('scale' in transformation) {
-    if (_typeof(transformation.scale) === 'object') {
-      scaleX = 'x' in transformation.scale ? transformation.scale.x : 1;
-      scaleY = 'y' in transformation.scale ? transformation.scale.y : 1;
-      scaleZ = 'z' in transformation.scale ? transformation.scale.z : 1;
-    } else {
-      scaleX = scaleY = transformation.scale;
-      scaleZ = 1;
-    }
-  } else {
-    scaleX = scaleY = scaleZ = 1;
-  }
+  var _getValues2 = _getValues(transformation, ['x', 'y', 'z'], 'scale', 1, { x: transformation.scale, y: transformation.scale, z: 1 }),
+      scaleX = _getValues2.scaleX,
+      scaleY = _getValues2.scaleY,
+      scaleZ = _getValues2.scaleZ;
 
-  var rotateX = void 0,
-      rotateY = void 0,
-      rotateZ = void 0;
-  if ('rotate' in transformation) {
-    if (_typeof(transformation.rotate) === 'object') {
-      rotateX = 'x' in transformation.rotate ? transformation.rotate.x : 0;
-      rotateY = 'y' in transformation.rotate ? transformation.rotate.y : 0;
-      rotateZ = 'z' in transformation.rotate ? transformation.rotate.z : 0;
-    } else {
-      rotateX = rotateY = 0;
-      rotateZ = transformation.rotate;
-    }
-  } else {
-    rotateX = rotateY = rotateZ = 0;
-  }
+  var _getValues3 = _getValues(transformation, ['x', 'y', 'z'], 'rotate', 0, { x: 0, y: 0, z: transformation.rotate }),
+      rotateX = _getValues3.rotateX,
+      rotateY = _getValues3.rotateY,
+      rotateZ = _getValues3.rotateZ;
 
-  var skewX = void 0,
-      skewY = void 0;
-  if ('skew' in transformation) {
-    if (_typeof(transformation.skew) === 'object') {
-      skewX = 'x' in transformation.skew ? transformation.skew.x : 0;
-      skewY = 'y' in transformation.skew ? transformation.skew.y : 0;
-    } else {
-      skewX = skewY = transformation.skew;
-    }
-  } else {
-    skewX = skewY = 0;
-  }
+  var _getValues4 = _getValues(transformation, ['x', 'y'], 'skew', 0, { x: transformation.skew, y: transformation.skew }),
+      skewX = _getValues4.skewX,
+      skewY = _getValues4.skewY;
 
   var cosRotateX = Math.cos(rotateX);
   var sinRotateX = Math.sin(rotateX);
@@ -1795,14 +2383,58 @@ function _transformMatrix(transformation) {
 }
 
 /**
- * Set the provided transformation to all elements using a matrix if needed and 3d if supported.
- * @param {string | Array | NodeList | HTMLCollection} elements - The iterable or selector
- * @param {object} [transformation] - The transformation as an object
- * @return {string | Array | NodeList | HTMLCollection} elements - The iterable for chaining
+ * Compute and apply 3d transform matrix from provided transformation to each element of elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable or selector.
+ * @param {Transformation} transformation - The transformation as an object
+ * @return {Array} domElements - The array of dom elements from elements.
+ * @return {function} domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+ * @example //esnext
+ * import { createElement, setHtml, transform } from 'chirashi'
+ * const wasabiPea = createElement('p')
+ * setHtml(wasabiPea, 'Wasabi')
+ * transform(wasabiPea, {}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {x: 5, y: 6, z: 7}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,5,6,7,1)">Wasabi</p>]
+ * transform(wasabiPea, {scale: 2}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,2,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {scale: {x: 2, y: 3, z: 4}}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {rotate: 45}) // returns: [<p style="transform: "matrix3d(0.53,0.85,0,0,-0.85,0.53,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {rotate: {x: 45, y: 20, z: 15}}) // returns: [<p style="transform: "matrix3d(-0.31,0.65,-0.91,0,-0.65,-0.4,0.85,0,0.91,-0.85,0.21,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {skew: 45}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,1.62,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,-0.13,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
+ * @example //es5
+ * var wasabiPea = Chirashi.createElement('p')
+ * Chirashi.setHtml(wasabiPea, 'Wasabi')
+ * Chirashi.transform(wasabiPea, {}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7}) // returns: [<p style="transform: "matrix3d(1,0,0,0,0,1,0,0,0,0,1,0,5,6,7,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {scale: 2}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,2,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {scale: {x: 2, y: 3, z: 4}}) // returns: [<p style="transform: "matrix3d(2,0,0,0,0,3,0,0,0,0,4,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {rotate: 45}) // returns: [<p style="transform: "matrix3d(0.53,0.85,0,0,-0.85,0.53,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {rotate: {x: 45, y: 20, z: 15}}) // returns: [<p style="transform: "matrix3d(-0.31,0.65,-0.91,0,-0.65,-0.4,0.85,0,0.91,-0.85,0.21,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {skew: 45}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,1.62,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(1,1.62,0,0,-0.13,1,0,0,0,0,1,0,0,0,0,1)">Wasabi</p>]
+ * Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
  */
 function transform(elements, transformation) {
-  setStyle(elements, { transform: 'matrix3d(' + _transformMatrix(transformation).join(',') + ')' });
+  return setStyle(elements, { transform: 'matrix3d(' + _transformMatrix(transformation).join(',') + ')' });
 }
+
+/**
+ * @typedef {Object} Transformation
+ * @property {number} [x=0] - Translation value on x axis in pixels.
+ * @property {number} [y=0] - Translation value on y axis in pixels.
+ * @property {number} [z=0] - Translation value on z axis in pixels.
+ * @property {(number|object)} [scale=1] - Scale value for x and y axes or object of values for axes.
+ * @property {number} [scale.x=1] - Scale value on x axis.
+ * @property {number} [scale.y=1] - Scale value on y axis.
+ * @property {number} [scale.z=1] - Scale value on z axis.
+ * @property {(number|object)} [rotate=0] - Rotation value for z axis in radians or object of values for axes.
+ * @property {number} [rotate.x=0] - Rotation value on x axis in radians.
+ * @property {number} [rotate.y=0] - Rotation value on y axis in radians.
+ * @property {number} [rotate.z=0] - Rotation value on z axis in radians.
+ * @property {(number|object)} [skew=0] - Skew value for x and y axes in radians or object of values for axes.
+ * @property {number} [skew.x=0] - Skew value on x axis in radians.
+ * @property {number} [skew.y=0] - Skew value on y axis in radians.
+ */
 
 var index = {
   forEach: forEach,
@@ -1834,7 +2466,7 @@ var index = {
   remove: remove,
   removeAttr: removeAttr,
   removeClass: removeClass,
-  removeData: removeAttr$1,
+  removeData: removeData,
   setAttr: setAttr,
   setData: setData,
   setHtml: setHtml,
