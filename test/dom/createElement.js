@@ -25,6 +25,7 @@ window.describe('chirashi#createElement', () => {
 
   window.it('should return new element', () => {
     assert.isTrue(Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]').matches('a#sushi.link[data-href="chirashijs.org"][data-link]'), 'from css selector')
+    assert.isTrue(Chirashi.createElement("a#sushi.link[data-href='chirashijs.org'][data-link]").matches('a#sushi.link[data-href="chirashijs.org"][data-link]'), 'from css selector with double quotes')
     assert.isTrue(Chirashi.createElement('p').matches('p'), 'from simple tag')
 
     const title = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>')
