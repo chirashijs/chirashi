@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v5.1.2
+ * Chirashi.js v5.1.3
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -620,7 +620,7 @@ function addClass(elements, classes) {
   return _updateClassList(elements, 'add', classes);
 }
 
-var regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(=([\w-_\.{}:'"]+))?\])/g;
+var regex = /(([#.]?)([\w-_]+))|(\[([\w-_]+)(=([\w.{}:'"]+))?])/g;
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
