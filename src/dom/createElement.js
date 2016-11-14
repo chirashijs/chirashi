@@ -1,4 +1,4 @@
-const regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(=["']([\w-_\.{}:'"]+)["'])?\])/g
+const regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(=([\w-_\.{}:'"]+))?\])/g
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
@@ -22,7 +22,7 @@ export default function createElement (string) {
     let segment
     while ((segment = regex.exec(string))) {
       if (typeof segment[5] !== 'undefined') { // attribute
-        attributes += ` ${segment[5]}${typeof segment[7] !== 'undefined' ? `="${segment[7]}"` : ''}`
+        attributes += ` ${segment[5]}${typeof segment[7] !== 'undefined' ? `=${segment[7]}` : ''}`
       } else {
         if (segment[2] === '.') { // className
           className += ` ${segment[3]}`

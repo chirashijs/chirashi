@@ -1,5 +1,5 @@
 /*!
- * Chirashi.js v5.1.0
+ * Chirashi.js v5.1.1
  * (c) 2016 Alex Toudic
  * Released under the MIT License.
  */
@@ -616,7 +616,7 @@ function addClass(elements, classes) {
   return _updateClassList(elements, 'add', classes);
 }
 
-var regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(=["']([\w-_\.{}:'"]+)["'])?\])/g;
+var regex = /(([#\.]?)([\w-_]+))|(\[([\w-_]+)(=([\w-_\.{}:'"]+))?\])/g;
 
 /**
  * Creates a dom element from an HTML string, tag or css selector.
@@ -641,7 +641,7 @@ function createElement(string) {
     while (segment = regex.exec(string)) {
       if (typeof segment[5] !== 'undefined') {
         // attribute
-        attributes += ' ' + segment[5] + (typeof segment[7] !== 'undefined' ? '="' + segment[7] + '"' : '');
+        attributes += ' ' + segment[5] + (typeof segment[7] !== 'undefined' ? '=' + segment[7] : '');
       } else {
         if (segment[2] === '.') {
           // className
