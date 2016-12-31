@@ -1212,14 +1212,6 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
 
-# unbindCallback
-
-Called to unbind one or all events.
-
-**Parameters**
-
--   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
-
 # bindCallback
 
 Callback to execute on event using delegate.
@@ -1288,13 +1280,13 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Returns **[unbindCallback](#unbindcallback)** object.unbind - The unbind method.
 
-# eventCallback
+# unbindCallback
 
-Callback to execute on event.
+Called to unbind one or all events.
 
 **Parameters**
 
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
+-   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
 
 # on
 
@@ -1362,6 +1354,14 @@ Called to remove one or all events listeners of one or all elements.
 
 -   `offElements` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))]** The iterable, selector or elements to unbind.
 -   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
+
+# eventCallback
+
+Callback to execute on event.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
 
 # once
 
