@@ -40,6 +40,7 @@
   "ready": "src/events/ready.js",
   "trigger": "src/events/trigger.js",
   "clearStyle": "src/styles/clearStyle.js",
+  "clientRect": "src/styles/clientRect.js",
   "getHeight": "src/styles/getHeight.js",
   "getSize": "src/styles/getSize.js",
   "getStyle": "src/styles/getStyle.js",

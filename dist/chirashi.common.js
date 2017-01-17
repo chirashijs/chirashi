@@ -1,6 +1,6 @@
 /*!
- * Chirashi.js v5.1.3
- * (c) 2016 Alex Toudic
+ * Chirashi.js v5.1.4
+ * (c) 2017 Alex Toudic
  * Released under the MIT License.
  */
 'use strict';
@@ -85,118 +85,7 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 
 
-var asyncGenerator = function () {
-  function AwaitValue(value) {
-    this.value = value;
-  }
 
-  function AsyncGenerator(gen) {
-    var front, back;
-
-    function send(key, arg) {
-      return new Promise(function (resolve, reject) {
-        var request = {
-          key: key,
-          arg: arg,
-          resolve: resolve,
-          reject: reject,
-          next: null
-        };
-
-        if (back) {
-          back = back.next = request;
-        } else {
-          front = back = request;
-          resume(key, arg);
-        }
-      });
-    }
-
-    function resume(key, arg) {
-      try {
-        var result = gen[key](arg);
-        var value = result.value;
-
-        if (value instanceof AwaitValue) {
-          Promise.resolve(value.value).then(function (arg) {
-            resume("next", arg);
-          }, function (arg) {
-            resume("throw", arg);
-          });
-        } else {
-          settle(result.done ? "return" : "normal", result.value);
-        }
-      } catch (err) {
-        settle("throw", err);
-      }
-    }
-
-    function settle(type, value) {
-      switch (type) {
-        case "return":
-          front.resolve({
-            value: value,
-            done: true
-          });
-          break;
-
-        case "throw":
-          front.reject(value);
-          break;
-
-        default:
-          front.resolve({
-            value: value,
-            done: false
-          });
-          break;
-      }
-
-      front = front.next;
-
-      if (front) {
-        resume(front.key, front.arg);
-      } else {
-        back = null;
-      }
-    }
-
-    this._invoke = send;
-
-    if (typeof gen.return !== "function") {
-      this.return = undefined;
-    }
-  }
-
-  if (typeof Symbol === "function" && Symbol.asyncIterator) {
-    AsyncGenerator.prototype[Symbol.asyncIterator] = function () {
-      return this;
-    };
-  }
-
-  AsyncGenerator.prototype.next = function (arg) {
-    return this._invoke("next", arg);
-  };
-
-  AsyncGenerator.prototype.throw = function (arg) {
-    return this._invoke("throw", arg);
-  };
-
-  AsyncGenerator.prototype.return = function (arg) {
-    return this._invoke("return", arg);
-  };
-
-  return {
-    wrap: function (fn) {
-      return function () {
-        return new AsyncGenerator(fn.apply(this, arguments));
-      };
-    },
-    await: function (value) {
-      return new AwaitValue(value);
-    }
-  };
-}();
 
 
 
@@ -239,30 +128,6 @@ var _extends = Object.assign || function (target) {
   return target;
 };
 
-var get = function get(object, property, receiver) {
-  if (object === null) object = Function.prototype;
-  var desc = Object.getOwnPropertyDescriptor(object, property);
-
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
-
-    if (parent === null) {
-      return undefined;
-    } else {
-      return get(parent, property, receiver);
-    }
-  } else if ("value" in desc) {
-    return desc.value;
-  } else {
-    var getter = desc.get;
-
-    if (getter === undefined) {
-      return undefined;
-    }
-
-    return getter.call(receiver);
-  }
-};
 
 
 
@@ -280,27 +145,8 @@ var get = function get(object, property, receiver) {
 
 
 
-var set = function set(object, property, value, receiver) {
-  var desc = Object.getOwnPropertyDescriptor(object, property);
 
-  if (desc === undefined) {
-    var parent = Object.getPrototypeOf(object);
 
-    if (parent !== null) {
-      set(parent, property, value, receiver);
-    }
-  } else if ("value" in desc && desc.writable) {
-    desc.value = value;
-  } else {
-    var setter = desc.set;
-
-    if (setter !== undefined) {
-      setter.call(receiver, value);
-    }
-  }
-
-  return value;
-};
 
 
 
@@ -2034,6 +1880,133 @@ function hide(elements) {
 }
 
 /**
+ * Return the screen relative position of an element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(Object|boolean)} clientRect - Element's screen position or false if no element found.
+ * @return {Object.bottom} bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box.
+ * @return {Object.height} height - Height of the rectangle box (This is identical to bottom minus top).
+ * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
+ * @return {Object.right} right - X-coordinate, relative to the viewport origin, of the right of the rectangle box.
+ * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
+ * @return {Object.width} width - Width of the rectangle box (This is identical to right minus left).
+ * @example esnext
+ * import { setStyle, append, clientRect } from 'chirashi'
+ *
+ * setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * append(document.body, '.poulp')
+ *
+ * const poulp = setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
+ * @example es5
+ * Chirashi.setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * Chirashi.append(document.body, '.poulp')
+ *
+ * var poulp = Chirashi.setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * Chirashi.clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
+ */
+function clientRect(element) {
+  element = getElement(element);
+
+  if (!element) return false;
+
+  var rect = element.getBoundingClientRect();
+  return {
+    bottom: rect.bottom,
+    height: rect.height,
+    left: rect.left,
+    right: rect.right,
+    top: rect.top,
+    width: rect.width
+  };
+}
+
+/**
+ * Return the screen relative position of an element.
+ * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
+ * @return {(Object|boolean)} screenPosition - Element's screen position or false if no element found.
+ * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
+ * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
+ * @example esnext
+ * import { setStyle, append, screenPosition } from 'chirashi'
+ *
+ * setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * append(document.body, '.poulp')
+ *
+ * const poulp = setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * screenPosition(poulp) // returns: { top: 200, left: 240 }
+ * @example es5
+ * Chirashi.setStyle([document.documentElement, document.body], {
+ *   position: 'relative',
+ *   margin: 0,
+ *   padding: 0
+ * })
+ *
+ * Chirashi.append(document.body, '.poulp')
+ *
+ * var poulp = Chirashi.setStyle('.poulp', {
+ *   display: 'block',
+ *   position: 'absolute',
+ *   top: 200,
+ *   left: 240,
+ *   width: 100,
+ *   height: 100,
+ *   background: 'red'
+ * })
+ *
+ * Chirashi.screenPosition(poulp) // returns: { top: 200, left: 240 }
+ */
+function screenPosition(element) {
+  var rect = clientRect(element);
+
+  return rect && {
+    top: rect.top,
+    left: rect.left
+  };
+}
+
+/**
  * Returns the top and left offset of an element. Offset is relative to web page.
  * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
  * @return {(Object|boolean)} offset - Offset object or false if no element found.
@@ -2076,14 +2049,11 @@ function hide(elements) {
  * Chirashi.offset(sushi) // returns: { top: 200, left: 240 }
  */
 function offset(element) {
-  element = getElement(element);
-  if (!element) return false;
+  var screenPos = screenPosition(element);
 
-  var rect = element.getBoundingClientRect();
-
-  return {
-    top: rect.top + window.scrollY,
-    left: rect.left + window.scrollX
+  return screenPos && {
+    top: screenPos.top + window.scrollY,
+    left: screenPos.left + window.scrollX
   };
 }
 
@@ -2169,67 +2139,6 @@ function position(element) {
     top: element.offsetTop,
     left: element.offsetLeft
   };
-}
-
-/**
- * Return the screen relative position of an element.
- * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
- * @return {(Object|boolean)} screenPosition - Element's screen position or false if no element found.
- * @return {Object.bottom} bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box. Read only.
- * @return {Object.height} height - Height of the rectangle box (This is identical to bottom minus top). Read only.
- * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
- * @return {Object.right} right - X-coordinate, relative to the viewport origin, of the right of the rectangle box. Read only.
- * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
- * @return {Object.width} width - Width of the rectangle box (This is identical to right minus left). Read only.
- * @return {Object.x} x - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
- * @return {Object.y} y - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
- * @example esnext
- * import { setStyle, append, screenPosition } from 'chirashi'
- *
- * setStyle([document.documentElement, document.body], {
- *   position: 'relative',
- *   margin: 0,
- *   padding: 0
- * })
- *
- * append(document.body, '.poulp')
- *
- * const poulp = setStyle('.poulp', {
- *   display: 'block',
- *   position: 'absolute',
- *   top: 200,
- *   left: 240,
- *   width: 100,
- *   height: 100,
- *   background: 'red'
- * })
- *
- * screenPosition(poulp) // returns: { top: 200, left: 240 }
- * @example es5
- * Chirashi.setStyle([document.documentElement, document.body], {
- *   position: 'relative',
- *   margin: 0,
- *   padding: 0
- * })
- *
- * Chirashi.append(document.body, '.poulp')
- *
- * var poulp = Chirashi.setStyle('.poulp', {
- *   display: 'block',
- *   position: 'absolute',
- *   top: 200,
- *   left: 240,
- *   width: 100,
- *   height: 100,
- *   background: 'red'
- * })
- *
- * Chirashi.screenPosition(poulp) // returns: { top: 200, left: 240 }
- */
-function screenPosition(element) {
-  element = getElement(element);
-
-  return !!element && element.getBoundingClientRect();
 }
 
 /**

@@ -1,4 +1,4 @@
-import getElement from '../core/getElement'
+import screenPosition from './screenPosition'
 
 /**
  * Returns the top and left offset of an element. Offset is relative to web page.
@@ -43,13 +43,10 @@ import getElement from '../core/getElement'
  * Chirashi.offset(sushi) // returns: { top: 200, left: 240 }
  */
 export default function offset (element) {
-  element = getElement(element)
-  if (!element) return false
+  const screenPos = screenPosition(element)
 
-  let rect = element.getBoundingClientRect()
-
-  return {
-    top: rect.top + window.scrollY,
-    left: rect.left + window.scrollX
+  return screenPos && {
+    top: screenPos.top + window.scrollY,
+    left: screenPos.left + window.scrollX
   }
 }

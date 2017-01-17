@@ -1,17 +1,11 @@
-import getElement from '../core/getElement'
+import clientRect from './clientRect'
 
 /**
  * Return the screen relative position of an element.
  * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} element - The selector or dom element.
  * @return {(Object|boolean)} screenPosition - Element's screen position or false if no element found.
- * @return {Object.bottom} bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box. Read only.
- * @return {Object.height} height - Height of the rectangle box (This is identical to bottom minus top). Read only.
- * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
- * @return {Object.right} right - X-coordinate, relative to the viewport origin, of the right of the rectangle box. Read only.
- * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
- * @return {Object.width} width - Width of the rectangle box (This is identical to right minus left). Read only.
- * @return {Object.x} x - X-coordinate, relative to the viewport origin, of the left of the rectangle box. Read only.
- * @return {Object.y} y - Y-coordinate, relative to the viewport origin, of the top of the rectangle box. Read only.
+ * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
+ * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
  * @example esnext
  * import { setStyle, append, screenPosition } from 'chirashi'
  *
@@ -56,7 +50,10 @@ import getElement from '../core/getElement'
  * Chirashi.screenPosition(poulp) // returns: { top: 200, left: 240 }
  */
 export default function screenPosition (element) {
-  element = getElement(element)
+  const rect = clientRect(element)
 
-  return !!element && element.getBoundingClientRect()
+  return rect && {
+    top: rect.top,
+    left: rect.left
+  }
 }
