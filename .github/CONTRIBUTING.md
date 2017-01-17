@@ -4,7 +4,7 @@ Thank you very much for considering contributing to chirashijs 👌
 
 The following is a set of guidelines and things to know about chirashi and plugins hosted in the [chirashijs organization](https://github.com/chirashijs) on GitHub.
 
-By contributing to chirashijs you agree to respect the [Open Source code of conduct](https://opensource.org/codeofconduct).
+By contributing to chirashijs you agree to respect the [code of conduct](CODE_OF_CONDUCT.md).
 
 ## chirashijs' design
 

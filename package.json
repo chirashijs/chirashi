@@ -7,7 +7,7 @@
     "build": "node build/build.js",
     "dev": "karma start",
     "test": "karma start --single-run",
-    "docs": "documentation build ./src -f md -o docs.md"
+    "docs": "documentation build ./src -f md -o docs/documentation.md"
   },
   "repository": {
     "type": "git",
