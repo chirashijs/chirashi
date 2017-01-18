@@ -1212,6 +1212,14 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
 
+# unbindCallback
+
+Called to unbind one or all events.
+
+**Parameters**
+
+-   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
+
 # bindCallback
 
 Callback to execute on event using delegate.
@@ -1220,14 +1228,6 @@ Callback to execute on event using delegate.
 
 -   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
 -   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
-
-# unbindCallback
-
-Called to unbind one or all events.
-
-**Parameters**
-
--   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
 
 # bind
 
@@ -1346,14 +1346,6 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Returns **[offCallback](#offcallback)** object.off - The off method.
 
-# eventCallback
-
-Callback to execute on event.
-
-**Parameters**
-
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
-
 # offCallback
 
 Called to remove one or all events listeners of one or all elements.
@@ -1362,6 +1354,14 @@ Called to remove one or all events listeners of one or all elements.
 
 -   `offElements` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))]** The iterable, selector or elements to unbind.
 -   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
+
+# eventCallback
+
+Callback to execute on event.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
 
 # once
 
@@ -1566,6 +1566,78 @@ Chirashi.clearStyle(maki, 'width, height, background')
 Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+
+# clientRect
+
+Return the screen relative position of an element.
+
+**Parameters**
+
+-   `element` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** The selector or dom element.
+
+**Examples**
+
+```javascript
+esnext
+import { setStyle, append, clientRect } from 'chirashi'
+
+setStyle([document.documentElement, document.body], {
+  position: 'relative',
+  margin: 0,
+  padding: 0
+})
+
+append(document.body, '.poulp')
+
+const poulp = setStyle('.poulp', {
+  display: 'block',
+  position: 'absolute',
+  top: 200,
+  left: 240,
+  width: 100,
+  height: 100,
+  background: 'red'
+})
+
+clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
+```
+
+```javascript
+es5
+Chirashi.setStyle([document.documentElement, document.body], {
+  position: 'relative',
+  margin: 0,
+  padding: 0
+})
+
+Chirashi.append(document.body, '.poulp')
+
+var poulp = Chirashi.setStyle('.poulp', {
+  display: 'block',
+  position: 'absolute',
+  top: 200,
+  left: 240,
+  width: 100,
+  height: 100,
+  background: 'red'
+})
+
+Chirashi.clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
+```
+
+Returns **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean))** clientRect - Element's screen position or false if no element found.
+
+Returns **Object.bottom** bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box.
+
+Returns **Object.height** height - Height of the rectangle box (This is identical to bottom minus top).
+
+Returns **Object.left** left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
+
+Returns **Object.right** right - X-coordinate, relative to the viewport origin, of the right of the rectangle box.
+
+Returns **Object.top** top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
+
+Returns **Object.width** width - Width of the rectangle box (This is identical to right minus left).
 
 # getHeight
 
@@ -1970,78 +2042,6 @@ Returns **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 Returns **Object.top** top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
 
 Returns **Object.left** left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
-
-# clientRect
-
-Return the screen relative position of an element.
-
-**Parameters**
-
--   `element` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** The selector or dom element.
-
-**Examples**
-
-```javascript
-esnext
-import { setStyle, append, clientRect } from 'chirashi'
-
-setStyle([document.documentElement, document.body], {
-  position: 'relative',
-  margin: 0,
-  padding: 0
-})
-
-append(document.body, '.poulp')
-
-const poulp = setStyle('.poulp', {
-  display: 'block',
-  position: 'absolute',
-  top: 200,
-  left: 240,
-  width: 100,
-  height: 100,
-  background: 'red'
-})
-
-clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
-```
-
-```javascript
-es5
-Chirashi.setStyle([document.documentElement, document.body], {
-  position: 'relative',
-  margin: 0,
-  padding: 0
-})
-
-Chirashi.append(document.body, '.poulp')
-
-var poulp = Chirashi.setStyle('.poulp', {
-  display: 'block',
-  position: 'absolute',
-  top: 200,
-  left: 240,
-  width: 100,
-  height: 100,
-  background: 'red'
-})
-
-Chirashi.clientRect(poulp) // returns: { bottom: 300, height: 100, left: 240, right: 0, top: 200, width: 100 }
-```
-
-Returns **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object) \| [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean))** clientRect - Element's screen position or false if no element found.
-
-Returns **Object.bottom** bottom - Y-coordinate, relative to the viewport origin, of the bottom of the rectangle box.
-
-Returns **Object.height** height - Height of the rectangle box (This is identical to bottom minus top).
-
-Returns **Object.left** left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
-
-Returns **Object.right** right - X-coordinate, relative to the viewport origin, of the right of the rectangle box.
-
-Returns **Object.top** top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
-
-Returns **Object.width** width - Width of the rectangle box (This is identical to right minus left).
 
 # setHeight
 
