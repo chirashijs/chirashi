@@ -2,63 +2,50 @@
   "name": "chirashi",
   "version": "5.1.4",
   "description": "Minimalist DOM and events manager focused on performances",
+  "keywords": [
+    "DOM",
+    "events"
+  ],
   "main": "./dist/chirashi.common.js",
+  "files": [
+    "lib",
+    "dist"
+  ],
   "scripts": {
     "build": "node build/build.js",
     "dev": "karma start",
-    "test": "karma start --single-run",
-    "docs": "documentation build ./src -f md -o docs/documentation.md"
+    "test": "npm run lint && karma start --single-run",
+    "lint": "eslint ./lib ./test",
+    "docs": "documentation build ./lib -f md -o docs/documentation.md"
   },
+  "homepage": "https://chirashijs.org",
+  "author": {
+    "name": "Alex Toudic",
+    "mail": "alex@chirashijs.org",
+    "url": "https://alextoudic.xyz"
+  },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/chirashijs/chirashi.git"
-  },
-  "author": {
-    "name": "Alex Toudic @AlexToudic"
-  },
-  "browserify": {
-    "transform": [
-      "babelify"
-    ]
   },
   "bugs": {
     "url": "https://github.com/chirashijs/chirashi/issues"
   },
   "devDependencies": {
-    "babel-cli": "6.18.0",
-    "babel-core": "6.21.0",
-    "babel-loader": "6.2.10",
-    "babel-plugin-external-helpers": "6.18.0",
-    "babel-plugin-istanbul": "3.1.2",
-    "babel-plugin-transform-object-rest-spread": "6.20.2",
-    "babel-plugin-transform-runtime": "6.15.0",
-    "babel-preset-es2015": "6.18.0",
-    "babel-preset-es2015-loose-rollup": "7.0.0",
-    "babel-preset-es2015-rollup": "3.0.0",
-    "babel-runtime": "^6.20.0",
-    "chai": "3.5.0",
-    "esdoc": "0.5.2",
-    "istanbul-instrumenter-loader": "1.2.0",
-    "karma": "1.4.0",
-    "karma-babel-preprocessor": "6.0.1",
-    "karma-coverage": "1.1.1",
-    "karma-firefox-launcher": "1.0.0",
-    "karma-mocha": "1.3.0",
-    "karma-phantomjs-launcher": "1.0.2",
-    "karma-spec-reporter": "0.0.26",
-    "karma-webpack": "2.0.1",
-    "mocha": "3.2.0",
-    "rollup": "0.41.4",
-    "rollup-plugin-babel": "2.7.1",
-    "rollup-plugin-replace": "1.1.1",
-    "tape": "4.6.3",
-    "webpack": "1.14.0",
-    "webpack-core": "^0.6.9"
+    "babelrc-rollup": "^3.0.0",
+    "eslint": "^3.13.1",
+    "eslint-config-standard": "^6.2.1",
+    "eslint-plugin-promise": "^3.4.0",
+    "eslint-plugin-standard": "^2.0.1",
+    "karma": "^1.4.0",
+    "rollup": "^0.41.4",
+    "rollup-plugin-babel": "^2.7.1"
   },
-  "homepage": "https://github.com/chirashijs/chirashi#readme",
-  "keywords": [
-    "DOM",
-    "events"
-  ],
-  "license": "MIT"
+  "dependencies": {},
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  }
 }
