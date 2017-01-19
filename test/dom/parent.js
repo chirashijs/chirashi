@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#parent', () => {
-  window.it('should be a function', () => {
+describe('chirashi#parent', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.parent)
   })
 
-  window.it('should return element\'s parent', () => {
+  it('should return element\'s parent', () => {
     const maki = document.createElement('div')
     maki.id = 'parent-maki'
     const cheese = document.createElement('div')

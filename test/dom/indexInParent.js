@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#indexInParent', () => {
-  window.it('should be a function', () => {
+describe('chirashi#indexInParent', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.indexInParent)
   })
 
-  window.it('should return element\'s index in its parent\'s children', () => {
+  it('should return element\'s index in its parent\'s children', () => {
     const maki = document.createElement('div')
     maki.id = 'index-in-parent-maki'
     const salmon = document.createElement('div')

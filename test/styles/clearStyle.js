@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#clearStyle', () => {
-  window.it('should be a function', () => {
+describe('chirashi#clearStyle', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.clearStyle)
   })
 
-  window.it('should clear element\'s style property', () => {
+  it('should clear element\'s style property', () => {
     let div = document.createElement('div')
     div.classList.add('clear-style', 'test')
 

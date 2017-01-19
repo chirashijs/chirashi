@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#show', () => {
-  window.it('should be a function', () => {
+describe('chirashi#show', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.show)
   })
 
-  window.it('should set element\'s visibility to visible', () => {
+  it('should set element\'s visibility to visible', () => {
     let div = document.createElement('div')
     div.classList.add('show', 'test')
     document.body.appendChild(div)

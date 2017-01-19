@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#getStyle', () => {
-  window.it('should be a function', () => {
+describe('chirashi#getStyle', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.getStyle)
   })
 
-  window.it('should return value for element\'s style property', () => {
+  it('should return value for element\'s style property', () => {
     let div = document.createElement('div')
     div.classList.add('get-style', 'test')
     document.body.appendChild(div)

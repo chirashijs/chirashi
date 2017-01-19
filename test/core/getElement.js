@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#getElement', () => {
-  window.it('should return a function', () => {
+describe('chirashi#getElement', () => {
+  it('should return a function', () => {
     assert.isFunction(Chirashi.getElement)
   })
 
-  window.it('should return element', () => {
+  it('should return element', () => {
     let yakitori = document.createElement('a')
     yakitori.classList.add('yakitori')
     document.body.appendChild(yakitori)

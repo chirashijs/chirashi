@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#forElements', () => {
-  window.it('should be a function', () => {
+describe('chirashi#forElements', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.forElements)
   })
 
-  window.it('should execute callback on elements', () => {
+  it('should execute callback on elements', () => {
     const wasabiSalmonSushi = document.createElement('div')
     wasabiSalmonSushi.classList.add('sushi', 'salmon', 'wasabi')
     document.body.appendChild(wasabiSalmonSushi)

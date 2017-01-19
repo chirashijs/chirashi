@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#setProp', () => {
-  window.it('should be a function', () => {
+describe('chirashi#setProp', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.setProp)
   })
 
-  window.it('should set property on element', () => {
+  it('should set property on element', () => {
     const input = document.createElement('input')
 
     Chirashi.setProp(input, { value: 'こんにちは世界' })

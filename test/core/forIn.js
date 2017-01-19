@@ -1,18 +1,18 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#forIn', () => {
+describe('chirashi#forIn', () => {
   const object = {
     a: 1,
     b: 2,
     c: 3
   }
 
-  window.it('should be defined as a function', () => {
+  it('should be defined as a function', () => {
     assert.isFunction(Chirashi.forIn)
   })
 
-  window.it('should execute callback on keys of object', () => {
+  it('should execute callback on keys of object', () => {
     const keys = Object.keys(object)
     let i = keys.length
     Chirashi.forIn(object, (key, value) => {
@@ -21,7 +21,7 @@ window.describe('chirashi#forIn', () => {
     })
   })
 
-  window.it('should execute callback on keys of object in same order', () => {
+  it('should execute callback on keys of object in same order', () => {
     const keys = Object.keys(object)
     let i = -1
     Chirashi.forIn(object, (key, value) => {
@@ -30,7 +30,7 @@ window.describe('chirashi#forIn', () => {
     }, true)
   })
 
-  window.it('shouldn\'t crash if input isn\'t an object', () => {
+  it('shouldn\'t crash if input isn\'t an object', () => {
     assert.equal(Chirashi.forIn('test', (key, value) => {}), undefined)
   })
 })

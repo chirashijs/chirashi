@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#insertBefore', () => {
-  window.it('should be a function', () => {
+describe('chirashi#insertBefore', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.insertBefore)
   })
 
-  window.it('should return element\'s insertBefore', () => {
+  it('should return element\'s insertBefore', () => {
     const maki = document.createElement('div')
     maki.id = 'insert-before-maki'
     const cheese = document.createElement('div')

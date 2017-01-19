@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#screenPosition', () => {
-  window.it('should be a function', () => {
+describe('chirashi#screenPosition', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.screenPosition)
   })
 
-  window.it('should return element\'s position on screen', () => {
+  it('should return element\'s position on screen', () => {
     let poulp = document.createElement('div')
     poulp.classList.add('poulp')
     document.body.appendChild(poulp)

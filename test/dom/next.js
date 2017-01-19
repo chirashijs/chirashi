@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#next', () => {
-  window.it('should be a function', () => {
+describe('chirashi#next', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.next)
   })
 
-  window.it('should return element\'s next', () => {
+  it('should return element\'s next', () => {
     const maki = document.createElement('div')
     maki.id = 'next-maki'
     const salmon = document.createElement('div')

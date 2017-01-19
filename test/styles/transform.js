@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#transform', () => {
-  window.it('should be a function', () => {
+describe('chirashi#transform', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.transform)
   })
 
-  window.it('should return transform matrix from transformation', () => {
+  it('should return transform matrix from transformation', () => {
     const wasabiPea = document.createElement('p')
     wasabiPea.id = 'wasabi'
 

@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#getProp', () => {
-  window.it('should be a function', () => {
+describe('chirashi#getProp', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.getProp)
   })
 
-  window.it('should return value for element\'s property', () => {
+  it('should return value for element\'s property', () => {
     const maki = document.createElement('a')
     maki.href = 'http://chirashijs.org/'
 

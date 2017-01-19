@@ -1,5 +1,4 @@
 var path = require('path')
-var webpack = require('webpack')
 
 var webpackConfig = {
   resolve: {
@@ -13,13 +12,15 @@ var webpackConfig = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: ['babel']
+        use: ['babel-loader']
       }
     ]
   }
 }
 
 module.exports = {
+  frameworks: ['mocha'],
+
   files: [
     '../test/**/*.js'
   ],

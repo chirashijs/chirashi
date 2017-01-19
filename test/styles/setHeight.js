@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#setHeight', () => {
-  window.it('should be a function', () => {
+describe('chirashi#setHeight', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.setHeight)
   })
 
-  window.it('should return element\'s height as Number', () => {
+  it('should return element\'s height as Number', () => {
     let div = document.createElement('div')
     div.classList.add('set-height', 'test')
     document.body.appendChild(div)

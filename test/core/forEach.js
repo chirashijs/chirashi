@@ -1,14 +1,14 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#forEach', () => {
+describe('chirashi#forEach', () => {
   const items = [0, 1, 2]
 
-  window.it('should be defined as a function', () => {
+  it('should be defined as a function', () => {
     assert.isFunction(Chirashi.forEach)
   })
 
-  window.it('should execute callback on item', () => {
+  it('should execute callback on item', () => {
     const salmonMaki = document.createElement('div')
     salmonMaki.classList.add('maki', 'salmon')
     document.body.appendChild(salmonMaki)

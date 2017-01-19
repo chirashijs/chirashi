@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#remove', () => {
-  window.it('should be a function', () => {
+describe('chirashi#remove', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.remove)
   })
 
-  window.it('should remove element from dom', () => {
+  it('should remove element from dom', () => {
     const sushi = document.createElement('div')
     const cheese = document.createElement('div')
 

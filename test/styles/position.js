@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#position', () => {
-  window.it('should be a function', () => {
+describe('chirashi#position', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.position)
   })
 
-  window.it('should return element\'s position in parent', () => {
+  it('should return element\'s position in parent', () => {
     let cod = document.createElement('div')
     cod.classList.add('cod')
     document.body.appendChild(cod)

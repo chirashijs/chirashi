@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#getAttr', () => {
-  window.it('should be a function', () => {
+describe('chirashi#getAttr', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.getAttr)
   })
 
-  window.it('should return value for element\'s data-attribute', () => {
+  it('should return value for element\'s data-attribute', () => {
     const maki = document.createElement('img')
     maki.src = 'http://chirashijs.org/placeholder.png'
     maki.setAttribute('data-src', 'http://chirashijs.org/tasty-maki.png')

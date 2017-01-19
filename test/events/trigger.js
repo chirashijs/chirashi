@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#trigger', () => {
-  window.it('should be a function', () => {
+describe('chirashi#trigger', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.trigger)
   })
 
-  window.it('should trigger event', done => {
+  it('should trigger event', done => {
     let maki = document.createElement('div')
     maki.classList.add('trigger', 'maki')
 

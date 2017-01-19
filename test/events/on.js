@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#on', () => {
-  window.it('should be a function', () => {
+describe('chirashi#on', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.on)
   })
 
-  window.it('should bind event on elements', done => {
+  it('should bind event on elements', done => {
     let maki = document.createElement('div')
     maki.classList.add('on', 'maki')
 

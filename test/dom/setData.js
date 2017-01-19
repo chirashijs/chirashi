@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#setData', () => {
-  window.it('should be a function', () => {
+describe('chirashi#setData', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.setData)
   })
 
-  window.it('should set data-attribute on element', () => {
+  it('should set data-attribute on element', () => {
     const maki = document.createElement('div')
 
     Chirashi.setData(maki, { fish: 'salmon' })

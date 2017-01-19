@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#setSize', () => {
-  window.it('should be a function', () => {
+describe('chirashi#setSize', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.setSize)
   })
 
-  window.it('should set elements\' size', () => {
+  it('should set elements\' size', () => {
     let salmon = document.createElement('div')
     salmon.classList.add('salmon')
     document.body.appendChild(salmon)

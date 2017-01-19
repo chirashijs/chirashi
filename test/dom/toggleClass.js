@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#toggleClass', () => {
-  window.it('should be a function', () => {
+describe('chirashi#toggleClass', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.toggleClass)
   })
 
-  window.it('should toggle class on element', () => {
+  it('should toggle class on element', () => {
     const maki = document.createElement('div')
     maki.classList.add('cheese')
 

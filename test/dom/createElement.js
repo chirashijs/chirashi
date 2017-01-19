@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
 // matches pollyfill for phantomJS
 if (!window.Element.prototype.matches) {
@@ -18,12 +18,12 @@ if (!window.Element.prototype.matches) {
   }
 }
 
-window.describe('chirashi#createElement', () => {
-  window.it('should be a function', () => {
+describe('chirashi#createElement', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.createElement)
   })
 
-  window.it('should return new element', () => {
+  it('should return new element', () => {
     assert.isTrue(Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]').matches('a#sushi.link[data-href="chirashijs.org"][data-link]'), 'from css selector')
     assert.isTrue(Chirashi.createElement("a#sushi.link[data-href='chirashijs.org'][data-link]").matches('a#sushi.link[data-href="chirashijs.org"][data-link]'), 'from css selector with double quotes')
     assert.isTrue(Chirashi.createElement('p').matches('p'), 'from simple tag')

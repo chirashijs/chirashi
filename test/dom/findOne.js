@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#findOne', () => {
-  window.it('should be a function', () => {
+describe('chirashi#findOne', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.findOne)
   })
 
-  window.it('should return first element from element\'s children for a selector', () => {
+  it('should return first element from element\'s children for a selector', () => {
     const maki = document.createElement('div')
     maki.classList.add('maki')
 

@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#getHtml', () => {
-  window.it('should be a function', () => {
+describe('chirashi#getHtml', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.getHtml)
   })
 
-  window.it('should return inner html of element', () => {
+  it('should return inner html of element', () => {
     const maki = document.createElement('p')
     maki.innerHTML = 'this maki contains cheese'
 

@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#setWidth', () => {
-  window.it('should be a function', () => {
+describe('chirashi#setWidth', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.setWidth)
   })
 
-  window.it('should return element\'s width as Number', () => {
+  it('should return element\'s width as Number', () => {
     let div = document.createElement('div')
     div.classList.add('set-width', 'test')
     document.body.appendChild(div)

@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
 // matches pollyfill for phantomJS
 if (!window.Element.prototype.matches) {
@@ -18,12 +18,12 @@ if (!window.Element.prototype.matches) {
   }
 }
 
-window.describe('chirashi#filter', () => {
-  window.it('should be a function', () => {
+describe('chirashi#filter', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.filter)
   })
 
-  window.it('should return elements matching test', () => {
+  it('should return elements matching test', () => {
     const maki = document.createElement('div')
     maki.classList.add('maki')
 

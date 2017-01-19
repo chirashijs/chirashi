@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#offset', () => {
-  window.it('should be a function', () => {
+describe('chirashi#offset', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.offset)
   })
 
-  window.it('should return element\'s position in page', () => {
+  it('should return element\'s position in page', () => {
     let tuna = document.createElement('div')
     tuna.classList.add('tuna')
     document.body.appendChild(tuna)

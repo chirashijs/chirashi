@@ -1,5 +1,5 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
 // matches pollyfill for phantomJS
 if (!window.Element.prototype.matches) {
@@ -18,12 +18,12 @@ if (!window.Element.prototype.matches) {
   }
 }
 
-window.describe('chirashi#closest', () => {
-  window.it('should be a function', () => {
+describe('chirashi#closest', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.closest)
   })
 
-  window.it('should return closest element matching test', () => {
+  it('should return closest element matching test', () => {
     const maki = document.createElement('div')
     maki.classList.add('maki')
     const cheese = document.createElement('div')

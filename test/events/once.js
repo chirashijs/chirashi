@@ -1,12 +1,12 @@
 import { assert } from 'chai'
-import Chirashi from '../../src'
+import Chirashi from 'chirashi'
 
-window.describe('chirashi#once', () => {
-  window.it('should be a function', () => {
+describe('chirashi#once', () => {
+  it('should be a function', () => {
     assert.isFunction(Chirashi.once)
   })
 
-  window.it('should bind event once on elements', done => {
+  it('should bind event once on elements', done => {
     let listener
 
     let called = 0
