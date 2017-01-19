@@ -14,6 +14,7 @@
   "scripts": {
     "build": "node build/build.js",
     "dev": "karma start",
+    "test:unit": "karma start build/karma.unit.conf.js",
     "test": "npm run lint && karma start --single-run",
     "lint": "eslint ./lib ./test",
     "docs": "documentation build ./lib -f md -o docs/documentation.md"
@@ -33,14 +34,22 @@
     "url": "https://github.com/chirashijs/chirashi/issues"
   },
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-core": "^6.21.0",
+    "babel-loader": "^6.2.10",
     "babelrc-rollup": "^3.0.0",
     "eslint": "^3.13.1",
     "eslint-config-standard": "^6.2.1",
     "eslint-plugin-promise": "^3.4.0",
     "eslint-plugin-standard": "^2.0.1",
     "karma": "^1.4.0",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-firefox-launcher": "^1.0.0",
+    "karma-safari-launcher": "^1.0.0",
+    "karma-webpack": "^2.0.1",
     "rollup": "^0.41.4",
-    "rollup-plugin-babel": "^2.7.1"
+    "rollup-plugin-babel": "^2.7.1",
+    "webpack": "beta"
   },
   "dependencies": {},
   "browserify": {
