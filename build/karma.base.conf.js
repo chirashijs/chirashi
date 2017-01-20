@@ -1,6 +1,6 @@
-var path = require('path')
+const path = require('path')
 
-var webpackConfig = {
+const webpackConfig = {
   resolve: {
     alias: {
       chirashi: path.resolve(__dirname, '../lib')

@@ -1,24 +1,27 @@
 {
   "name": "chirashi",
-  "version": "5.1.4",
+  "version": "5.2.0",
   "description": "Minimalist DOM and events manager focused on performances",
   "keywords": [
     "DOM",
     "events"
   ],
-  "main": "./dist/chirashi.common.js",
+  "main": "./dist/chirashi.js",
+  "module": "./dist/chirashi.es.js",
+  "jsnext:main": "./dist/chirashi.es.js",
   "files": [
     "lib",
     "dist"
   ],
   "scripts": {
-    "build": "node build/build.js",
+    "build": "rollup -c build/rollup.base.conf.js",
     "dev:test": "NODE_ENV=test karma start build/karma.dev.conf.js",
     "test:unit": "NODE_ENV=test karma start build/karma.unit.conf.js",
     "test:cover": "NODE_ENV=test karma start build/karma.cover.conf.js",
     "test": "npm run lint && npm run test:cover",
     "lint": "eslint ./lib ./test",
-    "docs": "documentation build ./lib -f md -o docs/documentation.md"
+    "docs": "documentation build ./lib -f md -o docs/documentation.md",
+    "release": "bash build/release.sh"
   },
   "homepage": "https://chirashijs.org",
   "author": {
@@ -35,8 +38,9 @@
     "url": "https://github.com/chirashijs/chirashi/issues"
   },
   "devDependencies": {
-    "babel-core": "^6.21.0",
+    "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
+    "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-istanbul": "^3.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.20.2",
     "babel-preset-latest": "^6.16.0",
@@ -59,6 +63,7 @@
     "phantomjs": "^2.1.7",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-istanbul": "^1.1.0",
     "webpack": "beta"
   },
   "dependencies": {},
