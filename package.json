@@ -18,7 +18,7 @@
     "dev:test": "NODE_ENV=test karma start build/karma.dev.conf.js",
     "test:unit": "NODE_ENV=test karma start build/karma.unit.conf.js",
     "test:cover": "NODE_ENV=test karma start build/karma.cover.conf.js",
-    "test": "npm run analyze && npm run test:cover",
+    "test": "npm run lint && npm run test:cover",
     "analyze": "bash build/analyze.sh",
     "lint": "eslint ./lib ./test",
     "docs": "documentation build ./lib -f md -o docs/documentation.md",

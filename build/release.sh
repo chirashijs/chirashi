@@ -12,7 +12,8 @@ echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
   echo "Releasing $VERSION ..."
 
-  npm run test
+  npm run analyze
+  npm run test:unit
 
   # build
   VERSION=$VERSION npm run build
