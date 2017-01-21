@@ -15,10 +15,10 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
   npm run analyze
   npm run test:unit
 
+  npm run docs
+
   # build
   VERSION=$VERSION npm run build
-
-  npm run docs
 
   # commit
   git add -A
