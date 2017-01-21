@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { parent } from 'chirashi'
 
 describe('chirashi#parent', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.parent)
+    assert.isFunction(parent)
   })
 
   it('should return element\'s parent', () => {
@@ -12,6 +12,6 @@ describe('chirashi#parent', () => {
     const cheese = document.createElement('div')
     maki.appendChild(cheese)
 
-    assert.equal(Chirashi.parent(cheese), maki)
+    assert.equal(parent(cheese), maki)
   })
 })

@@ -19,13 +19,13 @@ exclude_paths:
 - dist/
 - node_modules/
 - test/
+- docs/
 - .codeclimate.yml
 - .eslintignore
 - .eslintrc
 - .gitignore
 - .rubocop.yml
 - .travis.yml
-- docs.md
 - files.json
 - karma.conf.js
 - LICENSE

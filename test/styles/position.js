@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { position } from 'chirashi'
 
 describe('chirashi#position', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.position)
+    assert.isFunction(position)
   })
 
   it('should return element\'s position in parent', () => {
@@ -48,10 +48,10 @@ describe('chirashi#position', () => {
       background: 'blue'
     })
 
-    const position = Chirashi.position(innerCod)
-    assert.equal(position.top, 20, 'should return correct top position')
-    assert.equal(position.left, 10, 'should return correct left position')
-    assert.equal(Chirashi.position(null), false, 'should return false if element isn\'t valid')
+    const codPosition = position(innerCod)
+    assert.equal(codPosition.top, 20, 'should return correct top position')
+    assert.equal(codPosition.left, 10, 'should return correct left position')
+    assert.equal(position(null), false, 'should return false if element isn\'t valid')
 
     document.body.removeChild(cod)
     document.body.removeChild(innerCod)

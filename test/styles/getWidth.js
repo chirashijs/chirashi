@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { getWidth } from 'chirashi'
 
 describe('chirashi#getWidth', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.getWidth)
+    assert.isFunction(getWidth)
   })
 
   it('should return element\'s width as Number', () => {
@@ -19,8 +19,8 @@ describe('chirashi#getWidth', () => {
       width: '200px'
     })
 
-    assert.equal(Chirashi.getWidth(div, true), 260, 'should return offset width')
-    assert.equal(Chirashi.getWidth(div), 220, 'should return client width')
+    assert.equal(getWidth(div, true), 260, 'should return offset width')
+    assert.equal(getWidth(div), 220, 'should return client width')
 
     document.body.removeChild(div)
   })

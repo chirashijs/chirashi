@@ -4,11 +4,9 @@
  * Released under MIT License.
  **/
 
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.Chirashi = global.Chirashi || {})));
-}(this, (function (exports) { 'use strict';
+'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 /**
 * Iterates over items and apply callback on each one.
@@ -2416,7 +2414,3 @@ exports.setStyle = setStyle;
 exports.setWidth = setWidth;
 exports.show = show;
 exports.transform = transform;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));

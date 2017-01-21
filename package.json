@@ -6,19 +6,20 @@
     "DOM",
     "events"
   ],
-  "main": "./dist/chirashi.js",
-  "module": "./dist/chirashi.es.js",
-  "jsnext:main": "./dist/chirashi.es.js",
+  "main": "./dist/chirashi.common.js",
+  "module": "./dist/chirashi.mjs",
+  "jsnext:main": "./dist/chirashi.mjs",
   "files": [
     "lib",
     "dist"
   ],
   "scripts": {
-    "build": "rollup -c build/rollup.base.conf.js",
+    "build": "node build/build.js",
     "dev:test": "NODE_ENV=test karma start build/karma.dev.conf.js",
     "test:unit": "NODE_ENV=test karma start build/karma.unit.conf.js",
     "test:cover": "NODE_ENV=test karma start build/karma.cover.conf.js",
-    "test": "npm run lint && npm run test:cover",
+    "test": "npm run analyze && npm run test:cover",
+    "analyze": "bash build/analyze.sh",
     "lint": "eslint ./lib ./test",
     "docs": "documentation build ./lib -f md -o docs/documentation.md",
     "release": "bash build/release.sh"
@@ -59,11 +60,13 @@
     "karma-phantomjs-launcher": "^1.0.2",
     "karma-safari-launcher": "^1.0.0",
     "karma-webpack": "^2.0.1",
+    "mkdirp": "^0.5.1",
     "mocha": "^3.2.0",
     "phantomjs": "^2.1.7",
     "rollup": "^0.41.4",
     "rollup-plugin-babel": "^2.7.1",
-    "rollup-plugin-istanbul": "^1.1.0",
+    "rollup-plugin-local-resolve": "^1.0.7",
+    "uglify-js": "^2.7.5",
     "webpack": "beta"
   },
   "dependencies": {},

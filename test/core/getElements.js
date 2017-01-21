@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { getElements } from 'chirashi'
 
 describe('chirashi#getElements', () => {
   it('should return a function', () => {
-    assert.isFunction(Chirashi.getElements)
+    assert.isFunction(getElements)
   })
 
   it('should return elements', () => {
@@ -25,26 +25,26 @@ describe('chirashi#getElements', () => {
     form.appendChild(document.createElement('input'))
     form.appendChild(document.createElement('input'))
 
-    assert.sameDeepMembers([pinkVinegarGinger], Chirashi.getElements(pinkVinegarGinger), 'should work for dom element')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger], Chirashi.getElements(document.querySelectorAll('.ginger.vinegar')), 'should work for NodeList')
-    assert.sameDeepMembers([...form.children], Chirashi.getElements(form.children), 'should work for HTMLCollection')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], Chirashi.getElements('h1'), 'should work for tag selector')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], Chirashi.getElements('.ginger.vinegar, .ginger.sugar'), 'should work for class selector')
+    assert.sameDeepMembers([pinkVinegarGinger], getElements(pinkVinegarGinger), 'should work for dom element')
+    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger], getElements(document.querySelectorAll('.ginger.vinegar')), 'should work for NodeList')
+    assert.sameDeepMembers([...form.children], getElements(form.children), 'should work for HTMLCollection')
+    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('h1'), 'should work for tag selector')
+    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('.ginger.vinegar, .ginger.sugar'), 'should work for class selector')
 
-    const gingers = Chirashi.getElements([pinkVinegarGinger, vinegarGinger, '.ginger.sugar', '.unknown'])
+    const gingers = getElements([pinkVinegarGinger, vinegarGinger, '.ginger.sugar', '.unknown'])
     assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], gingers, 'should extract dom elements from array')
-    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], Chirashi.getElements(gingers), 'should return previously vinegared elements')
+    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], getElements(gingers), 'should return previously vinegared elements')
 
-    const vinegarGingers = Chirashi.getElements(document.querySelectorAll('.ginger.vinegar'))
+    const vinegarGingers = getElements(document.querySelectorAll('.ginger.vinegar'))
     vinegarGingers.push('.ginger.sugar')
-    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], Chirashi.getElements(vinegarGingers), 'should invalidate modified array')
+    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], getElements(vinegarGingers), 'should invalidate modified array')
 
-    const changingGingers = Chirashi.getElements(document.querySelectorAll('.ginger.vinegar'))
+    const changingGingers = getElements(document.querySelectorAll('.ginger.vinegar'))
     changingGingers.chrshPush('.ginger.sugar')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], Chirashi.getElements(changingGingers), 'should push using getElements')
+    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements(changingGingers), 'should push using getElements')
 
-    assert.sameDeepMembers([form], Chirashi.getElements(form), 'shouldn\'t return forms children')
-    assert.sameDeepMembers([], Chirashi.getElements(null), 'should return an empty array')
+    assert.sameDeepMembers([form], getElements(form), 'shouldn\'t return forms children')
+    assert.sameDeepMembers([], getElements(null), 'should return an empty array')
 
     document.body.removeChild(pinkVinegarGinger)
     document.body.removeChild(vinegarGinger)

@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { children } from 'chirashi'
 
 describe('chirashi#children', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.children)
+    assert.isFunction(children)
   })
 
   it('should return element\'s children', () => {
@@ -13,7 +13,7 @@ describe('chirashi#children', () => {
     maki.appendChild(cheese)
     document.body.appendChild(maki)
 
-    assert.sameDeepMembers([cheese], Chirashi.children('#children-maki'))
+    assert.sameDeepMembers([cheese], children('#children-maki'))
 
     document.body.removeChild(maki)
   })

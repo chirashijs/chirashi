@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { find } from 'chirashi'
 
 describe('chirashi#find', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.find)
+    assert.isFunction(find)
   })
 
   it('should return elements from element\'s children for a selector', () => {
@@ -18,8 +18,8 @@ describe('chirashi#find', () => {
     cheese.classList.add('cheese')
     maki.appendChild(cheese)
 
-    assert.sameDeepMembers(Chirashi.find(maki, '.salmon'), [salmon])
-    assert.sameDeepMembers(Chirashi.find(maki, '.avocado'), [])
-    assert.sameDeepMembers(Chirashi.find(window, '.maki'), [])
+    assert.sameDeepMembers(find(maki, '.salmon'), [salmon])
+    assert.sameDeepMembers(find(maki, '.avocado'), [])
+    assert.sameDeepMembers(find(window, '.maki'), [])
   })
 })

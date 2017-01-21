@@ -122,15 +122,6 @@ Callback to apply on element.
 -   `element` **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** 
 -   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of element in elements.
 
-# forInCallback
-
-Callback to apply on each key-value pair.
-
-**Parameters**
-
--   `key` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
--   `value` **any** 
-
 # forIn
 
 Iterates over object's keys and apply callback on each one.
@@ -183,6 +174,15 @@ Chirashi.forIn(californiaRoll, (key, value) => {
 ```
 
 Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** object - The iterable for chaining.
+
+# forInCallback
+
+Callback to apply on each key-value pair.
+
+**Parameters**
+
+-   `key` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** 
+-   `value` **any** 
 
 # getElement
 
@@ -1288,23 +1288,6 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Returns **[unbindCallback](#unbindcallback)** object.unbind - The unbind method.
 
-# offCallback
-
-Called to remove one or all events listeners of one or all elements.
-
-**Parameters**
-
--   `offElements` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))]** The iterable, selector or elements to unbind.
--   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
-
-# eventCallback
-
-Callback to execute on event.
-
-**Parameters**
-
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
-
 # on
 
 Bind events listener on each element of elements.
@@ -1362,6 +1345,23 @@ listener.off() //remove all listeners from all elements
 Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** object - An object with off method to remove events listeners.
 
 Returns **[offCallback](#offcallback)** object.off - The off method.
+
+# offCallback
+
+Called to remove one or all events listeners of one or all elements.
+
+**Parameters**
+
+-   `offElements` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))]** The iterable, selector or elements to unbind.
+-   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
+
+# eventCallback
+
+Callback to execute on event.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
 
 # once
 

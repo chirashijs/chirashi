@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { getElement } from 'chirashi'
 
 describe('chirashi#getElement', () => {
   it('should return a function', () => {
-    assert.isFunction(Chirashi.getElement)
+    assert.isFunction(getElement)
   })
 
   it('should return element', () => {
@@ -11,12 +11,12 @@ describe('chirashi#getElement', () => {
     yakitori.classList.add('yakitori')
     document.body.appendChild(yakitori)
 
-    assert.equal(yakitori, Chirashi.getElement(yakitori), 'should work for dom element')
-    assert.equal(yakitori, Chirashi.getElement('a'), 'should work for tag selector')
-    assert.equal(yakitori, Chirashi.getElement('.yakitori'), 'should work for class selector')
-    assert.equal(yakitori, Chirashi.getElement(document.querySelectorAll('.yakitori')), 'should work with NodeList')
-    assert.equal(yakitori, Chirashi.getElement([yakitori, 'yakitori']), 'should return first for array')
-    assert.isNull(Chirashi.getElement('.unknown'), 'should return null for unknown')
+    assert.equal(yakitori, getElement(yakitori), 'should work for dom element')
+    assert.equal(yakitori, getElement('a'), 'should work for tag selector')
+    assert.equal(yakitori, getElement('.yakitori'), 'should work for class selector')
+    assert.equal(yakitori, getElement(document.querySelectorAll('.yakitori')), 'should work with NodeList')
+    assert.equal(yakitori, getElement([yakitori, 'yakitori']), 'should return first for array')
+    assert.isNull(getElement('.unknown'), 'should return null for unknown')
 
     document.body.removeChild(yakitori)
   })

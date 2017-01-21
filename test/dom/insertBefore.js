@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { insertBefore } from 'chirashi'
 
 describe('chirashi#insertBefore', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.insertBefore)
+    assert.isFunction(insertBefore)
   })
 
   it('should return element\'s insertBefore', () => {
@@ -14,16 +14,16 @@ describe('chirashi#insertBefore', () => {
 
     const salmon = document.createElement('div')
 
-    Chirashi.insertBefore(cheese, salmon)
+    insertBefore(cheese, salmon)
 
     assert.equal(cheese.previousElementSibling, salmon, 'should insert existing node')
 
-    Chirashi.insertBefore(cheese, '.wasabi')
+    insertBefore(cheese, '.wasabi')
 
     assert.isTrue(cheese.previousElementSibling.classList.contains('wasabi'), 'should create and insert node')
 
-    assert.isUndefined(Chirashi.insertBefore(window, '.null'), 'should just return if node can\'t be inserted')
+    assert.isUndefined(insertBefore(window, '.null'), 'should just return if node can\'t be inserted')
 
-    assert.equal(maki, Chirashi.insertBefore(maki, 149), 'should return element if trying to append something wrong')
+    assert.equal(maki, insertBefore(maki, 149), 'should return element if trying to append something wrong')
   })
 })

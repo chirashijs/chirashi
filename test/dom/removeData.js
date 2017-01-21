@@ -1,16 +1,16 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { removeData } from 'chirashi'
 
 describe('chirashi#removeData', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.removeData)
+    assert.isFunction(removeData)
   })
 
   it('should remove data-attribute of element', () => {
     const sushi = document.createElement('div')
     sushi.setAttribute('data-fish', 'salmon')
 
-    Chirashi.removeData(sushi, 'fish')
+    removeData(sushi, 'fish')
 
     assert.isNull(sushi.getAttribute('data-fish'))
   })

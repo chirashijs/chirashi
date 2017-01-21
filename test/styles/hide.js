@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { hide } from 'chirashi'
 
 describe('chirashi#hide', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.hide)
+    assert.isFunction(hide)
   })
 
   it('should set element\'s visibility to hidden', () => {
@@ -11,7 +11,7 @@ describe('chirashi#hide', () => {
     div.classList.add('hide', 'test')
     document.body.appendChild(div)
 
-    Chirashi.hide(div)
+    hide(div)
 
     assert.equal(div.style.visibility, 'hidden')
 

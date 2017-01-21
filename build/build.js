@@ -1,143 +1,117 @@
-var fs = require('fs')
-var zlib = require('zlib')
-var rollup = require('rollup')
-var uglify = require('uglify-js')
-var babel = require('rollup-plugin-babel')
-var replace = require('rollup-plugin-replace')
-var version = require('../package.json').version
+const fs = require('fs')
+const mkdirp = require('mkdirp')
+const rollup = require('rollup')
+const localResolve = require('rollup-plugin-local-resolve')
+const babel = require('rollup-plugin-babel')
+const babelrc = require('babelrc-rollup').default
+const uglify = require('uglify-js')
 
-var banner =
-  '/*!\n' +
-  ' * Chirashi.js v' + version + '\n' +
-  ' * (c) ' + new Date().getFullYear() + ' Alex Toudic\n' +
-  ' * Released under the MIT License.\n' +
-  ' */'
+const pkg = require('../package.json')
+const version = process.env.VERSION || pkg.version
+const external = Object.keys(pkg.dependencies)
 
-// update main file
-var main = fs
-  .readFileSync('src/index.js', 'utf-8')
-  .replace(/Chirashi\.version = '[\d\.]+'/, "Chirashi.version = '" + version + "'")
-fs.writeFileSync('src/index.js', main)
+const moduleName = toPascalCase(pkg.name)
+const path = pkg.main.split('/').slice(0, -1).join('/')
 
-// CommonJS build.
-// this is used as the "main" field in package.json
-// and used by bundlers like Webpack and Browserify.
-rollup.rollup({
-  entry: 'src/index.js',
+const config = {
+  entry: 'lib/index.js',
   plugins: [
-    babel({
-      runtimeHelpers: true,
-      presets: [
-        [
-          'es2015-rollup'
-        ]
-      ],
-      plugins: ['transform-object-rest-spread']
-    })
-  ]
-})
-.then(function (bundle) {
-  return write('dist/chirashi.common.js', bundle.generate({
-    format: 'cjs',
-    banner: banner
-  }).code)
-})
-// Standalone Dev Build
-.then(function () {
-  return rollup.rollup({
-    entry: 'src/index.js',
-    plugins: [
-      replace({
-        'process.env.NODE_ENV': "'development'"
-      }),
-      babel({
-        runtimeHelpers: true,
-        presets: [
-          [
-            'es2015-rollup'
-          ]
-        ],
-        plugins: ['transform-object-rest-spread']
-      })
-    ]
-  })
-  .then(function (bundle) {
-    return write('dist/chirashi.js', bundle.generate({
-      globals: {
-        raf: 'raf'
-      },
-      format: 'umd',
-      banner: banner,
-      moduleName: 'Chirashi'
-    }).code)
-  })
-})
-.then(function () {
-  // Standalone Production Build
-  return rollup.rollup({
-    entry: 'src/index.js',
-    plugins: [
-      replace({
-        'process.env.NODE_ENV': "'production'"
-      }),
-      babel({
-        runtimeHelpers: true,
-        presets: [
-          [
-            'es2015-rollup'
-          ]
-        ],
-        plugins: ['transform-object-rest-spread']
-      })
-    ]
-  })
-  .then(function (bundle) {
-    var code = bundle.generate({
-      format: 'umd',
-      moduleName: 'Chirashi'
-    }).code
-    var minified = banner + '\n' + uglify.minify(code, {
-      fromString: true,
-      output: {
-        ascii_only: true
-      }
-    }).code
-    return write('dist/chirashi.min.js', minified)
-  })
-  .then(zip)
-})
-.catch(logError)
-
-function write (dest, code) {
-  return new Promise(function (resolve, reject) {
-    fs.writeFile(dest, code, function (err) {
-      if (err) return reject(err)
-      console.log(blue(dest) + ' ' + getSize(code))
-      resolve()
-    })
-  })
+    localResolve(),
+    babel(babelrc())
+  ],
+  external: external
 }
 
-function zip () {
-  return new Promise(function (resolve, reject) {
-    fs.readFile('dist/chirashi.min.js', function (err, buf) {
-      if (err) return reject(err)
-      zlib.gzip(buf, function (err, buf) {
-        if (err) return reject(err)
-        write('dist/chirashi.min.js.gz', buf).then(resolve)
-      })
-    })
+const banner =
+  `/**\n` +
+  ` * ${moduleName}.js v${version}\n` +
+  ` * (c) ${new Date().getFullYear()} ${pkg.author.name}\n` +
+  ` * Released under MIT License.\n` +
+  ` **/\n`
+
+const targets = [
+  {
+    file: pkg.main,
+    options: {
+      banner,
+      format: 'cjs'
+    }
+  },
+  {
+    file: pkg.module,
+    options: {
+      banner,
+      format: 'es'
+    }
+  },
+  {
+    file: `${path}/${pkg.name}.js`,
+    options: {
+      banner,
+      format: 'umd',
+      moduleName: moduleName
+    },
+    then (file, code) {
+      file = file.split('.')
+      file.splice(-1, 0, 'min')
+      file = file.join('.')
+
+      const minified = banner + '\n' + uglify.minify(code, {
+        fromString: true,
+        output: {
+          screw_ie8: true,
+          ascii_only: true
+        }
+      }).code
+
+      console.log(`${blue(file.split('/').pop())} ${green(`${getSize(minified)}kb`)}`)
+
+      fs.writeFileSync(file, minified)
+    }
+  }
+]
+
+mkdirp.sync(path)
+
+rollup
+  .rollup(config)
+  .then(bundle => {
+    for (const target of targets) {
+      const result = bundle.generate(target.options)
+
+      const file = target.file
+
+      console.log(`${blue(file.split('/').pop())} ${green(`${getSize(result.code)}kb`)}`)
+
+      fs.writeFileSync(target.file, result.code)
+
+      if (target.then) target.then(target.file, result.code)
+    }
   })
+
+function toPascalCase (input) {
+  const kebabRegex = /(^|-)([a-z])/g
+
+  let ouput = `${input}`
+  let match
+  while ((match = kebabRegex.exec(input))) {
+    const fullMatch = match[0]
+    const letter = match[2]
+
+    ouput = ouput.replace(new RegExp(fullMatch, 'g'), letter.toUpperCase())
+  }
+
+  return ouput
 }
 
 function getSize (code) {
-  return (code.length / 1024).toFixed(2) + 'kb'
-}
-
-function logError (e) {
-  console.log(e)
+  return (code.length / 1024).toFixed(2)
 }
 
 function blue (str) {
   return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m'
+}
+
+function green (str) {
+  return '\x1b[1m\x1b[32m' + str + '\x1b[39m\x1b[22m'
 }

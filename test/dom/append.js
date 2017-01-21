@@ -1,19 +1,19 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { append } from 'chirashi'
 
 describe('chirashi#append', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.append)
+    assert.isFunction(append)
   })
 
   it('should append child into element', () => {
     const maki = document.createElement('div')
     const salmon = document.createElement('div')
-    Chirashi.append(maki, [salmon, '.cheese'])
+    append(maki, [salmon, '.cheese'])
 
     assert.equal(maki.firstChild, salmon, 'should append existing node')
     assert.isTrue(maki.children[1].classList.contains('cheese'), 'should create and append node')
-    assert.isFalse(Chirashi.append(window, maki), 'should return false if nodes can\'t be appended')
-    assert.equal(maki, Chirashi.append(maki, 149), 'should return element if trying to append something wrong')
+    assert.isFalse(append(window, maki), 'should return false if nodes can\'t be appended')
+    assert.equal(maki, append(maki, 149), 'should return element if trying to append something wrong')
   })
 })

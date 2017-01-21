@@ -4,12 +4,6 @@
  * Released under MIT License.
  **/
 
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
-	typeof define === 'function' && define.amd ? define(['exports'], factory) :
-	(factory((global.Chirashi = global.Chirashi || {})));
-}(this, (function (exports) { 'use strict';
-
 /**
 * Iterates over items and apply callback on each one.
 * @param {*} items - The iterable.
@@ -2360,63 +2354,4 @@ function transform(elements, transformation) {
  * @property {number} [skew.y=0] - Skew value on y axis in radians.
  */
 
-exports.forEach = forEach;
-exports.forElements = forElements;
-exports.forIn = forIn;
-exports.getElement = getElement;
-exports.getElements = getElements;
-exports.isDomElement = isDomElement;
-exports.addClass = addClass;
-exports.append = append;
-exports.children = children;
-exports.clone = clone;
-exports.closest = closest;
-exports.createElement = createElement;
-exports.filter = filter;
-exports.find = find;
-exports.findOne = findOne;
-exports.getAttr = getAttr;
-exports.getData = getData;
-exports.getHtml = getHtml;
-exports.getProp = getProp;
-exports.hasClass = hasClass;
-exports.indexInParent = indexInParent;
-exports.insertAfter = insertAfter;
-exports.insertBefore = insertBefore;
-exports.next = next;
-exports.parent = parent;
-exports.prev = prev;
-exports.remove = remove;
-exports.removeAttr = removeAttr;
-exports.removeClass = removeClass;
-exports.removeData = removeData;
-exports.setAttr = setAttr;
-exports.setData = setData;
-exports.setHtml = setHtml;
-exports.setProp = setProp;
-exports.toggleClass = toggleClass;
-exports.bind = bind;
-exports.on = on;
-exports.once = once;
-exports.ready = ready;
-exports.trigger = trigger;
-exports.clearStyle = clearStyle;
-exports.clientRect = clientRect;
-exports.getHeight = getHeight;
-exports.getSize = getSize;
-exports.getStyle = getStyle;
-exports.getWidth = getWidth;
-exports.hide = hide;
-exports.offset = offset;
-exports.position = position;
-exports.screenPosition = screenPosition;
-exports.setHeight = setHeight;
-exports.setSize = setSize;
-exports.setStyle = setStyle;
-exports.setWidth = setWidth;
-exports.show = show;
-exports.transform = transform;
-
-Object.defineProperty(exports, '__esModule', { value: true });
-
-})));
+export { forEach, forElements, forIn, getElement, getElements, isDomElement, addClass, append, children, clone, closest, createElement, filter, find, findOne, getAttr, getData, getHtml, getProp, hasClass, indexInParent, insertAfter, insertBefore, next, parent, prev, remove, removeAttr, removeClass, removeData, setAttr, setData, setHtml, setProp, toggleClass, bind, on, once, ready, trigger, clearStyle, clientRect, getHeight, getSize, getStyle, getWidth, hide, offset, position, screenPosition, setHeight, setSize, setStyle, setWidth, show, transform };

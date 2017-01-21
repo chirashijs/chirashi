@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { clientRect } from 'chirashi'
 
 window.describe('chirashi#clientRect', () => {
   window.it('should be a function', () => {
-    assert.isFunction(Chirashi.clientRect)
+    assert.isFunction(clientRect)
   })
 
   window.it('should return element\'s position on screen', () => {
@@ -32,12 +32,12 @@ window.describe('chirashi#clientRect', () => {
       background: 'red'
     })
 
-    const clientRect = Chirashi.clientRect(poulp)
-    assert.equal(clientRect.top, 200, 'should return correct top position')
-    assert.equal(clientRect.left, 240, 'should return correct left position')
-    assert.equal(clientRect.width, 100, 'should return correct width')
-    assert.equal(clientRect.height, 100, 'should return correct height')
-    assert.isFalse(Chirashi.clientRect(null), 'should return false if element isn\'t valid')
+    const boundingClientRect = clientRect(poulp)
+    assert.equal(boundingClientRect.top, 200, 'should return correct top position')
+    assert.equal(boundingClientRect.left, 240, 'should return correct left position')
+    assert.equal(boundingClientRect.width, 100, 'should return correct width')
+    assert.equal(boundingClientRect.height, 100, 'should return correct height')
+    assert.isFalse(clientRect(null), 'should return false if element isn\'t valid')
 
     document.body.removeChild(poulp)
   })

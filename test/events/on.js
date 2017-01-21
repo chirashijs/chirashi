@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { on } from 'chirashi'
 
 describe('chirashi#on', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.on)
+    assert.isFunction(on)
   })
 
   it('should bind event on elements', done => {
@@ -23,7 +23,7 @@ describe('chirashi#on', () => {
       }, 200)
     }
 
-    const listeners = Chirashi.on([maki, maki2], {
+    const listeners = on([maki, maki2], {
       'click': callback
     })
 

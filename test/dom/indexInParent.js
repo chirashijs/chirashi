@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { indexInParent } from 'chirashi'
 
 describe('chirashi#indexInParent', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.indexInParent)
+    assert.isFunction(indexInParent)
   })
 
   it('should return element\'s index in its parent\'s children', () => {
@@ -14,9 +14,9 @@ describe('chirashi#indexInParent', () => {
     const cheese = document.createElement('div')
     maki.appendChild(cheese)
 
-    assert.equal(Chirashi.indexInParent(salmon), 0, 'should return element\'s index')
-    assert.equal(Chirashi.indexInParent(cheese), 1, 'should return element\'s index')
+    assert.equal(indexInParent(salmon), 0, 'should return element\'s index')
+    assert.equal(indexInParent(cheese), 1, 'should return element\'s index')
 
-    assert.isNull(Chirashi.indexInParent(null), 'should return null if no element found')
+    assert.isNull(indexInParent(null), 'should return null if no element found')
   })
 })

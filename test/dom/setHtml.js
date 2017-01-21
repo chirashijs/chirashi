@@ -1,15 +1,15 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { setHtml } from 'chirashi'
 
 describe('chirashi#setHtml', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.setHtml)
+    assert.isFunction(setHtml)
   })
 
   it('should set property on element', () => {
     const title = document.createElement('h1')
 
-    Chirashi.setHtml(title, 'salmon')
+    setHtml(title, 'salmon')
 
     assert.equal(title.innerHTML, 'salmon')
   })

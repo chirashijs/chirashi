@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { offset } from 'chirashi'
 
 describe('chirashi#offset', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.offset)
+    assert.isFunction(offset)
   })
 
   it('should return element\'s position in page', () => {
@@ -32,10 +32,10 @@ describe('chirashi#offset', () => {
       background: 'red'
     })
 
-    const offset = Chirashi.offset(tuna)
-    assert.equal(offset.top, 200, 'should return correct top offset')
-    assert.equal(offset.left, 240, 'should return correct left offset')
-    assert.equal(Chirashi.offset(null), false, 'should return false if element isn\'t valid')
+    const tunaOffset = offset(tuna)
+    assert.equal(tunaOffset.top, 200, 'should return correct top offset')
+    assert.equal(tunaOffset.left, 240, 'should return correct left offset')
+    assert.equal(offset(null), false, 'should return false if element isn\'t valid')
 
     document.body.removeChild(tuna)
   })

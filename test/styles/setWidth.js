@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { setWidth } from 'chirashi'
 
 describe('chirashi#setWidth', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.setWidth)
+    assert.isFunction(setWidth)
   })
 
   it('should return element\'s width as Number', () => {
@@ -16,10 +16,10 @@ describe('chirashi#setWidth', () => {
       height: '200px'
     })
 
-    Chirashi.setWidth(div, 200)
+    setWidth(div, 200)
     assert.equal(div.style.width, '200px', 'should set width in pixels')
 
-    Chirashi.setWidth(div, '100%')
+    setWidth(div, '100%')
     assert.equal(div.style.width, '100%', 'should set width with unit')
 
     document.body.removeChild(div)

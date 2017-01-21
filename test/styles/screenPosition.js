@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { screenPosition } from 'chirashi'
 
 describe('chirashi#screenPosition', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.screenPosition)
+    assert.isFunction(screenPosition)
   })
 
   it('should return element\'s position on screen', () => {
@@ -32,10 +32,10 @@ describe('chirashi#screenPosition', () => {
       background: 'red'
     })
 
-    const screenPosition = Chirashi.screenPosition(poulp)
-    assert.equal(screenPosition.top, 200, 'should return correct top position')
-    assert.equal(screenPosition.left, 240, 'should return correct left position')
-    assert.isFalse(Chirashi.screenPosition(null), 'should return false if element isn\'t valid')
+    const poulpScreenPosition = screenPosition(poulp)
+    assert.equal(poulpScreenPosition.top, 200, 'should return correct top position')
+    assert.equal(poulpScreenPosition.left, 240, 'should return correct left position')
+    assert.isFalse(screenPosition(null), 'should return false if element isn\'t valid')
 
     document.body.removeChild(poulp)
   })

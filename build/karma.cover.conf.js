@@ -16,6 +16,8 @@ module.exports = function (config) {
     singleRun: true
   })
 
+  options.files.push('./matches-polyfill.js')
+
   options.frameworks.push('es6-shim')
 
   config.set(options)

@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { bind } from 'chirashi'
 
 describe('chirashi#bind', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.bind)
+    assert.isFunction(bind)
   })
 
   it('should bind event of elements', done => {
@@ -16,7 +16,7 @@ describe('chirashi#bind', () => {
     cheese.classList.add('bind', 'cheese')
     document.body.appendChild(cheese)
 
-    const listener = Chirashi.bind('.cheese', {
+    const listener = bind('.cheese', {
       click: (event, target) => {
         ++called
 

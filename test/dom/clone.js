@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { clone } from 'chirashi'
 
 describe('chirashi#clone', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.clone)
+    assert.isFunction(clone)
   })
 
   it('should return element\'s clone', () => {
@@ -12,7 +12,7 @@ describe('chirashi#clone', () => {
     const cheese = document.createElement('div')
     maki.appendChild(cheese)
 
-    assert.deepEqual(maki, Chirashi.clone(maki))
-    assert.isFalse(Chirashi.clone(window))
+    assert.deepEqual(maki, clone(maki))
+    assert.isFalse(clone(window))
   })
 })

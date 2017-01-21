@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { findOne } from 'chirashi'
 
 describe('chirashi#findOne', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.findOne)
+    assert.isFunction(findOne)
   })
 
   it('should return first element from element\'s children for a selector', () => {
@@ -18,8 +18,8 @@ describe('chirashi#findOne', () => {
     cheese.classList.add('cheese')
     maki.appendChild(cheese)
 
-    assert.equal(Chirashi.findOne(maki, '.salmon'), salmon)
-    assert.isNull(Chirashi.findOne(maki, '.avocado'))
-    assert.isNull(Chirashi.findOne(window, '.maki'))
+    assert.equal(findOne(maki, '.salmon'), salmon)
+    assert.isNull(findOne(maki, '.avocado'))
+    assert.isNull(findOne(window, '.maki'))
   })
 })

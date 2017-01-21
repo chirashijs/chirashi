@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { trigger } from 'chirashi'
 
 describe('chirashi#trigger', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.trigger)
+    assert.isFunction(trigger)
   })
 
   it('should trigger event', done => {
@@ -20,8 +20,8 @@ describe('chirashi#trigger', () => {
 
     maki.addEventListener('click', callback)
 
-    Chirashi.trigger(maki, 'click')
+    trigger(maki, 'click')
 
-    assert.isUndefined(Chirashi.trigger(null, 'click'))
+    assert.isUndefined(trigger(null, 'click'))
   })
 })

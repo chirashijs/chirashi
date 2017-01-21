@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { prev } from 'chirashi'
 
 describe('chirashi#prev', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.prev)
+    assert.isFunction(prev)
   })
 
   it('should return element\'s prev', () => {
@@ -14,6 +14,6 @@ describe('chirashi#prev', () => {
     const cheese = document.createElement('div')
     maki.appendChild(cheese)
 
-    assert.equal(Chirashi.prev(cheese), salmon)
+    assert.equal(prev(cheese), salmon)
   })
 })

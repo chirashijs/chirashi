@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { forElements } from 'chirashi'
 
 describe('chirashi#forElements', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.forElements)
+    assert.isFunction(forElements)
   })
 
   it('should execute callback on elements', () => {
@@ -22,46 +22,46 @@ describe('chirashi#forElements', () => {
     const s1 = [wasabiSalmonSushi]
     let i = s1.length
     while (i--) {
-      Chirashi.forElements(wasabiSalmonSushi, element => {
+      forElements(wasabiSalmonSushi, element => {
         assert.equal(s1[i], element, 'should work for dom element')
       })
     }
 
     const s2 = [wasabiSalmonSushi, salmonSushi]
     let j = s2.length
-    const elements = Chirashi.forElements(document.querySelectorAll('.sushi.salmon'), element => {
+    const elements = forElements(document.querySelectorAll('.sushi.salmon'), element => {
       assert.equal(s2[--j], element, 'should work for nodelist')
     })
 
     const s3 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
     let h = s3.length
-    Chirashi.forElements('.sushi', element => {
+    forElements('.sushi', element => {
       assert.equal(s3[--h], element, 'should work for tag selector')
     })
 
     const s4 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
     let k = s4.length
-    Chirashi.forElements('.sushi.salmon, .sushi.tuna', element => {
+    forElements('.sushi.salmon, .sushi.tuna', element => {
       assert.equal(s4[--k], element, 'should work for class selector')
     })
 
     elements.chrshPush('.sushi.tuna', '.unknown')
     const s5 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
     let l = s5.length
-    Chirashi.forElements(elements, element => {
+    forElements(elements, element => {
       assert.equal(s5[--l], element, 'should extract dom elements from array')
     })
 
     const s6 = [tunaSushi, wasabiSalmonSushi, salmonSushi]
     let m = s6.length
-    Chirashi.forElements(['.sushi.salmon', '.sushi.tuna'], element => {
+    forElements(['.sushi.salmon', '.sushi.tuna'], element => {
       assert.equal(s6[--m], element, 'should work for array of selectors')
     })
 
     elements.push('.none')
     const s7 = [tunaSushi, salmonSushi, wasabiSalmonSushi]
     let n = s7.length
-    Chirashi.forElements(elements, (element, index) => {
+    forElements(elements, (element, index) => {
       assert.equal(s7[--n], element, 'should invalidate elements')
     })
 

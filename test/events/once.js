@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { once } from 'chirashi'
 
 describe('chirashi#once', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.once)
+    assert.isFunction(once)
   })
 
   it('should bind event once on elements', done => {
@@ -35,7 +35,7 @@ describe('chirashi#once', () => {
       }
     }
 
-    listener = Chirashi.once([maki, maki2], {
+    listener = once([maki, maki2], {
       'click': callback,
       'cliclick': callback
     }, true, true)

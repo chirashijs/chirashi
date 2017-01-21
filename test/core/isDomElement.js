@@ -1,15 +1,15 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { isDomElement } from 'chirashi'
 
 describe('chirashi#isDomElement', () => {
   it('should return a function', () => {
-    assert.isFunction(Chirashi.isDomElement)
+    assert.isFunction(isDomElement)
   })
 
   it('should detect DOM Element', () => {
-    assert.isTrue(Chirashi.isDomElement(window), 'true for window')
-    assert.isTrue(Chirashi.isDomElement(document), 'true for document')
-    assert.isTrue(Chirashi.isDomElement(document.createElement('div')), 'true for div')
-    assert.isFalse(Chirashi.isDomElement(null), 'false for null')
+    assert.isTrue(isDomElement(window), 'true for window')
+    assert.isTrue(isDomElement(document), 'true for document')
+    assert.isTrue(isDomElement(document.createElement('div')), 'true for div')
+    assert.isFalse(isDomElement(null), 'false for null')
   })
 })

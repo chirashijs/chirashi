@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { setSize } from 'chirashi'
 
 describe('chirashi#setSize', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.setSize)
+    assert.isFunction(setSize)
   })
 
   it('should set elements\' size', () => {
@@ -27,7 +27,7 @@ describe('chirashi#setSize', () => {
       background: 'gray'
     })
 
-    Chirashi.setSize([salmon, unagi], 150, '20%')
+    setSize([salmon, unagi], 150, '20%')
     assert.ok(salmon.style.width === '150px' && unagi.style.width === '150px', 'should set width')
     assert.ok(salmon.style.height === '20%' && unagi.style.height === '20%', 'should set height')
 

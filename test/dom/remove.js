@@ -1,9 +1,9 @@
 import { assert } from 'chai'
-import Chirashi from 'chirashi'
+import { remove } from 'chirashi'
 
 describe('chirashi#remove', () => {
   it('should be a function', () => {
-    assert.isFunction(Chirashi.remove)
+    assert.isFunction(remove)
   })
 
   it('should remove element from dom', () => {
@@ -12,11 +12,11 @@ describe('chirashi#remove', () => {
 
     sushi.appendChild(cheese)
 
-    Chirashi.remove(cheese)
+    remove(cheese)
 
     assert.isNull(cheese.parentNode, 'should have removed element from dom')
 
-    Chirashi.remove(cheese)
+    remove(cheese)
     assert.isNull(cheese.parentNode, 'should not fail when element is no longer in the dom')
   })
 })
