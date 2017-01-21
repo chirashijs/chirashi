@@ -34,4 +34,4 @@ exclude_paths:
 - README.md
 ratings:
   paths:
-  - src/**
+  - lib/**
