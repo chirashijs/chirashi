@@ -67,7 +67,7 @@
     "rollup-plugin-babel": "^2.7.1",
     "rollup-plugin-local-resolve": "^1.0.7",
     "uglify-js": "^2.7.5",
-    "webpack": "beta"
+    "webpack": "^2.2.0"
   },
   "dependencies": {},
   "browserify": {

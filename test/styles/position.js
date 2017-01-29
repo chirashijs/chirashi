@@ -26,7 +26,7 @@ describe('chirashi#position', () => {
 
     Object.assign(cod.style, {
       display: 'block',
-      position: 'absolute',
+      position: 'fixed',
       top: '200px',
       left: '240px',
       width: '100px',

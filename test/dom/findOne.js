@@ -19,7 +19,8 @@ describe('chirashi#findOne', () => {
     maki.appendChild(cheese)
 
     assert.equal(findOne(maki, '.salmon'), salmon)
-    assert.isNull(findOne(maki, '.avocado'))
-    assert.isNull(findOne(window, '.maki'))
+    assert.equal(findOne(maki, '[class="salmon"]'), salmon)
+    assert.isUndefined(findOne(maki, '.avocado'))
+    assert.isNull(findOne('.none', '.avocado'))
   })
 })

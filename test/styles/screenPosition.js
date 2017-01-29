@@ -24,7 +24,7 @@ describe('chirashi#screenPosition', () => {
 
     Object.assign(poulp.style, {
       display: 'block',
-      position: 'absolute',
+      position: 'fixed',
       top: '200px',
       left: '240px',
       width: '100px',

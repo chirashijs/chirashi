@@ -1,3 +1,4 @@
+import contains from '../contains'
 import { assert } from 'chai'
 import { getElements } from 'chirashi'
 
@@ -25,26 +26,19 @@ describe('chirashi#getElements', () => {
     form.appendChild(document.createElement('input'))
     form.appendChild(document.createElement('input'))
 
-    assert.sameDeepMembers([pinkVinegarGinger], getElements(pinkVinegarGinger), 'should work for dom element')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger], getElements(document.querySelectorAll('.ginger.vinegar')), 'should work for NodeList')
-    assert.sameDeepMembers([...form.children], getElements(form.children), 'should work for HTMLCollection')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('h1'), 'should work for tag selector')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('.ginger.vinegar, .ginger.sugar'), 'should work for class selector')
+    assert.isTrue(contains([pinkVinegarGinger], getElements(pinkVinegarGinger)), 'should work for dom element')
+    assert.isTrue(contains([pinkVinegarGinger, vinegarGinger], getElements(document.querySelectorAll('.ginger.vinegar'))), 'should work for NodeList')
+    assert.isTrue(contains([...form.children], getElements(form.children)), 'should work for HTMLCollection')
+    assert.isTrue(contains([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('h1')), 'should work for tag selector')
+    assert.isTrue(contains([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements('.ginger.vinegar, .ginger.sugar')), 'should work for class selector')
 
     const gingers = getElements([pinkVinegarGinger, vinegarGinger, '.ginger.sugar', '.unknown'])
-    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], gingers, 'should extract dom elements from array')
-    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], getElements(gingers), 'should return previously vinegared elements')
+    assert.isTrue(contains([sugarGinger, vinegarGinger, pinkVinegarGinger], gingers), 'should extract dom elements from array')
+    gingers.push('.none') // invalidate array
+    assert.isTrue(contains([sugarGinger, vinegarGinger, pinkVinegarGinger], getElements(gingers)), 'should return previously elements')
 
-    const vinegarGingers = getElements(document.querySelectorAll('.ginger.vinegar'))
-    vinegarGingers.push('.ginger.sugar')
-    assert.sameDeepMembers([sugarGinger, vinegarGinger, pinkVinegarGinger], getElements(vinegarGingers), 'should invalidate modified array')
-
-    const changingGingers = getElements(document.querySelectorAll('.ginger.vinegar'))
-    changingGingers.chrshPush('.ginger.sugar')
-    assert.sameDeepMembers([pinkVinegarGinger, vinegarGinger, sugarGinger], getElements(changingGingers), 'should push using getElements')
-
-    assert.sameDeepMembers([form], getElements(form), 'shouldn\'t return forms children')
-    assert.sameDeepMembers([], getElements(null), 'should return an empty array')
+    assert.isTrue(contains([form], getElements(form)), 'shouldn\'t return forms children')
+    assert.isTrue(contains([], getElements(null)), 'should return an empty array')
 
     document.body.removeChild(pinkVinegarGinger)
     document.body.removeChild(vinegarGinger)

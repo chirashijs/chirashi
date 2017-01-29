@@ -45,10 +45,11 @@ describe('chirashi#forElements', () => {
       assert.equal(s4[--k], element, 'should work for class selector')
     })
 
-    elements.chrshPush('.sushi.tuna', '.unknown')
-    const s5 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
+    const arrayElements = [].slice.call(elements)
+    arrayElements.push('.sushi.tuna', '.unknown')
+    const s5 = [tunaSushi, salmonSushi, wasabiSalmonSushi]
     let l = s5.length
-    forElements(elements, element => {
+    forElements(arrayElements, element => {
       assert.equal(s5[--l], element, 'should extract dom elements from array')
     })
 
@@ -56,13 +57,6 @@ describe('chirashi#forElements', () => {
     let m = s6.length
     forElements(['.sushi.salmon', '.sushi.tuna'], element => {
       assert.equal(s6[--m], element, 'should work for array of selectors')
-    })
-
-    elements.push('.none')
-    const s7 = [tunaSushi, salmonSushi, wasabiSalmonSushi]
-    let n = s7.length
-    forElements(elements, (element, index) => {
-      assert.equal(s7[--n], element, 'should invalidate elements')
     })
 
     document.body.removeChild(wasabiSalmonSushi)

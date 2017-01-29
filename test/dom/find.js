@@ -1,4 +1,5 @@
 import { assert } from 'chai'
+import contains from '../contains'
 import { find } from 'chirashi'
 
 describe('chirashi#find', () => {
@@ -10,16 +11,22 @@ describe('chirashi#find', () => {
     const maki = document.createElement('div')
     maki.classList.add('maki')
 
-    const salmon = document.createElement('div')
-    salmon.classList.add('salmon')
-    maki.appendChild(salmon)
+    const sushi = document.createElement('div')
+    sushi.classList.add('sushi')
+
+    const makiSalmon = document.createElement('div')
+    makiSalmon.classList.add('salmon')
+    maki.appendChild(makiSalmon)
+
+    const sushiSalmon = document.createElement('div')
+    sushiSalmon.classList.add('salmon')
+    sushi.appendChild(sushiSalmon)
 
     const cheese = document.createElement('div')
     cheese.classList.add('cheese')
     maki.appendChild(cheese)
 
-    assert.sameDeepMembers(find(maki, '.salmon'), [salmon])
-    assert.sameDeepMembers(find(maki, '.avocado'), [])
-    assert.sameDeepMembers(find(window, '.maki'), [])
+    assert.isTrue(contains([], find(maki, '.avocado')))
+    assert.isTrue(contains([makiSalmon, sushiSalmon], find([maki, sushi], '.salmon')))
   })
 })

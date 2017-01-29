@@ -1,3 +1,4 @@
+import contains from '../contains'
 import { assert } from 'chai'
 import { children } from 'chirashi'
 
@@ -13,7 +14,7 @@ describe('chirashi#children', () => {
     maki.appendChild(cheese)
     document.body.appendChild(maki)
 
-    assert.sameDeepMembers([cheese], children('#children-maki'))
+    assert.isTrue(contains([cheese], children('#children-maki')))
 
     document.body.removeChild(maki)
   })
