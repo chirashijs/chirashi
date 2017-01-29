@@ -18,7 +18,7 @@ describe('chirashi#getElement', () => {
     assert.equal(yakitori, getElement('#beef'), 'should work for id selector')
     assert.equal(yakitori, getElement(document.querySelectorAll('.yakitori')), 'should work with NodeList')
     assert.equal(yakitori, getElement([yakitori, 'yakitori']), 'should return first for array')
-    assert.isUndefined(getElement('.unknown'), 'should return undefined for unknown')
+    assert.isNull(getElement('.unknown'), 'should return undefined for unknown')
 
     document.body.removeChild(yakitori)
   })

@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.0.0
+ * Chirashi.js v6.0.1
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -55,50 +55,6 @@ var _extends = Object.assign || function (target) {
   }
 
   return target;
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-var toConsumableArray = function (arr) {
-  if (Array.isArray(arr)) {
-    for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) arr2[i] = arr[i];
-
-    return arr2;
-  } else {
-    return Array.from(arr);
-  }
 };
 
 /**
@@ -185,25 +141,6 @@ function _chirasizeArray(array) {
   return array;
 }
 
-var reg = /^([.])?([\w-_]+)$/g;
-function _find(from, selector) {
-  reg.lastIndex = 0;
-  var match = reg.exec(selector);
-
-  if (match) {
-    var prefix = match[1];
-    selector = match[2];
-
-    if (prefix === '.') {
-      return from.getElementsByClassName(selector);
-    }
-
-    return from.getElementsByTagName(selector);
-  }
-
-  return from.querySelectorAll(selector);
-}
-
 /**
  * Test if element is a dom element. Doesn't resolve selectors.
  * @param {*} element - The element to test.
@@ -227,7 +164,7 @@ function isDomElement(element) {
 }
 
 /**
- * Get dom element recursively from iterable or selector. Note that to improve performances, the NodeList returned will be live if the selector allow it.
+ * Get dom element recursively from iterable or selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
  * @return {(Array|NodeList|HTMLCollection)} domElements - The array or nodelist of dom elements from input.
  * @example //esnext
@@ -255,7 +192,7 @@ function isDomElement(element) {
 
 function getElements(input) {
   if (typeof input === 'string') {
-    return _find(document, input);
+    return document.querySelectorAll(input);
   }
 
   if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
@@ -398,29 +335,6 @@ function forIn(object, callback) {
  * @param {*} value
  */
 
-var reg$1 = /^([.#])?([\w-_]+)$/g;
-function _find$1(from, selector) {
-  reg$1.lastIndex = 0;
-  var match = reg$1.exec(selector);
-
-  if (match) {
-    var prefix = match[1];
-    selector = match[2];
-
-    if (prefix === '.') {
-      return from.getElementsByClassName(selector)[0];
-    }
-
-    if (prefix === '#') {
-      return from.getElementById(selector);
-    }
-
-    return from.getElementsByTagName(selector)[0];
-  }
-
-  return from.querySelector(selector);
-}
-
 /**
  * Get first dom element from iterable or selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
@@ -450,7 +364,7 @@ function _find$1(from, selector) {
 
 function getElement(input) {
   if (typeof input === 'string') {
-    return _find$1(document, input);
+    return document.querySelector(input);
   }
 
   if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
@@ -464,23 +378,24 @@ function getElement(input) {
   return isDomElement(input) && input;
 }
 
-function _stringToArray(input, prefix) {
-  var output = typeof input === 'string' ? input.split(/[,\s]+/g) : input;
+var reg = /[,\s]+/g;
+function _stringToArray(input) {
+  reg.lastIndex = 0;
 
-  return prefix ? output.map(function (string) {
-    return '' + prefix + string;
-  }) : output;
+  if (typeof input === 'string' && input.search(reg)) {
+    return input.split(reg);
+  }
+
+  return input;
 }
 
 function _updateClassList(elements, method, classes) {
   classes = _stringToArray(classes);
 
   return forElements(elements, function (element) {
-    var _element$classList;
-
     if (!element.classList) return;
 
-    (_element$classList = element.classList)[method].apply(_element$classList, toConsumableArray(classes));
+    element.classList[method].apply(element.classList, classes);
   });
 }
 
@@ -767,7 +682,7 @@ function find(elements, selector) {
       var found = [];
 
       forElements(elements, function (element) {
-        found.push.apply(found, [].slice.call(_find(element, selector)));
+        found.push.apply(found, [].slice.call(element.querySelectorAll(selector)));
       });
 
       return {
@@ -777,8 +692,31 @@ function find(elements, selector) {
 
     if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
   } else {
-    return _find(elements, selector);
+    return elements.querySelectorAll(selector);
   }
+}
+
+var reg$1 = /^([.#])?([\w-_]+)$/g;
+function _find(from, selector) {
+  reg$1.lastIndex = 0;
+  var match = reg$1.exec(selector);
+
+  if (match) {
+    var prefix = match[1];
+    selector = match[2];
+
+    if (prefix === '.') {
+      return from.getElementsByClassName(selector)[0];
+    }
+
+    if (prefix === '#') {
+      return from.getElementById(selector);
+    }
+
+    return from.getElementsByTagName(selector)[0];
+  }
+
+  return from.querySelector(selector);
 }
 
 /**
@@ -807,7 +745,7 @@ function find(elements, selector) {
 function findOne(element, selector) {
   element = getElement(element);
 
-  return element ? _find$1(element, selector) : null;
+  return element ? _find(element, selector) : null;
 }
 
 /**
@@ -1149,7 +1087,12 @@ function removeClass(elements, classes) {
  * Chirashi.removeData('.salmon', 'fish') //returns: [<div class="salmon"></div>]
  */
 function removeData(elements, attributes) {
-  return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes, 'data-'));
+  attributes = _stringToArray(attributes);
+  forEach(attributes, function (attr, index) {
+    attributes[index] = 'data-' + attr;
+  });
+
+  return _applyForEach(elements, 'removeAttribute', attributes);
 }
 
 /**

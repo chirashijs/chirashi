@@ -58,15 +58,6 @@ Callback to apply on item.
 -   `item` **any** 
 -   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of item in items.
 
-# forElementsCallback
-
-Callback to apply on element.
-
-**Parameters**
-
--   `element` **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** 
--   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of element in elements.
-
 # forElements
 
 Iterates over dom elements and apply callback on each one.
@@ -119,6 +110,15 @@ Chirashi.forElements([yakitori, sashimi], console.log, true) //returns: [<div cl
 ```
 
 Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** items for chaining.
+
+# forElementsCallback
+
+Callback to apply on element.
+
+**Parameters**
+
+-   `element` **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** 
+-   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of element in elements.
 
 # forIn
 
@@ -223,7 +223,7 @@ Returns **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| 
 
 # getElements
 
-Get dom element recursively from iterable or selector. Note that to improve performances, the NodeList returned will be live if the selector allow it.
+Get dom element recursively from iterable or selector.
 
 **Parameters**
 
@@ -1192,6 +1192,15 @@ Called to unbind one or all events.
 
 -   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
 
+# bindCallback
+
+Callback to execute on event using delegate.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
+-   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
+
 # bind
 
 Bind events listener on delegate and execute callback when target matches selector (targets doesn't have to be in the DOM at binding).
@@ -1250,15 +1259,6 @@ listener.unbind() //remove all listeners
 Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** object - An object with unbind method for unbinding.
 
 Returns **[unbindCallback](#unbindcallback)** object.unbind - The unbind method.
-
-# bindCallback
-
-Callback to execute on event using delegate.
-
-**Parameters**
-
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
--   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
 
 # offCallback
 
@@ -2201,25 +2201,6 @@ Chirashi.getStyle(maki, 'visibility') // returns: "visible"
 
 Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
-# Transformation
-
-**Properties**
-
--   `x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on x axis in pixels.
--   `y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on y axis in pixels.
--   `z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on z axis in pixels.
--   `scale` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Scale value for x and y axes or object of values for axes.
-    -   `scale.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on x axis.
-    -   `scale.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on y axis.
-    -   `scale.z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on z axis.
--   `rotate` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Rotation value for z axis in radians or object of values for axes.
-    -   `rotate.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on x axis in radians.
-    -   `rotate.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on y axis in radians.
-    -   `rotate.z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on z axis in radians.
--   `skew` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Skew value for x and y axes in radians or object of values for axes.
-    -   `skew.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Skew value on x axis in radians.
-    -   `skew.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Skew value on y axis in radians.
-
 # transform
 
 Compute and apply 3d transform matrix from provided transformation to each element of elements.
@@ -2265,3 +2246,22 @@ Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x
 Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+
+# Transformation
+
+**Properties**
+
+-   `x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on x axis in pixels.
+-   `y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on y axis in pixels.
+-   `z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Translation value on z axis in pixels.
+-   `scale` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Scale value for x and y axes or object of values for axes.
+    -   `scale.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on x axis.
+    -   `scale.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on y axis.
+    -   `scale.z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Scale value on z axis.
+-   `rotate` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Rotation value for z axis in radians or object of values for axes.
+    -   `rotate.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on x axis in radians.
+    -   `rotate.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on y axis in radians.
+    -   `rotate.z` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Rotation value on z axis in radians.
+-   `skew` **\[([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number) \| [object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))]** Skew value for x and y axes in radians or object of values for axes.
+    -   `skew.x` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Skew value on x axis in radians.
+    -   `skew.y` **\[[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)]** Skew value on y axis in radians.
