@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v5.2.2
+ * Chirashi.js v6.0.0
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -231,7 +231,7 @@ function isDomElement(element) {
 }
 
 /**
- * Get dom element recursively from iterable or selector.
+ * Get dom element recursively from iterable or selector. Note that to improve performances, the NodeList returned will be live if the selector allow it.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
  * @return {(Array|NodeList|HTMLCollection)} domElements - The array or nodelist of dom elements from input.
  * @example //esnext
@@ -428,7 +428,7 @@ function _find$1(from, selector) {
 /**
  * Get first dom element from iterable or selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
- * @return {(window|document|HTMLElement|SVGElement|Text|boolean)} element - The dom element from input or null if no element found.
+ * @return {(window|document|HTMLElement|SVGElement|Text|boolean)} element - The dom element from input.
  * @example //esnext
  * import { createElement, append, getElement } from 'chirashi'
  * const sushi = createElement('.sushi')
@@ -523,8 +523,9 @@ function addClass(elements, classes) {
  * var maki = Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
  * var greetings = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  */
+var regex = /([#.]?)([\w-_]+)|\[([\w-_]+)(=([\w.{}:'"\s]+))?]/g;
 function createElement(string) {
-  var regex = /(([#.]?)([\w-_]+))|(\[([\w-_]+)(=([\w.{}:'"]+))?])/g;
+  regex.lastIndex = 0;
 
   if (string.indexOf('<') === -1) {
     var core = null;
@@ -534,19 +535,23 @@ function createElement(string) {
 
     var segment = void 0;
     while (segment = regex.exec(string)) {
-      if (typeof segment[5] !== 'undefined') {
+      var attribute = segment[3];
+      if (typeof attribute !== 'undefined') {
         // attribute
-        attributes += ' ' + segment[5] + (typeof segment[7] !== 'undefined' ? '=' + segment[7] : '');
+        var value = segment[5];
+        attributes += ' ' + attribute + (typeof value !== 'undefined' ? '=' + value : '');
       } else {
-        if (segment[2] === '.') {
+        var prefix = segment[1];
+        var _value = segment[2];
+        if (prefix === '.') {
           // className
-          className += ' ' + segment[3];
-        } else if (segment[2] === '#') {
+          className += ' ' + _value;
+        } else if (prefix === '#') {
           // id
-          attributes += ' id="' + segment[3] + '"';
+          attributes += ' id="' + _value + '"';
         } else {
           // tag
-          core = segment[3];
+          core = _value;
         }
       }
     }
@@ -619,7 +624,7 @@ function getProp(element, property) {
 }
 
 /**
- * Returns an array of element's children.
+ * Returns an element's children.
  * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
  * @return {HTMLCollection} children - Element's children or null if elements has no children property or isn't a dom element.
  * @example //esnext
@@ -741,7 +746,7 @@ function filter(elements, tested) {
  * Iterates over each element of elements and returns an array containing all elements' children matching a selector.
  * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
  * @param {string} selector - The selector.
- * @return {Array} found - The elements' children matching the selector.
+ * @return {(Array|NodeList|HTMLCollection)} found - The elements' descendants matching the selector.
  * @example //esnext
  * import { createElement, append, find } from 'chirashi'
  * const maki = createElement('.maki')
@@ -761,13 +766,23 @@ function filter(elements, tested) {
  * Chirashi.find(maki, '[data-inside]') //returns: [<div class="salmon" data-fish data-inside></div>, <div class="avocado" data-inside></div>]
  */
 function find(elements, selector) {
-  var found = [];
+  if (elements.length) {
+    var _ret = function () {
+      var found = [];
 
-  forElements(elements, function (element) {
-    found.push.apply(found, [].slice.call(_find(element, selector)));
-  });
+      forElements(elements, function (element) {
+        found.push.apply(found, [].slice.call(_find(element, selector)));
+      });
 
-  return _chirasizeArray(found);
+      return {
+        v: _chirasizeArray(found)
+      };
+    }();
+
+    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+  } else {
+    return _find(elements, selector);
+  }
 }
 
 /**

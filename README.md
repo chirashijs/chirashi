@@ -33,7 +33,7 @@ ready(() => {
 
 #### Standalone
 
-You can download [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/5.2.2/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/5.2.2/chirashi.min.js) and load it using a script tag. You can also use CDN version of those files from unpkg using the link [https://unpkg.com/chirashi@5.2.2/dist/chirashi.min.js](https://unpkg.com/chirashi@5.2.2/dist/chirashi.min.js). It'll create an instance of Chirashi on your window. Then use as following example
+You can download [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/6.0.0/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/6.0.0/chirashi.min.js) and load it using a script tag. You can also use CDN version of those files from unpkg using the link [https://unpkg.com/chirashi@6.0.0/dist/chirashi.min.js](https://unpkg.com/chirashi@6.0.0/dist/chirashi.min.js). It'll create an instance of Chirashi on your window. Then use as following example
 
 ```js
 Chirashi.ready(function () {

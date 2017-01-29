@@ -58,6 +58,15 @@ Callback to apply on item.
 -   `item` **any** 
 -   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of item in items.
 
+# forElementsCallback
+
+Callback to apply on element.
+
+**Parameters**
+
+-   `element` **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** 
+-   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of element in elements.
+
 # forElements
 
 Iterates over dom elements and apply callback on each one.
@@ -109,18 +118,7 @@ Chirashi.forElements([yakitori, sashimi], console.log, true) //returns: [<div cl
 // <div class="sashimi"></div> 1
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
-
-# forElementsCallback
-
-Callback to apply on element.
-
-**Parameters**
-
--   `element` **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** 
--   `index` **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number)** Index of element in elements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** items for chaining.
 
 # forIn
 
@@ -205,7 +203,7 @@ append(document.body, [sushi, unagi, yakitori, sashimi])
 getElement('div') //returns: <div class="sushi"></div>
 getElement('.yakitori, .sashimi') //returns: <div class="yakitori"></div>
 getElement([sushi, unagi, '.sashimi', '.unknown']) //returns: <div class="sushi"></div>
-getElement('.wasabi') //returns: null
+getElement('.wasabi') //returns: undefined
 ```
 
 ```javascript
@@ -218,14 +216,14 @@ Chirashi.append(document.body, [sushi, unagi, yakitori, sashimi])
 Chirashi.getElement('div') //returns: <div class="sushi"></div>
 Chirashi.getElement('.yakitori, .sashimi') //returns: <div class="yakitori"></div>
 Chirashi.getElement([sushi, unagi, '.sashimi', '.unknown']) //returns: <div class="sushi"></div>
-Chirashi.getElement('.wasabi') //returns: null
+Chirashi.getElement('.wasabi') //returns: undefined
 ```
 
-Returns **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML) \| [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean))** element - The dom element from input or false if no element found.
+Returns **([window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| [document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML) \| [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean))** element - The dom element from input.
 
 # getElements
 
-Get dom element recursively from iterable or selector.
+Get dom element recursively from iterable or selector. Note that to improve performances, the NodeList returned will be live if the selector allow it.
 
 **Parameters**
 
@@ -260,9 +258,7 @@ Chirashi.getElements([sushi, unagi, '.sashimi', '.wasabi']) //returns: [<div cla
 Chirashi.getElements('.wasabi') //returns: []
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from input.
 
 # isDomElement
 
@@ -325,9 +321,7 @@ Chirashi.addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed 
 Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # append
 
@@ -361,7 +355,7 @@ Returns **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Eleme
 
 # children
 
-Returns an array of element's children.
+Returns an element's children.
 
 **Parameters**
 
@@ -384,9 +378,7 @@ Chirashi.append(maki, ['.salmon', '.avocado'])
 Chirashi.children(maki) //returns: [<div class="salmon"></div>, <div class="avocado"></div>]
 ```
 
-Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean))** children - Array of element's children or false if elements has no children property or isn't a dom element.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** children.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **HTMLCollection** children - Element's children or null if elements has no children property or isn't a dom element.
 
 # clone
 
@@ -456,7 +448,7 @@ Chirashi.closest('.avocado', '.maki', '.cheese') //returns: false
 
 Returns **([boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean) \| [HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate) \| [Text](https://developer.mozilla.org/en-US/docs/Web/HTML))** matchedElement - The matched element or false.
 
-# createElement
+# regex
 
 Creates a dom element from an HTML string, tag or css selector.
 
@@ -553,9 +545,7 @@ Chirashi.find('div', '[data-fish]') //returns: [<div class="salmon" data-fish da
 Chirashi.find(maki, '[data-inside]') //returns: [<div class="salmon" data-fish data-inside></div>, <div class="avocado" data-inside></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** found - The elements' children matching the selector.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** found.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** found - The elements' descendants matching the selector.
 
 # findOne
 
@@ -942,9 +932,7 @@ Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div
 Chirashi.remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The removed elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** removedElements - The array or nodelist of removed dom elements.
 
 # removeAttr
 
@@ -974,9 +962,7 @@ Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="crea
 Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # removeClass
 
@@ -1002,9 +988,7 @@ var maki = Chirashi.createElement('.maki.salmon.cheese.wasabi') //returns: <div 
 Chirashi.removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # removeData
 
@@ -1034,9 +1018,7 @@ Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="crea
 Chirashi.removeData('.salmon', 'fish') //returns: [<div class="salmon"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setAttr
 
@@ -1067,9 +1049,7 @@ Chirashi.setAttr(maki, {
 }) //returns: [<div class="maki" data-fish="salmon">]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setData
 
@@ -1100,9 +1080,7 @@ Chirashi.setData(maki, {
 }) //returns: [<div class="maki" data-fish="salmon">]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setHtml
 
@@ -1130,9 +1108,7 @@ setHtml(maki, 'salmon') //returns: [<p class="maki">salmon</p>]
 getHtml(maki) //returns: "salmon"
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The removed elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setProp
 
@@ -1161,9 +1137,7 @@ Chirashi.setProp(maki, { value: 'こんにちは世界' })
 Chirashi.getProp(maki, 'value') //returns: こんにちは世界
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The removed elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # toggleClass
 
@@ -1208,18 +1182,7 @@ Chirashi.toggleClass([maki, scdMaki], {
 }) //returns: [<div class="maki salmon cheese" data-for="sheldon"></div>, <div class="maki salmon" data-for="leonard"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The removed elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
-
-# bindCallback
-
-Callback to execute on event using delegate.
-
-**Parameters**
-
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
--   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # unbindCallback
 
@@ -1288,6 +1251,15 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 Returns **[unbindCallback](#unbindcallback)** object.unbind - The unbind method.
 
+# bindCallback
+
+Callback to execute on event using delegate.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
+-   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
+
 # offCallback
 
 Called to remove one or all events listeners of one or all elements.
@@ -1323,7 +1295,7 @@ const maki = createElement('a.cheese.maki')
 const sushi = createElement('a.wasabi.sushi')
 append(document.body, [maki, sushi])
 const listener = on('.cheese, .wasabi', {
-  click(e, target) => {
+  click(e, target) {
     console.log('clicked', target)
   },
   'mouseenter mousemove': (e, target) => {
@@ -1563,9 +1535,7 @@ Chirashi.clearStyle(maki, ['position', top])
 Chirashi.clearStyle(maki, 'width, height, background')
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # clientRect
 
@@ -1828,9 +1798,7 @@ var maki = Chirashi.hide('.maki')
 Chirashi.getStyle(maki, 'visibility') // returns: "hidden"
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # offset
 
@@ -2072,9 +2040,7 @@ Chirashi.setHeight('.maki', 20) // returns: [<div class="maki" style="height: 20
 Chirashi.setHeight('.maki', '100%') // returns: [<div class="maki" style="height: 100%;"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setSize
 
@@ -2104,9 +2070,7 @@ Chirashi.append(document.body, '.maki')
 Chirashi.setSize('.maki', 20, '100%') // returns: [<div class="maki" style="width: 20px; height: 100%;"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setStyle
 
@@ -2177,9 +2141,7 @@ const salmon = Chirashi.setStyle('.salmon', {
 }) // returns: [<div class="salmon" style="display: block; position: absolute; top: 20px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: pink;"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # setWidth
 
@@ -2210,9 +2172,7 @@ Chirashi.setWidth('.maki', 20) // returns: [<div class="maki" style="width: 20px
 Chirashi.setWidth('.maki', '100%') // returns: [<div class="maki" style="width: 100%;"></div>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # show
 
@@ -2239,9 +2199,7 @@ var maki = Chirashi.show('.maki')
 Chirashi.getStyle(maki, 'visibility') // returns: "visible"
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
-
-Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 # Transformation
 
@@ -2304,6 +2262,6 @@ Chirashi.transform(wasabiPea, {skew: {x: 25, y: 45}}) // returns: [<p style="tra
 Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
 ```
 
-Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** domElements - The array of dom elements from elements.
+Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection)** domElements - The array or nodelist of dom elements from elements.
 
 Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function)** domElements.chrshPush - Methods to push dom elements into the array. Accepts same input as getElements.
