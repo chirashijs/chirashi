@@ -378,19 +378,10 @@ function getElement(input) {
   return isDomElement(input) && input;
 }
 
-var reg = /[,\s]+/g;
-function _stringToArray(input) {
-  reg.lastIndex = 0;
-
-  if (typeof input === 'string') {
-    return input.search(reg) !== -1 ? input.split(reg) : [input];
-  }
-
-  return input;
-}
+// import _stringToArray from './_stringToArray'
 
 function _updateClassList(elements, method, classes) {
-  classes = _stringToArray(classes);
+  // classes = _stringToArray(classes)
 
   return forElements(elements, function (element) {
     if (!element.classList) return;
@@ -418,7 +409,11 @@ function _updateClassList(elements, method, classes) {
  * Chirashi.addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
  * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
  */
-function addClass(elements, classes) {
+function addClass(elements) {
+  for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    classes[_key - 1] = arguments[_key];
+  }
+
   return _updateClassList(elements, 'add', classes);
 }
 
@@ -779,6 +774,17 @@ function getHtml(element) {
   return getProp(element, 'innerHTML');
 }
 
+var reg = /[,\s]+/g;
+function _stringToArray(input) {
+  reg.lastIndex = 0;
+
+  if (typeof input === 'string') {
+    return input.search(reg) !== -1 ? input.split(reg) : [input];
+  }
+
+  return input;
+}
+
 /**
  * Iterates over classes and test if element has each.
  * @param {(string|HTMLElement|SVGElement)} element - The selector or dom element.
@@ -1042,7 +1048,11 @@ function removeAttr(elements, attributes) {
  * var maki = Chirashi.createElement('.maki.salmon.cheese.wasabi') //returns: <div class="maki salmon cheese wasabi"></div>
  * Chirashi.removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
  */
-function removeClass(elements, classes) {
+function removeClass(elements) {
+  for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    classes[_key - 1] = arguments[_key];
+  }
+
   return _updateClassList(elements, 'remove', classes);
 }
 

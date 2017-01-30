@@ -10,7 +10,7 @@ describe('chirashi#removeClass', () => {
     const maki = document.createElement('div')
     maki.classList.add('salmon')
     maki.classList.add('cheese')
-    removeClass(maki, 'cheese, salmon')
+    removeClass(maki, 'cheese', 'salmon')
 
     assert.isFalse(maki.classList.contains('cheese'))
     assert.isFalse(maki.classList.contains('salmon'))
