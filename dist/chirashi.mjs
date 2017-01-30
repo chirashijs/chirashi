@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.0.1
+ * Chirashi.js v6.0.2
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -382,8 +382,8 @@ var reg = /[,\s]+/g;
 function _stringToArray(input) {
   reg.lastIndex = 0;
 
-  if (typeof input === 'string' && input.search(reg)) {
-    return input.split(reg);
+  if (typeof input === 'string') {
+    return input.search(reg) !== -1 ? input.split(reg) : [input];
   }
 
   return input;
@@ -696,29 +696,6 @@ function find(elements, selector) {
   }
 }
 
-var reg$1 = /^([.#])?([\w-_]+)$/g;
-function _find(from, selector) {
-  reg$1.lastIndex = 0;
-  var match = reg$1.exec(selector);
-
-  if (match) {
-    var prefix = match[1];
-    selector = match[2];
-
-    if (prefix === '.') {
-      return from.getElementsByClassName(selector)[0];
-    }
-
-    if (prefix === '#') {
-      return from.getElementById(selector);
-    }
-
-    return from.getElementsByTagName(selector)[0];
-  }
-
-  return from.querySelector(selector);
-}
-
 /**
  * Find the first element's child matching the selector.
  * @param {(string|Array|NodeList|HTMLCollection|document|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
@@ -745,7 +722,7 @@ function _find(from, selector) {
 function findOne(element, selector) {
   element = getElement(element);
 
-  return element ? _find(element, selector) : null;
+  return element ? element.querySelector(selector) : null;
 }
 
 /**
