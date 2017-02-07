@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.0.2
+ * Chirashi.js v6.0.3
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -94,28 +94,16 @@ var _extends = Object.assign || function (target) {
  * //   0: 1
  */
 function forEach(items, callback) {
-  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
   if (!items) return [];
 
   if ((typeof items === 'undefined' ? 'undefined' : _typeof(items)) !== 'object' || !('length' in items)) {
     items = [items];
   }
 
-  if (!forceOrder) {
-    var i = items.length;
-    while (i--) {
-      callback(items[i], i);
-    }
-  } else {
-    var _i = -1;
-    var len = items.length;
-    while (++_i < len) {
-      callback(items[_i], _i);
-    }
-  }
-
-  return items;
+  var n = items.length;
+  for (var i = 0; i < n; ++i) {
+    callback(items[i], i);
+  }return items;
 }
 
 /**
@@ -127,18 +115,48 @@ function forEach(items, callback) {
 
 var _breakingMethods = ['push', 'splice', 'unshift'];
 
-function _chirasizeArray(array) {
-  forEach(_breakingMethods, function (method) {
-    array[method] = function () {
-      this['_chrsh-valid'] = false;
+function _overloadMethod(array, method) {
+  array[method] = function () {
+    this['_chrsh-valid'] = false;
 
-      return Array.prototype[method].apply(this, arguments);
-    };
-  });
+    return Array.prototype[method].apply(this, arguments);
+  };
+}
+
+function _chirasizeArray(array) {
+  forEach(_breakingMethods, _overloadMethod.bind(null, array));
 
   array['_chrsh-valid'] = true;
 
   return array;
+}
+
+function _nodelistToArray(collection) {
+  var arr = [];
+
+  var i = -1;
+  while (arr[++i] = collection[i]) {}
+
+  arr.length--;
+
+  return _chirasizeArray(arr);
+}
+
+var reg = /^[.#]?[\w-_]+$/;
+
+function _getElements(from, selector) {
+  if (selector.search(reg) === 0) {
+    switch (selector[0]) {
+      case '.':
+        return _nodelistToArray(from.getElementsByClassName(selector.slice(1)));
+      case '#':
+        return [from.getElementById(selector.slice(1))];
+      default:
+        return _nodelistToArray(from.getElementsByTagName(selector));
+    }
+  }
+
+  return _nodelistToArray(from.querySelectorAll(selector));
 }
 
 /**
@@ -192,11 +210,11 @@ function isDomElement(element) {
 
 function getElements(input) {
   if (typeof input === 'string') {
-    return document.querySelectorAll(input);
+    return _getElements(document, input);
   }
 
   if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
-    return input;
+    return _nodelistToArray(input);
   }
 
   if (input instanceof Array) {
@@ -264,9 +282,9 @@ function getElements(input) {
  * // <div class="sashimi"></div> 1
  */
 function forElements(elements, callback) {
-  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+  var live = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
 
-  return forEach(getElements(elements), callback, forceOrder);
+  return forEach(getElements(elements, live), callback);
 }
 
 /**
@@ -316,14 +334,14 @@ function forElements(elements, callback) {
  * // price -> 4.25
  * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
  */
-function forIn(object, callback) {
-  var forceOrder = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+function _forKey(object, callback, key) {
+  callback(key, object[key]);
+}
 
+function forIn(object, callback) {
   if ((typeof object === 'undefined' ? 'undefined' : _typeof(object)) !== 'object') return;
 
-  forEach(Object.keys(object), function (key) {
-    return callback(key, object[key]);
-  }, forceOrder);
+  forEach(Object.keys(object), _forKey.bind(null, object, callback));
 
   return object;
 }
@@ -334,6 +352,23 @@ function forIn(object, callback) {
  * @param {string} key
  * @param {*} value
  */
+
+var reg$1 = /^[.#]?[\w-_]+$/;
+
+function _getElement(from, selector) {
+  if (selector.search(reg$1) === 0) {
+    switch (selector[0]) {
+      case '.':
+        return from.getElementsByClassName(selector.slice(1))[0];
+      case '#':
+        return from.getElementById(selector.slice(1));
+      default:
+        return from.getElementsByTagName(selector)[0];
+    }
+  }
+
+  return from.querySelector(selector);
+}
 
 /**
  * Get first dom element from iterable or selector.
@@ -364,7 +399,7 @@ function forIn(object, callback) {
 
 function getElement(input) {
   if (typeof input === 'string') {
-    return document.querySelector(input);
+    return _getElement(document, input);
   }
 
   if (input instanceof window.NodeList || input instanceof window.HTMLCollection) {
@@ -378,16 +413,12 @@ function getElement(input) {
   return isDomElement(input) && input;
 }
 
-// import _stringToArray from './_stringToArray'
+function _updateOne(method, classes, element) {
+  element.classList[method].apply(element.classList, classes);
+}
 
 function _updateClassList(elements, method, classes) {
-  // classes = _stringToArray(classes)
-
-  return forElements(elements, function (element) {
-    if (!element.classList) return;
-
-    element.classList[method].apply(element.classList, classes);
-  });
+  return forElements(elements, _updateOne.bind(null, method, classes));
 }
 
 /**
@@ -399,15 +430,13 @@ function _updateClassList(elements, method, classes) {
  * import { createElement, addClass } from 'chirashi'
  * const maki = createElement('div')
  * addClass(maki, 'wasabi') //returns: <div class="wasabi"></div>
- * addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi seaweed cheese"></div>
- * addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
- * addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
+ * addClass(maki, 'seaweed', 'cheese') //returns: <div class="wasabi seaweed cheese"></div>
+ * addClass(maki, 'avocado', 'salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
  * @example //es5
  * var maki = Chirashi.createElement('div')
  * Chirashi.addClass(maki, 'wasabi') //returns: <div class="wasabi"></div>
- * Chirashi.addClass(maki, 'seaweed, cheese') //returns: <div class="wasabi seaweed cheese"></div>
- * Chirashi.addClass(maki, 'avocado salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
- * Chirashi.addClass(maki, ['egg', 'tuna']) //returns: <div class="wasabi seaweed cheese avocado salmon egg tuna"></div>
+ * Chirashi.addClass(maki, 'seaweed', 'cheese') //returns: <div class="wasabi seaweed cheese"></div>
+ * Chirashi.addClass(maki, 'avocado', 'salmon') //returns: <div class="wasabi seaweed cheese avocado salmon"></div>
  */
 function addClass(elements) {
   for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -774,12 +803,12 @@ function getHtml(element) {
   return getProp(element, 'innerHTML');
 }
 
-var reg = /[,\s]+/g;
+var reg$2 = /[,\s]+/g;
 function _stringToArray(input) {
-  reg.lastIndex = 0;
+  reg$2.lastIndex = 0;
 
   if (typeof input === 'string') {
-    return input.search(reg) !== -1 ? input.split(reg) : [input];
+    return input.search(reg$2) !== -1 ? input.split(reg$2) : [input];
   }
 
   return input;
@@ -1004,14 +1033,18 @@ function remove(elements) {
   });
 }
 
-function _applyForEach(elements, method, args) {
-  return forElements(elements, function (element) {
-    if (!element[method]) return;
+function _applyArg(element, method, arg) {
+  element[method](arg);
+}
 
-    forEach(args, function (arg) {
-      element[method](arg);
-    });
-  });
+function _applyElement(method, args, element) {
+  if (!element[method]) return;
+
+  forEach(args, _applyArg.bind(null, element, method));
+}
+
+function _applyForEach(elements, method, args) {
+  return forElements(elements, _applyElement.bind(null, method, args));
 }
 
 /**
@@ -1043,10 +1076,10 @@ function removeAttr(elements, attributes) {
  * @example //esnext
  * import { createElement, removeClass } from 'chirashi'
  * const maki = createElement('.maki.salmon.cheese.wasabi') //returns: <div class="maki salmon cheese wasabi"></div>
- * removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
+ * removeClass(maki, 'cheese', 'wasabi') //returns: [<div class="maki salmon"></div>]
  * @example //es5
  * var maki = Chirashi.createElement('.maki.salmon.cheese.wasabi') //returns: <div class="maki salmon cheese wasabi"></div>
- * Chirashi.removeClass(maki, 'cheese, wasabi') //returns: [<div class="maki salmon"></div>]
+ * Chirashi.removeClass(maki, 'cheese', 'wasabi') //returns: [<div class="maki salmon"></div>]
  */
 function removeClass(elements) {
   for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
@@ -1242,16 +1275,25 @@ function toggleClass(elements, input) {
   }
 }
 
+function _setEvent(method, callback, event, element) {
+  element[method](event, callback);
+}
+
+function _setEventOnEach(elements, method, callback, event) {
+  forEach(elements, _setEvent.bind(null, method, callback, event));
+}
+
+function _setInput(elements, method, events, callback) {
+  forEach(_stringToArray(events), _setEventOnEach.bind(null, elements, method, callback));
+}
+
 function _setEvents(elements, method, input) {
   method += 'EventListener';
 
-  return forElements(elements, function (element) {
-    forIn(input, function (events, callback) {
-      forEach(_stringToArray(events), function (event) {
-        return element[method](event, callback);
-      });
-    });
-  });
+  elements = getElements(elements);
+  forIn(input, _setInput.bind(null, elements, method));
+
+  return elements;
 }
 
 /**
