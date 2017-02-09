@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.0.3
+ * Chirashi.js v6.1.1
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -208,6 +208,10 @@ function isDomElement(element) {
  * Chirashi.getElements('.wasabi') //returns: []
  */
 
+function _pushRecursive(output, element) {
+  output.push.apply(output, getElements(element));
+}
+
 function getElements(input) {
   if (typeof input === 'string') {
     return _getElements(document, input);
@@ -218,24 +222,14 @@ function getElements(input) {
   }
 
   if (input instanceof Array) {
-    var _ret = function () {
-      if (input['_chrsh-valid']) {
-        return {
-          v: input
-        };
-      }
+    if (input['_chrsh-valid']) {
+      return input;
+    }
 
-      var output = [];
-      forEach(input, function (element) {
-        output.push.apply(output, getElements(element));
-      });
+    var output = [];
+    forEach(input, _pushRecursive.bind(null, output));
 
-      return {
-        v: _chirasizeArray(output)
-      };
-    }();
-
-    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    return _chirasizeArray(output);
   }
 
   return _chirasizeArray(isDomElement(input) ? [input] : []);
@@ -282,9 +276,7 @@ function getElements(input) {
  * // <div class="sashimi"></div> 1
  */
 function forElements(elements, callback) {
-  var live = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-  return forEach(getElements(elements, live), callback);
+  return forEach(getElements(elements), callback);
 }
 
 /**
@@ -521,18 +513,17 @@ function createElement(string) {
  * var avocado = Chirashi.createElement('.avocado')
  * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
  */
+
+function _appendOne(element, node) {
+  element.appendChild(typeof node === 'string' ? createElement(node) : element.appendChild(node));
+}
+
 function append(element, nodes) {
   element = getElement(element);
 
   if (!element || !element.appendChild) return false;
 
-  forEach(nodes, function (node, index) {
-    if (typeof node === 'string') {
-      element.appendChild(createElement(node));
-    } else if (isDomElement(node)) {
-      element.appendChild(node);
-    }
-  }, true);
+  forEach(nodes, _appendOne.bind(null, element));
 
   return element;
 }
@@ -573,7 +564,7 @@ function getProp(element, property) {
  * Chirashi.children(maki) //returns: [<div class="salmon"></div>, <div class="avocado"></div>]
  */
 function children(element) {
-  return getProp(element, 'children');
+  return _nodelistToArray(getProp(element, 'children'));
 }
 
 /**
@@ -641,6 +632,45 @@ function closest(element, tested) {
 }
 
 /**
+ * Iterates over elements and removes it from DOM.
+ * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(Array|NodeList|HTMLCollection)} removedElements - The array or nodelist of removed dom elements.
+ * @example //esnext
+ * import { createElement, append, remove } from 'chirashi'
+ * const maki = createElement('.maki')
+ * append(document.body, maki)
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * const avocado = createElement('.avocado')
+ * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * Chirashi.append(document.body, maki)
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * var avocado = Chirashi.createElement('.avocado')
+ * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
+ * Chirashi.remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
+ */
+
+function _removeOne(element) {
+  if (!element.parentNode) return;
+
+  element.parentNode.removeChild(element);
+}
+
+function remove(elements) {
+  return forElements(elements, _removeOne);
+}
+
+function _emptyElement(element) {
+  remove(element.children);
+}
+
+function empty(elements) {
+  return forElements(elements, _emptyElement);
+}
+
+/**
  * Iterates over elements, returning an array of all elements matching tested selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
  * @param {(string|HTMLElement|SVGElement|Text)} tested - The selector or dom element to match.
@@ -665,14 +695,17 @@ function closest(element, tested) {
  * Chirashi.filter([salmonMaki, tunaMaki, salmonSushi, tunaSushi], '.maki') //returns: [<div class="salmon maki"></div>, <div class="tuna maki"></div>]
  * Chirashi.filter('div', '.salmon') //returns: [<div class="salmon sushi"></div>, <div class="salmon maki"></div>]
  */
+
+function _checkOne(matching, tested, element) {
+  if (typeof tested === 'string' && 'matches' in element && element.matches(tested) || element === tested) {
+    matching.push(element);
+  }
+}
+
 function filter(elements, tested) {
   var matching = [];
 
-  forElements(elements, function (element) {
-    if (typeof tested === 'string' && 'matches' in element && element.matches(tested) || element === tested) {
-      matching.push(element);
-    }
-  });
+  forElements(elements, _checkOne.bind(null, matching, tested));
 
   return _chirasizeArray(matching);
 }
@@ -700,23 +733,20 @@ function filter(elements, tested) {
  * Chirashi.find('div', '[data-fish]') //returns: [<div class="salmon" data-fish data-inside></div>, <div class="tuna" data-fish data-inside></div>]
  * Chirashi.find(maki, '[data-inside]') //returns: [<div class="salmon" data-fish data-inside></div>, <div class="avocado" data-inside></div>]
  */
+
+function _findFromOne(found, selector, element) {
+  found.push.apply(found, _getElements(element, selector));
+}
+
 function find(elements, selector) {
   if (elements.length) {
-    var _ret = function () {
-      var found = [];
+    var found = [];
 
-      forElements(elements, function (element) {
-        found.push.apply(found, [].slice.call(element.querySelectorAll(selector)));
-      });
+    forElements(elements, _findFromOne.bind(null, found, selector));
 
-      return {
-        v: _chirasizeArray(found)
-      };
-    }();
-
-    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+    return _chirasizeArray(found);
   } else {
-    return elements.querySelectorAll(selector);
+    return _getElements(elements, selector);
   }
 }
 
@@ -887,6 +917,11 @@ function indexInParent(element) {
  * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * Chirashi.insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
+
+function _insertOn(parent, element, node) {
+  parent.insertBefore(typeof node === 'string' ? createElement(node) : node, element.nextElementSibling);
+}
+
 function insertAfter(element, nodes) {
   element = getElement(element);
 
@@ -894,13 +929,7 @@ function insertAfter(element, nodes) {
 
   var parent = element.parentNode;
 
-  forEach(nodes, function (node, index) {
-    if (typeof node === 'string') {
-      node = createElement(node);
-    }
-
-    if (isDomElement(node)) parent.insertBefore(node, element.nextElementSibling);
-  }, true);
+  forEach(nodes, _insertOn.bind(null, parent, element));
 
   return element;
 }
@@ -922,6 +951,11 @@ function insertAfter(element, nodes) {
  * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]'])
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
+
+function _insertOne(parent, element, node) {
+  parent.insertBefore(typeof node === 'string' ? createElement(node) : node, element);
+}
+
 function insertBefore(element, nodes) {
   element = getElement(element);
 
@@ -929,13 +963,7 @@ function insertBefore(element, nodes) {
 
   var parent = element.parentNode;
 
-  forEach(nodes, function (node, index) {
-    if (typeof node === 'string') {
-      node = createElement(node);
-    }
-
-    if (isDomElement(node)) parent.insertBefore(node, element);
-  }, true);
+  forEach(nodes, _insertOne.bind(null, parent, element));
 
   return element;
 }
@@ -984,6 +1012,41 @@ function parent(element) {
 }
 
 /**
+ * Returns the parent node of the element.
+ * @param {(string|document|HTMLElement|SVGElement|Text)} element - The selector or dom element.
+ * @return {(document|HTMLElement|SVGElement|null)} parentElement - The parent node or null if no element found.
+ * @example //esnext
+ * import { createElement, append, parent } from 'chirashi'
+ * const maki = createElement('.maki')
+ * append(document.body, maki)
+ * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * @example //es5
+ * var maki = Chirashi.createElement('.maki')
+ * append(maki
+ * Chirashi.append(document.body, maki)
+ * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ * Chirashi.parent('.salmon') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
+ */
+
+function _getParents(element) {
+  var arr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
+
+  var parent = element.parentNode;
+  if (parent && parent !== document) {
+    arr.push(parent);
+
+    return _getParents(parent, arr);
+  }
+
+  return arr;
+}
+
+function parents(element) {
+  return _chirasizeArray(_getParents(getElement(element)));
+}
+
+/**
  * Get the previous sibling of element.
  * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
  * @return {(HTMLElement|SVGElement|Text|null)} previousElement - The element's previous sibling or null if no element found.
@@ -1003,34 +1066,6 @@ function parent(element) {
  */
 function prev(element) {
   return getProp(element, 'previousElementSibling');
-}
-
-/**
- * Iterates over elements and removes it from DOM.
- * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
- * @return {(Array|NodeList|HTMLCollection)} removedElements - The array or nodelist of removed dom elements.
- * @example //esnext
- * import { createElement, append, remove } from 'chirashi'
- * const maki = createElement('.maki')
- * append(document.body, maki)
- * append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
- * const avocado = createElement('.avocado')
- * append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
- * remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
- * @example //es5
- * var maki = Chirashi.createElement('.maki')
- * Chirashi.append(document.body, maki)
- * Chirashi.append(maki, '.salmon[data-fish="salmon"]') //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div></div>
- * var avocado = Chirashi.createElement('.avocado')
- * Chirashi.append(maki, [avocado, '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="cheese" data-cheese="cream"></div></div>
- * Chirashi.remove('.cheese') //returns: [<div class="cheese" data-cheese="cream"></div>]
- */
-function remove(elements) {
-  return forElements(elements, function (element) {
-    if (!element.parentNode) return;
-
-    element.parentNode.removeChild(element);
-  });
 }
 
 function _applyArg(element, method, arg) {
@@ -1106,11 +1141,14 @@ function removeClass(elements) {
  * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.removeData('.salmon', 'fish') //returns: [<div class="salmon"></div>]
  */
+
+function _prefixAttr(attributes, attr, index) {
+  attributes[index] = 'data-' + attr;
+}
+
 function removeData(elements, attributes) {
   attributes = _stringToArray(attributes);
-  forEach(attributes, function (attr, index) {
-    attributes[index] = 'data-' + attr;
-  });
+  forEach(attributes, _prefixAttr.bind(null, attributes));
 
   return _applyForEach(elements, 'removeAttribute', attributes);
 }
@@ -1132,18 +1170,21 @@ function removeData(elements, attributes) {
  *   dataFish: 'salmon'
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
-function setAttr(elements, attributes) {
-  forIn(attributes, function (name, value) {
-    if (typeof value !== 'string' && !(value instanceof Array)) {
-      attributes[name] = JSON.stringify(value);
-    }
-  });
 
-  return forElements(elements, function (element) {
-    forIn(attributes, function (name, value) {
-      element.setAttribute(name, value);
-    });
-  });
+function _setAttributes(attributes, element) {
+  forIn(attributes, element.setAttribute.bind(element));
+}
+
+function _stringifyValue(attributes, name, value) {
+  if (typeof value !== 'string' && !(value instanceof Array)) {
+    attributes[name] = JSON.stringify(value);
+  }
+}
+
+function setAttr(elements, attributes) {
+  forIn(attributes, _stringifyValue.bind(null, attributes));
+
+  return forElements(elements, _setAttributes.bind(null, attributes));
 }
 
 /**
@@ -1163,12 +1204,15 @@ function setAttr(elements, attributes) {
  *   fish: 'salmon'
  * }) //returns: [<div class="maki" data-fish="salmon">]
  */
+
+function _prefixAttribute(attributes, name, value) {
+  attributes['data-' + name] = value;
+}
+
 function setData(elements, dataAttributes) {
   var attributes = {};
 
-  forIn(dataAttributes, function (name, value) {
-    attributes['data-' + name] = value;
-  });
+  forIn(dataAttributes, _prefixAttribute.bind(null, attributes));
 
   return setAttr(elements, attributes);
 }
@@ -1188,10 +1232,13 @@ function setData(elements, dataAttributes) {
  * Chirashi.setProp(maki, { value: 'こんにちは世界' })
  * Chirashi.getProp(maki, 'value') //returns: こんにちは世界
  */
+
+function _apply(props, element) {
+  Object.assign(element, props);
+}
+
 function setProp(elements, props) {
-  return forElements(elements, function (element) {
-    return Object.assign(element, props);
-  });
+  return forElements(elements, _apply.bind(null, props));
 }
 
 /**
@@ -1690,18 +1737,23 @@ var unitless = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset'
  *   background: 'pink'
  * }) // returns: [<div class="salmon" style="display: block; position: absolute; top: 20px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: pink;"></div>]
  */
+
+function _applyUnit(style, prop, value) {
+  if (unitless.indexOf(_kebabCase(prop)) === -1 && typeof value === 'number') {
+    style[prop] += 'px';
+  }
+}
+
+function _applyStyle(style, element) {
+  if (!element.style) return;
+
+  Object.assign(element.style, style);
+}
+
 function setStyle(elements, style) {
-  forIn(style, function (prop, value) {
-    if (unitless.indexOf(_kebabCase(prop)) === -1 && typeof value === 'number') {
-      style[prop] += 'px';
-    }
-  });
+  forIn(style, _applyUnit.bind(null, style));
 
-  return forElements(elements, function (element) {
-    if (!element.style) return;
-
-    Object.assign(element.style, style);
-  });
+  return forElements(elements, _applyStyle.bind(null, style));
 }
 
 /**
@@ -1733,13 +1785,19 @@ function setStyle(elements, style) {
  * Chirashi.clearStyle(maki, ['position', top])
  * Chirashi.clearStyle(maki, 'width, height, background')
  */
-function clearStyle(elements, props) {
-  props = _stringToArray(props);
 
+function _resetProp(style, prop) {
+  style[prop] = '';
+}
+
+function clearStyle(elements) {
   var style = {};
-  forEach(props, function (prop) {
-    style[prop] = '';
-  });
+
+  for (var _len = arguments.length, props = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    props[_key - 1] = arguments[_key];
+  }
+
+  forEach(props, _resetProp.bind(null, style));
 
   return setStyle(elements, style);
 }
@@ -2365,4 +2423,4 @@ function transform(elements, transformation) {
  * @property {number} [skew.y=0] - Skew value on y axis in radians.
  */
 
-export { forEach, forElements, forIn, getElement, getElements, isDomElement, addClass, append, children, clone, closest, createElement, filter, find, findOne, getAttr, getData, getHtml, getProp, hasClass, indexInParent, insertAfter, insertBefore, next, parent, prev, remove, removeAttr, removeClass, removeData, setAttr, setData, setHtml, setProp, toggleClass, bind, on, once, ready, trigger, clearStyle, clientRect, getHeight, getSize, getStyle, getWidth, hide, offset, position, screenPosition, setHeight, setSize, setStyle, setWidth, show, transform };
+export { forEach, forElements, forIn, getElement, getElements, isDomElement, addClass, append, children, clone, closest, createElement, empty, filter, find, findOne, getAttr, getData, getHtml, getProp, hasClass, indexInParent, insertAfter, insertBefore, next, parent, parents, prev, remove, removeAttr, removeClass, removeData, setAttr, setData, setHtml, setProp, toggleClass, bind, on, once, ready, trigger, clearStyle, clientRect, getHeight, getSize, getStyle, getWidth, hide, offset, position, screenPosition, setHeight, setSize, setStyle, setWidth, show, transform };
