@@ -1,4 +1,3 @@
-import contains from '../contains'
 import { assert } from 'chai'
 import { empty } from 'chirashi'
 
