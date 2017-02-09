@@ -21,27 +21,21 @@ describe('chirashi#forEach', () => {
     avocadoMaki.classList.add('maki', 'avocado')
     document.body.appendChild(avocadoMaki)
 
-    let i = items.length
+    let j = 0
     forEach(items, (item, index) => {
-      assert.equal(--i, index, 'should provide index backward')
-      assert.equal(items[index], item, 'should iterate backward')
-    })
-
-    let j = -1
-    forEach(items, (item, index) => {
-      assert.equal(++j, index, 'should provide index forward')
+      assert.equal(j++, index, 'should provide index forward')
       assert.equal(items[index], item, 'should iterate forward')
-    }, true)
+    })
 
     forEach(1, item => {
       assert.equal(1, item, 'should work with singleton')
     })
 
     const nodeList = document.querySelectorAll('.maki')
-    let k = nodeList.length
+    let k = 0
     forEach(nodeList, (item, index) => {
-      assert.equal(--k, index, 'should provide index backward')
-      assert.equal(nodeList[index], item, 'should iterate backward')
+      assert.equal(k++, index, 'should provide index forward')
+      assert.equal(nodeList[index], item, 'should iterate forward')
     })
 
     assert.equal(items, forEach(items, () => {}), 'should return items')

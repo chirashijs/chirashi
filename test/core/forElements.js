@@ -20,43 +20,40 @@ describe('chirashi#forElements', () => {
     document.body.appendChild(tunaSushi)
 
     const s1 = [wasabiSalmonSushi]
-    let i = s1.length
-    while (i--) {
-      forElements(wasabiSalmonSushi, element => {
-        assert.equal(s1[i], element, 'should work for dom element')
-      })
-    }
+    let i = 0
+    forElements(wasabiSalmonSushi, element => {
+      assert.equal(s1[i++], element, 'should work for dom element')
+    })
 
     const s2 = [wasabiSalmonSushi, salmonSushi]
-    let j = s2.length
+    let j = 0
     const elements = forElements(document.querySelectorAll('.sushi.salmon'), element => {
-      assert.equal(s2[--j], element, 'should work for nodelist')
+      assert.equal(s2[j++], element, 'should work for nodelist')
     })
 
     const s3 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
-    let h = s3.length
+    let h = 0
     forElements('.sushi', element => {
-      assert.equal(s3[--h], element, 'should work for tag selector')
+      assert.equal(s3[h++], element, 'should work for tag selector')
     })
 
     const s4 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
-    let k = s4.length
+    let k = 0
     forElements('.sushi.salmon, .sushi.tuna', element => {
-      assert.equal(s4[--k], element, 'should work for class selector')
+      assert.equal(s4[k++], element, 'should work for class selector')
     })
 
-    const arrayElements = [].slice.call(elements)
-    arrayElements.push('.sushi.tuna', '.unknown')
-    const s5 = [tunaSushi, salmonSushi, wasabiSalmonSushi]
-    let l = s5.length
-    forElements(arrayElements, element => {
-      assert.equal(s5[--l], element, 'should extract dom elements from array')
+    elements.push('.sushi.tuna', '.unknown')
+    const s5 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
+    let l = 0
+    forElements(elements, element => {
+      assert.equal(s5[l++], element, 'should extract dom elements from array')
     })
 
-    const s6 = [tunaSushi, wasabiSalmonSushi, salmonSushi]
-    let m = s6.length
+    const s6 = [wasabiSalmonSushi, salmonSushi, tunaSushi]
+    let m = 0
     forElements(['.sushi.salmon', '.sushi.tuna'], element => {
-      assert.equal(s6[--m], element, 'should work for array of selectors')
+      assert.equal(s6[m++], element, 'should work for array of selectors')
     })
 
     document.body.removeChild(wasabiSalmonSushi)

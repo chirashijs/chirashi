@@ -16,7 +16,7 @@ describe('chirashi#clearStyle', () => {
       top: '10px'
     })
 
-    clearStyle(div, 'display, position')
+    clearStyle(div, 'display', 'position')
     assert.equal(div.style.display, '', 'should clear using string')
 
     clearStyle(div, ['top'])

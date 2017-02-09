@@ -22,7 +22,7 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 
   # commit
   git add -A
-  git commit -m "[release] $VERSION :sushi:"
+  git commit -m "[release] $VERSION :rocket::sushi:"
   npm version $VERSION --message "[release] $VERSION :sushi:"
 
   # publish

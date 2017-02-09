@@ -14,20 +14,11 @@ describe('chirashi#forIn', () => {
 
   it('should execute callback on keys of object', () => {
     const keys = Object.keys(object)
-    let i = keys.length
+    let i = 0
     forIn(object, (key, value) => {
-      assert.equal(key, keys[--i])
-      assert.equal(value, object[keys[i]])
+      assert.equal(key, keys[i])
+      assert.equal(value, object[keys[i++]])
     })
-  })
-
-  it('should execute callback on keys of object in same order', () => {
-    const keys = Object.keys(object)
-    let i = -1
-    forIn(object, (key, value) => {
-      assert.equal(key, keys[++i])
-      assert.equal(value, object[keys[i]])
-    }, true)
   })
 
   it('shouldn\'t crash if input isn\'t an object', () => {

@@ -21,9 +21,5 @@ describe('chirashi#insertBefore', () => {
     insertBefore(cheese, '.wasabi')
 
     assert.isTrue(cheese.previousElementSibling.classList.contains('wasabi'), 'should create and insert node')
-
-    assert.isUndefined(insertBefore(window, '.null'), 'should just return if node can\'t be inserted')
-
-    assert.equal(maki, insertBefore(maki, 149), 'should return element if trying to append something wrong')
   })
 })
