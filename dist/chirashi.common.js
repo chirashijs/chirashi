@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.2.1-beta
+ * Chirashi.js v6.2.2-beta
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -1299,16 +1299,24 @@ function _stringToArray(input) {
  * }) //returns: [<div class="maki salmon cheese" data-for="sheldon"></div>, <div class="maki salmon" data-for="leonard"></div>]
  */
 
-function _toggleOne(className, force, element) {
-  element.classList.toggle(className, force ? force(element) : undefined);
+function _toggleOne(className, element) {
+  element.classList.toggle(className);
 }
 
-function _toggleClassName(elements, force, className) {
-  forElements(elements, _toggleOne.bind(null, className, force));
+function _toggleClassName(elements, className) {
+  forElements(elements, _toggleOne.bind(null, className));
+}
+
+function _toggleOneWithForce(className, force, element) {
+  element.classList.toggle(className, force(element));
+}
+
+function _toggleClassNameWithForce(elements, force, className) {
+  forElements(elements, _toggleOneWithForce.bind(null, className, force));
 }
 
 function _toggleClassesWithForce(elements, classNames, force) {
-  forEach(_stringToArray(classNames), _toggleClassName.bind(null, elements, force));
+  forEach(_stringToArray(classNames), _toggleClassNameWithForce.bind(null, elements, force));
 }
 
 function toggleClass(elements) {
@@ -1319,7 +1327,7 @@ function toggleClass(elements) {
   if (_typeof(args[0]) === 'object') {
     forIn(args[0], _toggleClassesWithForce.bind(null, elements));
   } else {
-    forEach(args, _toggleClassName.bind(null, elements, null));
+    forEach(args, _toggleClassName.bind(null, elements));
   }
 }
 
