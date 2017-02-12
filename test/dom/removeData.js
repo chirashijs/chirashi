@@ -9,9 +9,11 @@ describe('chirashi#removeData', () => {
   it('should remove data-attribute of element', () => {
     const sushi = document.createElement('div')
     sushi.setAttribute('data-fish', 'salmon')
+    sushi.setAttribute('data-cheese', 'true')
 
-    removeData(sushi, 'fish')
+    removeData(sushi, 'fish', 'cheese')
 
     assert.isNull(sushi.getAttribute('data-fish'))
+    assert.isNull(sushi.getAttribute('data-cheese'))
   })
 })

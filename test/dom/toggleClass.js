@@ -13,10 +13,9 @@ describe('chirashi#toggleClass', () => {
     toggleClass(maki, 'cheese')
     assert.isFalse(maki.classList.contains('cheese'), 'remove class if present')
 
-    toggleClass(maki, 'cheese')
+    toggleClass(maki, 'cheese', 'avocado')
     assert.isTrue(maki.classList.contains('cheese'), 'add class if missing')
-
-    assert.sameDeepMembers([window], toggleClass(window, ['cheese', 'avocado']), 'should just return if element has no classes')
+    assert.isTrue(maki.classList.contains('avocado'), 'add multiple class if missing')
 
     const scdMaki = maki.cloneNode(true)
 
@@ -24,17 +23,12 @@ describe('chirashi#toggleClass', () => {
     scdMaki.setAttribute('data-for', 'sheldon')
 
     toggleClass([maki, scdMaki], {
-      cheese: element => {
+      'cream cheese': element => {
         return element.getAttribute('data-for') !== 'leonard'
       }
     })
 
-    assert.isFalse(maki.classList.contains('cheese'), 'remove class if condition is false')
-    assert.isTrue(scdMaki.classList.contains('cheese'), 'add class if condition is true')
-    assert.sameDeepMembers([window], toggleClass(window, {
-      cheese: element => {
-        return true
-      }
-    }), 'should just return if element has no classes')
+    assert.isTrue(!maki.classList.contains('cream') && !maki.classList.contains('cheese'), 'remove class if condition is false')
+    assert.isTrue(scdMaki.classList.contains('cream') && scdMaki.classList.contains('cheese'), 'add class if condition is true')
   })
 })

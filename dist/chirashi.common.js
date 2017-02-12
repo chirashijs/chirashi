@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.1.1
+ * Chirashi.js v6.2.0-beta
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -863,15 +863,17 @@ function _stringToArray(input) {
  * Chirashi.hasClass(maki, 'salmon cheese') //returns: true
  * Chirashi.hasClass(maki, ['salmon', 'avocado']) //returns: false
  */
-function hasClass(element, classes) {
+function hasClass(element) {
   element = getElement(element);
-  if (!element || !element.classList) return;
+  if (!element) return;
 
-  classes = _stringToArray(classes);
+  for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    classes[_key - 1] = arguments[_key];
+  }
 
-  var i = classes.length;
+  var n = classes.length;
   var found = void 0;
-  while (i-- && (found = element.classList.contains(classes[i]))) {}
+  for (var i = 0; i < n && (found = element.classList.contains(classes[i])); ++i) {}
 
   return found;
 }
@@ -1103,8 +1105,12 @@ function _applyForEach(elements, method, args) {
  * Chirashi.append(maki, ['.salmon[data-fish="salmon"]', '.cheese[data-cheese="cream"]']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="cheese" data-cheese="cream"></div></div>
  * Chirashi.removeAttr('.salmon', 'data-fish') //returns: [<div class="salmon"></div>]
  */
-function removeAttr(elements, attributes) {
-  return _applyForEach(elements, 'removeAttribute', _stringToArray(attributes));
+function removeAttr(elements) {
+  for (var _len = arguments.length, attributes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    attributes[_key - 1] = arguments[_key];
+  }
+
+  return _applyForEach(elements, 'removeAttribute', attributes);
 }
 
 /**
@@ -1150,8 +1156,11 @@ function _prefixAttr(attributes, attr, index) {
   attributes[index] = 'data-' + attr;
 }
 
-function removeData(elements, attributes) {
-  attributes = _stringToArray(attributes);
+function removeData(elements) {
+  for (var _len = arguments.length, attributes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    attributes[_key - 1] = arguments[_key];
+  }
+
   forEach(attributes, _prefixAttr.bind(null, attributes));
 
   return _applyForEach(elements, 'removeAttribute', attributes);
@@ -1295,34 +1304,28 @@ function setHtml(elements, html) {
  *   }
  * }) //returns: [<div class="maki salmon cheese" data-for="sheldon"></div>, <div class="maki salmon" data-for="leonard"></div>]
  */
-function toggleClass(elements, input) {
-  if (input instanceof Array || typeof input === 'string') {
-    var _ret = function () {
-      var classes = _stringToArray(input);
 
-      return {
-        v: forElements(elements, function (element) {
-          if (!element.classList) return;
+function _toggleOne(className, force, element) {
+  element.classList.toggle(className, force ? force(element) : undefined);
+}
 
-          forEach(classes, function (className) {
-            element.classList.toggle(className);
-          });
-        })
-      };
-    }();
+function _toggleClassName(elements, force, className) {
+  forElements(elements, _toggleOne.bind(null, className, force));
+}
 
-    if ((typeof _ret === 'undefined' ? 'undefined' : _typeof(_ret)) === "object") return _ret.v;
+function _toggleClassesWithForce(elements, classNames, force) {
+  forEach(_stringToArray(classNames), _toggleClassName.bind(null, elements, force));
+}
+
+function toggleClass(elements) {
+  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+
+  if (_typeof(args[0]) === 'object') {
+    forIn(args[0], _toggleClassesWithForce.bind(null, elements));
   } else {
-    return forElements(elements, function (element) {
-      if (!element.classList) return;
-
-      forIn(input, function (classes, condition) {
-        var toggle = condition(element);
-        forEach(_stringToArray(classes), function (className) {
-          element.classList.toggle(className, toggle);
-        });
-      });
-    });
+    forEach(args, _toggleClassName.bind(null, elements, null));
   }
 }
 
