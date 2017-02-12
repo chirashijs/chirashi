@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.2.0-beta
+ * Chirashi.js v6.2.1-beta
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -839,17 +839,6 @@ function getHtml(element) {
   return getProp(element, 'innerHTML');
 }
 
-var reg$2 = /[,\s]+/g;
-function _stringToArray(input) {
-  reg$2.lastIndex = 0;
-
-  if (typeof input === 'string') {
-    return input.search(reg$2) !== -1 ? input.split(reg$2) : [input];
-  }
-
-  return input;
-}
-
 /**
  * Iterates over classes and test if element has each.
  * @param {(string|HTMLElement|SVGElement)} element - The selector or dom element.
@@ -908,6 +897,18 @@ function indexInParent(element) {
   }return i;
 }
 
+function _nodeInsertion(method, element, nodes) {
+  element = getElement(element);
+
+  if (!element || !('parentNode' in element)) return;
+
+  var parent = element.parentNode;
+
+  forEach(nodes, method.bind(null, parent, element));
+
+  return element;
+}
+
 /**
  * Insert nodes after element in his parent.
  * @param {(string|HTMLElement|SVGElement|Text)} element - The selector or dom element.
@@ -926,21 +927,11 @@ function indexInParent(element) {
  * Chirashi.insertAfter('.salmon', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 
-function _insertOn(parent, element, node) {
+function _insertAfter(parent, element, node) {
   parent.insertBefore(typeof node === 'string' ? createElement(node) : node, element.nextElementSibling);
 }
 
-function insertAfter(element, nodes) {
-  element = getElement(element);
-
-  if (!element || !('parentNode' in element)) return;
-
-  var parent = element.parentNode;
-
-  forEach(nodes, _insertOn.bind(null, parent, element));
-
-  return element;
-}
+var insertAfter = _nodeInsertion.bind(null, _insertAfter);
 
 /**
  * Insert nodes before element in his parent.
@@ -960,21 +951,11 @@ function insertAfter(element, nodes) {
  * Chirashi.insertBefore('.cheese', ['.avocado', '.wasabi']) //returns: <div class="maki"><div class="salmon" data-fish="salmon"></div><div class="avocado"></div><div class="wasabi"></div><div class="cheese" data-cheese="cream"></div></div>
  */
 
-function _insertOne(parent, element, node) {
+function _insertBefore(parent, element, node) {
   parent.insertBefore(typeof node === 'string' ? createElement(node) : node, element);
 }
 
-function insertBefore(element, nodes) {
-  element = getElement(element);
-
-  if (!element || !('parentNode' in element)) return;
-
-  var parent = element.parentNode;
-
-  forEach(nodes, _insertOne.bind(null, parent, element));
-
-  return element;
-}
+var insertBefore = _nodeInsertion.bind(null, _insertBefore);
 
 /**
  * Get the next sibling of element.
@@ -1168,6 +1149,12 @@ function removeData(elements) {
   return _applyForEach(elements, 'removeAttribute', attributes);
 }
 
+function _parseAndApply(parse, apply, elements, options) {
+  forIn(options, parse.bind(null, options));
+
+  return forElements(elements, apply.bind(null, options));
+}
+
 /**
  * Iterates over attributes as key value pairs and apply on each element of elements.
  * @param {Array | string | HTMLElement | SVGElement} elements - The iterable, selector or elements.
@@ -1196,11 +1183,7 @@ function _stringifyValue(attributes, name, value) {
   }
 }
 
-function setAttr(elements, attributes) {
-  forIn(attributes, _stringifyValue.bind(null, attributes));
-
-  return forElements(elements, _setAttributes.bind(null, attributes));
-}
+var setAttr = _parseAndApply.bind(null, _stringifyValue, _setAttributes);
 
 /**
  * Iterates over data-attributes as key value pairs and apply on each element of elements.
@@ -1273,6 +1256,17 @@ function setProp(elements, props) {
  */
 function setHtml(elements, html) {
   return setProp(elements, { 'innerHTML': html });
+}
+
+var reg$2 = /[,\s]+/g;
+function _stringToArray(input) {
+  reg$2.lastIndex = 0;
+
+  if (typeof input === 'string') {
+    return input.search(reg$2) !== -1 ? input.split(reg$2) : [input];
+  }
+
+  return input;
 }
 
 /**
@@ -1759,11 +1753,7 @@ function _applyStyle(style, element) {
   Object.assign(element.style, style);
 }
 
-function setStyle(elements, style) {
-  forIn(style, _applyUnit.bind(null, style));
-
-  return forElements(elements, _applyStyle.bind(null, style));
-}
+var setStyle = _parseAndApply.bind(null, _applyUnit, _applyStyle);
 
 /**
  * Clear inline style properties from elements.
