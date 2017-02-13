@@ -1,6 +1,6 @@
 {
   "name": "chirashi",
-  "version": "6.2.2-beta",
+  "version": "6.2.3-beta",
   "description": "Minimalist DOM and events manager focused on performances",
   "keywords": [
     "DOM",

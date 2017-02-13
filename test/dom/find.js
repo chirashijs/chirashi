@@ -15,6 +15,7 @@ describe('chirashi#find', () => {
     sushi.classList.add('sushi')
 
     const makiSalmon = document.createElement('div')
+    makiSalmon.setAttribute('id', 'salmon')
     makiSalmon.classList.add('salmon')
     maki.appendChild(makiSalmon)
 
@@ -27,6 +28,7 @@ describe('chirashi#find', () => {
     maki.appendChild(cheese)
 
     assert.isTrue(contains([], find(maki, '.avocado')))
+    assert.isTrue(contains([sushiSalmon], find(maki, '#salmon')))
     assert.isTrue(contains([makiSalmon, sushiSalmon], find([maki, sushi], '.salmon')))
   })
 })

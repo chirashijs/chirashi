@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.2.2-beta
+ * Chirashi.js v6.2.3-beta
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -65,17 +65,11 @@ var _extends = Object.assign || function (target) {
  * Iterates over items and apply callback on each one.
  * @param {*} items - The iterable.
  * @param {forEachCallback} callback - The callback to call for each iteratee.
- * @param {boolean} [forceOrder=false] - Respect items order.
- * @return {(Array|NodeList|HTMLCollection)} items for chaining.
+ * @return {(Array|NodeList|HTMLCollection)} iterable - items for chaining.
  * @example //esnext
  * import { forEach } from 'chirashi'
  *
  * const items = forEach([0, 1, 2], (item, i) => console.log(`${i}: ${item + 1}`)) //returns: [0, 1, 2]
- * // logs:
- * //   2: 3
- * //   1: 2
- * //   0: 1
- * forEach(items, (item, i) => console.log(`${i}: ${item + 1}`), true) //returns: [0, 1, 2]
  * // logs:
  * //   0: 1
  * //   1: 2
@@ -84,11 +78,6 @@ var _extends = Object.assign || function (target) {
  * //   0: 1
  * @example //es5
  * var items = Chirashi.forEach([0, 1, 2], function (item, i) { console.log(i+': '+(item + 1)) }) //returns: [0, 1, 2]
- * // logs:
- * //   2: 3
- * //   1: 2
- * //   0: 1
- * Chirashi.forEach(items, function (item, i) { console.log(i+': '+(item + 1)) }, true) //returns: [0, 1, 2]
  * // logs:
  * //   0: 1
  * //   1: 2
@@ -154,7 +143,7 @@ function _getElements(from, selector) {
       case '.':
         return _nodelistToArray(from.getElementsByClassName(selector.slice(1)));
       case '#':
-        return [from.getElementById(selector.slice(1))];
+        return _chirasizeArray([from === document ? from.getElementById(selector.slice(1)) : from.querySelector(selector)]);
       default:
         return _nodelistToArray(from.getElementsByTagName(selector));
     }
@@ -188,7 +177,7 @@ function isDomElement(element) {
 /**
  * Get dom element recursively from iterable or selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} input - The iterable, selector or elements.
- * @return {(Array|NodeList|HTMLCollection)} domElements - The array or nodelist of dom elements from input.
+ * @return {Array} domElements - The array of dom elements from input.
  * @example //esnext
  * import { createElement, append, getElements } from 'chirashi'
  * const sushi = createElement('.sushi')
@@ -243,8 +232,7 @@ function getElements(input) {
  * Iterates over dom elements and apply callback on each one.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
  * @param {forElementsCallback} callback - The function to call for each element.
- * @param {boolean} [forceOrder=false] - Respect elements order.
- * @return {(Array|NodeList|HTMLCollection)} items for chaining.
+ * @return {(Array|NodeList|HTMLCollection)} iterable - items for chaining.
  * @example //esnext
  * import { createElement, append, forElements } from 'chirashi'
  * const sushi = createElement('.sushi')
@@ -254,11 +242,11 @@ function getElements(input) {
  * append(document.body, [sushi, unagi, yakitori, sashimi])
  * forElements('div', console.log) //returns: [<div class="sushi"></div>, <div class="unagi"></div>, <div class="yakitori"></div>, <div class="sashimi"></div>]
  * // logs:
- * // <div class="sashimi"></div> 3
- * // <div class="yakitori"></div> 2
- * // <div class="unagi"></div> 1
  * // <div class="sushi"></div> 0
- * forElements([yakitori, sashimi], console.log, true) //returns: [<div class="yakitori"></div>, <div class="sashimi"></div>]
+ * // <div class="unagi"></div> 1
+ * // <div class="yakitori"></div> 2
+ * // <div class="sashimi"></div> 3
+ * forElements([yakitori, sashimi], console.log) //returns: [<div class="yakitori"></div>, <div class="sashimi"></div>]
  * // logs:
  * // <div class="yakitori"></div> 0
  * // <div class="sashimi"></div> 1
@@ -270,11 +258,11 @@ function getElements(input) {
  * Chirashi.append(document.body, [sushi, unagi, yakitori, sashimi])
  * Chirashi.forElements('div', console.log) //returns: [<div class="sushi"></div>, <div class="unagi"></div>, <div class="yakitori"></div>, <div class="sashimi"></div>]
  * // logs:
- * // <div class="sashimi"></div> 3
- * // <div class="yakitori"></div> 2
- * // <div class="unagi"></div> 1
  * // <div class="sushi"></div> 0
- * Chirashi.forElements([yakitori, sashimi], console.log, true) //returns: [<div class="yakitori"></div>, <div class="sashimi"></div>]
+ * // <div class="unagi"></div> 1
+ * // <div class="yakitori"></div> 2
+ * // <div class="sashimi"></div> 3
+ * Chirashi.forElements([yakitori, sashimi], console.log) //returns: [<div class="yakitori"></div>, <div class="sashimi"></div>]
  * // logs:
  * // <div class="yakitori"></div> 0
  * // <div class="sashimi"></div> 1
@@ -294,7 +282,6 @@ function forElements(elements, callback) {
  * Iterates over object's keys and apply callback on each one.
  * @param {Object} object - The iterable.
  * @param {forInCallback} callback - The function to call for each key-value pair.
- * @param {boolean} [forceOrder=false] - Respect keys order.
  * @return {Object} object - The iterable for chaining.
  * @example //esnext
  * import { forIn } from 'chirashi'
@@ -302,13 +289,6 @@ function forElements(elements, callback) {
  * forIn(californiaRoll, (key, value) => {
  *   console.log(`${key} -> ${value}`)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * // LOGS:
- * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
- * // price -> 4.25
- * // name -> California Roll
- * forIn(californiaRoll, (key, value) => {
- *   console.log(`${key} -> ${value}`)
- * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
  * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
@@ -318,13 +298,6 @@ function forElements(elements, callback) {
  * Chirashi.forIn(californiaRoll, (key, value) => {
  *   console.log(key + ' -> ' + value)
  * }) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
- * // LOGS:
- * // recipe -> ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed']
- * // price -> 4.25
- * // name -> California Roll
- * Chirashi.forIn(californiaRoll, (key, value) => {
- *   console.log(key + ' -> ' + value)
- * }, true) //returns: { name: 'California Roll', price: 4.25, recipe: ['avocado', 'cucumber', 'crab', 'mayonnaise', 'sushi rice', 'seaweed'] }
  * // LOGS:
  * // name -> California Roll
  * // price -> 4.25
@@ -418,9 +391,9 @@ function _updateClassList(elements, method, classes) {
 }
 
 /**
- * Iterates over classes and add it on each element of elements.
+ * Iterates over classes and add it on each element of elements or ignore it if already set.
  * @param {(string|Array|NodeList|HTMLCollection|HTMLElement|SVGElement)} elements - The iterable, selector or elements.
- * @param {(string|string[])} classes - Array of classes or string of classes seperated with comma and/or spaces.
+ * @param {...string} classes - Classes to add.
  * @return {(Array|NodeList|HTMLCollection)} domElements - The array or nodelist of dom elements from elements.
  * @example //esnext
  * import { createElement, addClass } from 'chirashi'
@@ -454,7 +427,8 @@ function addClass(elements) {
  * var maki = Chirashi.createElement('a#sushi.link[data-href="chirashijs.org"][data-link]') //returns: <a class="link" id="sushi" data-href="chirashijs.org" data-link></a>
  * var greetings = Chirashi.createElement('<h1>Hello <strong>World</strong>!</h1>') //returns: <h1>Hello <strong>World</strong>!</h1>
  */
-var regex = /([#.]?)([\w-_]+)|\[([\w-_]+)(=([\w.{}:'"\s]+))?]/g;
+
+var regex = /[#.]?([\w-_]+)|\[([\w-_]+)(="([\w.{}:'/'"#!@\s]+)?")?]|{([\w.{}:'/'"#!@\s]+)}/g;
 function createElement(string) {
   regex.lastIndex = 0;
 
@@ -463,33 +437,33 @@ function createElement(string) {
 
     var attributes = '';
     var className = '';
+    var text = '';
 
     var segment = void 0;
     while (segment = regex.exec(string)) {
-      var attribute = segment[3];
-      if (typeof attribute !== 'undefined') {
-        // attribute
-        var value = segment[5];
-        attributes += ' ' + attribute + (typeof value !== 'undefined' ? '=' + value : '');
-      } else {
-        var prefix = segment[1];
-        var _value = segment[2];
-        if (prefix === '.') {
-          // className
-          className += ' ' + _value;
-        } else if (prefix === '#') {
-          // id
-          attributes += ' id="' + _value + '"';
-        } else {
-          // tag
-          core = _value;
+      if (segment[1]) {
+        switch (segment[0][0]) {
+          case '#':
+            attributes += ' id="' + segment[1] + '"';
+            break;
+
+          case '.':
+            className += ' ' + segment[1];
+            break;
+
+          default:
+            core = segment[1];
         }
+      } else if (segment[2]) {
+        attributes += ' ' + segment[2] + (segment[4] ? '="' + segment[4] + '"' : '');
+      } else {
+        text = segment[5];
       }
     }
 
     if (core === null) core = 'div';
 
-    string = '<' + core + (className ? ' class="' + className.slice(1) + '"' : '') + attributes + '></' + core + '>';
+    string = '<' + core + (className ? ' class="' + className.slice(1) + '"' : '') + attributes + '>' + text + '</' + core + '>';
   }
 
   var temp = document.createElement('div');
@@ -554,9 +528,9 @@ function getProp(element, property) {
 }
 
 /**
- * Returns an element's children.
+ * Returns an element's children as Array.
  * @param {(string|HTMLElement|SVGElement)} element - Selector or element.
- * @return {HTMLCollection} children - Element's children or null if elements has no children property or isn't a dom element.
+ * @return {Array} children - Element's children as array.
  * @example //esnext
  * import { createElement, append, children } from 'chirashi'
  * const maki = createElement('.maki')
@@ -840,29 +814,26 @@ function getHtml(element) {
 /**
  * Iterates over classes and test if element has each.
  * @param {(string|HTMLElement|SVGElement)} element - The selector or dom element.
- * @param {(string|string[])} classes - Array of classes, classes seperated by coma and/or spaces or single class.
+ * @param {...string} classes - Classes to test.
  * @return {boolean} hasClass - Is true if element has all classes.
  * @example //esnext
  * import { createElement, hasClass } from 'chirashi'
  * const maki = createElement('.salmon.cheese.maki')
- * hasClass(maki, 'salmon cheese') //returns: true
- * hasClass(maki, ['salmon', 'avocado']) //returns: false
+ * hasClass(maki, 'salmon', 'cheese') //returns: true
+ * hasClass(maki, 'salmon', 'avocado') //returns: false
  * @example //es5
  * var maki = Chirashi.createElement('.salmon.cheese.maki')
- * Chirashi.hasClass(maki, 'salmon cheese') //returns: true
- * Chirashi.hasClass(maki, ['salmon', 'avocado']) //returns: false
+ * Chirashi.hasClass(maki, 'salmon', 'cheese') //returns: true
+ * Chirashi.hasClass(maki, 'salmon', 'avocado') //returns: false
  */
 function hasClass(element) {
   element = getElement(element);
   if (!element) return;
 
-  for (var _len = arguments.length, classes = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    classes[_key - 1] = arguments[_key];
-  }
-
-  var n = classes.length;
+  var n = arguments.length <= 1 ? 0 : arguments.length - 1;
   var found = void 0;
-  for (var i = 0; i < n && (found = element.classList.contains(classes[i])); ++i) {}
+  var i = -1;
+  while (++i < n && (found = element.classList.contains(arguments.length <= i + 1 ? undefined : arguments[i + 1]))) {}
 
   return found;
 }
@@ -1020,7 +991,7 @@ function _getParents(element) {
   var arr = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : [];
 
   var parent = element.parentNode;
-  if (parent && parent !== document) {
+  if (parent) {
     arr.push(parent);
 
     return _getParents(parent, arr);

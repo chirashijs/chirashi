@@ -15,6 +15,8 @@ describe('chirashi#children', () => {
     document.body.appendChild(maki)
 
     assert.isTrue(contains([cheese], children('#children-maki')))
+    maki.removeChild(cheese)
+    assert.isTrue(contains([], children('#children-maki')))
 
     document.body.removeChild(maki)
   })

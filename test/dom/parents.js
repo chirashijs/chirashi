@@ -13,6 +13,6 @@ describe('chirashi#parents', () => {
     const cheese = document.createElement('div')
     maki.appendChild(cheese)
 
-    assert.isTrue(contains(parents(cheese), [maki, document.body]))
+    assert.isTrue(contains(parents(cheese), [maki, document.body, document.documentElement, document]))
   })
 })
