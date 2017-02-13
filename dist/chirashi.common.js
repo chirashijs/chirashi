@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.2.3-beta
+ * Chirashi.js v6.2.4-beta
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -143,7 +143,8 @@ function _getElements(from, selector) {
       case '.':
         return _nodelistToArray(from.getElementsByClassName(selector.slice(1)));
       case '#':
-        return _chirasizeArray([from === document ? from.getElementById(selector.slice(1)) : from.querySelector(selector)]);
+        var element = from === document ? from.getElementById(selector.slice(1)) : from.querySelector(selector);
+        return _chirasizeArray(element ? [element] : []);
       default:
         return _nodelistToArray(from.getElementsByTagName(selector));
     }
@@ -648,6 +649,14 @@ function empty(elements) {
   return forElements(elements, _emptyElement);
 }
 
+function _applyOnElements(method, elements, selector) {
+  var found = [];
+
+  forElements(elements, method.bind(null, found, selector));
+
+  return _chirasizeArray(found);
+}
+
 /**
  * Iterates over elements, returning an array of all elements matching tested selector.
  * @param {(string|Array|NodeList|HTMLCollection|window|document|HTMLElement|SVGElement|Text)} elements - The iterable, selector or elements.
@@ -680,13 +689,7 @@ function _checkOne(matching, tested, element) {
   }
 }
 
-function filter(elements, tested) {
-  var matching = [];
-
-  forElements(elements, _checkOne.bind(null, matching, tested));
-
-  return _chirasizeArray(matching);
-}
+var filter = _applyOnElements.bind(null, _checkOne);
 
 /**
  * Iterates over each element of elements and returns an array containing all elements' children matching a selector.
@@ -716,17 +719,7 @@ function _findFromOne(found, selector, element) {
   found.push.apply(found, _getElements(element, selector));
 }
 
-function find(elements, selector) {
-  if (elements.length) {
-    var found = [];
-
-    forElements(elements, _findFromOne.bind(null, found, selector));
-
-    return _chirasizeArray(found);
-  } else {
-    return _getElements(elements, selector);
-  }
-}
+var find = _applyOnElements.bind(null, _findFromOne);
 
 /**
  * Find the first element's child matching the selector.
