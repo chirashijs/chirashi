@@ -14,5 +14,6 @@ describe('chirashi#parents', () => {
     maki.appendChild(cheese)
 
     assert.isTrue(contains(parents(cheese), [maki, document.body, document.documentElement, document]))
+    assert.isTrue(contains(parents('.null'), []))
   })
 })

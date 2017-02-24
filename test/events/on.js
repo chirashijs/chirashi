@@ -13,14 +13,20 @@ describe('chirashi#on', () => {
     let maki2 = document.createElement('div')
     maki2.classList.add('on', 'maki2')
 
+    const calls = {
+      value: 0
+    }
+
     const callback = event => {
       assert.equal(event.target, maki, 'should bind event')
 
-      setTimeout(() => {
-        maki.removeEventListener('click', callback)
+      if (++calls.value === 2) {
+        setTimeout(() => {
+          maki.removeEventListener('click', callback)
 
-        done()
-      }, 200)
+          done()
+        }, 200)
+      }
     }
 
     const listeners = on([maki, maki2], {
@@ -28,6 +34,15 @@ describe('chirashi#on', () => {
     })
 
     listeners.off(maki2, 'click')
+
+    const listeners2 = on([maki, maki2], {
+      'click': {
+        handler: callback,
+        capture: false
+      }
+    })
+
+    listeners2.off(maki2, 'click')
 
     maki2.dispatchEvent(new window.CustomEvent('click', {
       bubbles: true,
