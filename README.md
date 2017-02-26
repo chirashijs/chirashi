@@ -9,7 +9,7 @@
 
 ## Get started
 
-Find API documentation, guide and more on [chirashijs.org](http://chirashijs.org).
+Find API documentation, guide and more on [chirashi.js.org](http://chirashi.js.org).
 
 ## Quick view
 
