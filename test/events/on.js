@@ -18,6 +18,7 @@ describe('chirashi#on', () => {
     }
 
     const callback = event => {
+      console.log('clicked callback')
       assert.equal(event.target, maki, 'should bind event')
 
       if (++calls.value === 2) {
@@ -34,6 +35,18 @@ describe('chirashi#on', () => {
     })
 
     listeners.off(maki2, 'click')
+
+    maki2.dispatchEvent(new window.CustomEvent('click', {
+      bubbles: true,
+      cancelable: true
+    }))
+
+    maki.dispatchEvent(new window.CustomEvent('click', {
+      bubbles: true,
+      cancelable: true
+    }))
+
+    listeners.off()
 
     const listeners2 = on([maki, maki2], {
       'click': {
@@ -53,5 +66,7 @@ describe('chirashi#on', () => {
       bubbles: true,
       cancelable: true
     }))
+
+    listeners2.off()
   })
 })

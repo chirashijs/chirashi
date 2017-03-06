@@ -20,6 +20,8 @@ describe('chirashi#once', () => {
     const callback = event => {
       ++called
 
+      console.log('once callback')
+
       if (called === 1) {
         assert.equal(event.currentTarget, maki)
         assert.equal(event.type, 'click')

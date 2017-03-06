@@ -1,4 +1,4 @@
-# chirashi
+[![chirashi](./logo.png)](https://chirashi.js.org)
 
 [![npm version](https://badge.fury.io/js/chirashi.svg)](https://badge.fury.io/js/chirashi)
 [![Standard - JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)

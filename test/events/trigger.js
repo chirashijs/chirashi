@@ -13,12 +13,12 @@ describe('chirashi#trigger', () => {
     const callback = event => {
       assert.equal(event.target, maki, 'should trigger event')
 
-      maki.removeEventListener('click', callback)
+      maki.removeEventListener('click', callback, false)
 
       done()
     }
 
-    maki.addEventListener('click', callback)
+    maki.addEventListener('click', callback, false)
 
     trigger(maki, 'click')
 
