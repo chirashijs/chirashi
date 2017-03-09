@@ -5,6 +5,7 @@ const localResolve = require('rollup-plugin-local-resolve')
 const babel = require('rollup-plugin-babel')
 const babelrc = require('babelrc-rollup').default
 const uglify = require('uglify-js')
+const gzipSize = require('gzip-size')
 
 const pkg = require('../package.json')
 const version = process.env.VERSION || pkg.version
@@ -64,7 +65,9 @@ const targets = [
         }
       }).code
 
-      console.log(`${blue(file.split('/').pop())} ${green(`${getSize(minified)}kb`)}`)
+      const minifiedFile = file.split('/').pop()
+      console.log(`${blue(minifiedFile)} ${green(`${getSize(minified)}kb`)}`)
+      console.log(`${blue(minifiedFile + '.gz')} ${green(`${(gzipSize.sync(minified) / 1000).toFixed(2)}kb`)}`)
 
       fs.writeFileSync(file, minified)
     }

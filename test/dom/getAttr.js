@@ -10,8 +10,9 @@ describe('chirashi#getAttr', () => {
     const maki = document.createElement('img')
     maki.src = 'http://chirashijs.org/placeholder.png'
     maki.setAttribute('data-src', 'http://chirashijs.org/tasty-maki.png')
+    maki.setAttribute('alt', 'test')
 
-    assert.equal(getAttr(maki, 'src'), 'http://chirashijs.org/placeholder.png', 'should return value for attribute')
-    assert.equal(getAttr(maki, 'data-src'), 'http://chirashijs.org/tasty-maki.png', 'should return value for data-attribute')
+    assert.equal(getAttr(maki, 'data-src'), 'http://chirashijs.org/tasty-maki.png', 'should return value for one attribute')
+    assert.deepEqual(getAttr(maki, 'alt', 'src'), { alt: 'test', src: 'http://chirashijs.org/placeholder.png' }, 'should return object for multiple attributes')
   })
 })

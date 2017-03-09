@@ -17,9 +17,7 @@ describe('chirashi#getComputedStyle', () => {
       top: '10px'
     })
 
-    const getStyle = getComputedStyle(div)
-    const vanillaStyle = {...window.getComputedStyle(div)}
-    assert.sameDeepMembers(Object.keys(getStyle), Object.keys(vanillaStyle), 'should return a copy of element\'s computed style')
+    assert.deepEqual(getComputedStyle(div), window.getComputedStyle(div), 'should return a copy of element\'s computed style')
     assert.equal(getComputedStyle(null), false, 'should return false if no element')
 
     document.body.removeChild(div)

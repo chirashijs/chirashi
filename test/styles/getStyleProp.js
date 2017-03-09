@@ -19,9 +19,7 @@ describe('chirashi#getStyleProp', () => {
     })
 
     assert.equal(getStyleProp(div, 'display'), 'block', 'should return the value if only one prop')
-    const style = getStyleProp(div, 'top', 'zIndex')
-    assert.equal(style.top, 10, 'should return an object containing props with associated value and parse value when in pixel')
-    assert.equal(style.zIndex, 2, 'should parse value when unitless numeric value')
+    assert.deepEqual(getStyleProp(div, 'top', 'zIndex'), { top: 10, zIndex: 2 }, 'should return an object containing props with associated value and parse value when in pixel')
     assert.equal(getStyleProp(null), false, 'should return false if no element')
 
     document.body.removeChild(div)
