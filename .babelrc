@@ -1,9 +1,10 @@
 {
   "presets": [
-    ["latest", {
-      "es2015": {
-        "modules": false
-      }
+    ["env", {
+      "targets": {
+        "browsers": ["last 2 versions"]
+      },
+      "modules": false
     }]
   ],
   "plugins": ["transform-object-rest-spread"],
