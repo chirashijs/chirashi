@@ -2,7 +2,7 @@
 
 # forEach
 
-[lib/core/forEach.js:26-37](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forEach.js#L26-L37 "Source code on GitHub")
+[lib/core/forEach.js:26-37](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forEach.js#L26-L37 "Source code on GitHub")
 
 Iterates over items and apply callback on each one.
 
@@ -42,7 +42,7 @@ Returns **any** iterable - items if it's an array-like or an array containing it
 
 # forEachCallback
 
-[lib/core/forEach.js:26-37](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forEach.js#L26-L37 "Source code on GitHub")
+[lib/core/forEach.js:26-37](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forEach.js#L26-L37 "Source code on GitHub")
 
 Callback to apply on item.
 
@@ -53,7 +53,7 @@ Callback to apply on item.
 
 # forElements
 
-[lib/core/forElements.js:43-45](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forElements.js#L43-L45 "Source code on GitHub")
+[lib/core/forElements.js:43-45](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forElements.js#L43-L45 "Source code on GitHub")
 
 Iterates over dom elements and apply callback on each one.
 
@@ -107,7 +107,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # forElementsCallback
 
-[lib/core/forElements.js:43-45](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forElements.js#L43-L45 "Source code on GitHub")
+[lib/core/forElements.js:43-45](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forElements.js#L43-L45 "Source code on GitHub")
 
 Callback to apply on element.
 
@@ -118,7 +118,7 @@ Callback to apply on element.
 
 # forIn
 
-[lib/core/forIn.js:28-34](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forIn.js#L28-L34 "Source code on GitHub")
+[lib/core/forIn.js:28-34](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forIn.js#L28-L34 "Source code on GitHub")
 
 Iterates over object's keys and apply callback on each one.
 
@@ -158,7 +158,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # forInCallback
 
-[lib/core/forIn.js:36-38](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/forIn.js#L36-L38 "Source code on GitHub")
+[lib/core/forIn.js:36-38](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/forIn.js#L36-L38 "Source code on GitHub")
 
 Callback to apply on each key-value pair.
 
@@ -169,7 +169,7 @@ Callback to apply on each key-value pair.
 
 # getElement
 
-[lib/core/getElement.js:30-44](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/getElement.js#L30-L44 "Source code on GitHub")
+[lib/core/getElement.js:30-44](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/getElement.js#L30-L44 "Source code on GitHub")
 
 Get first dom element from iterable or selector.
 
@@ -210,7 +210,7 @@ Returns **([Window](https://developer.mozilla.org/en-US/docs/Web/API/Window) \| 
 
 # getElements
 
-[lib/core/getElements.js:33-54](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/getElements.js#L33-L54 "Source code on GitHub")
+[lib/core/getElements.js:33-54](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/getElements.js#L33-L54 "Source code on GitHub")
 
 Get dom element recursively from iterable or selector.
 
@@ -251,7 +251,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # isDomElement
 
-[lib/core/isDomElement.js:19-21](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/core/isDomElement.js#L19-L21 "Source code on GitHub")
+[lib/core/isDomElement.js:19-21](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/core/isDomElement.js#L19-L21 "Source code on GitHub")
 
 Test if element is a dom element. Doesn't resolve selectors.
 
@@ -284,7 +284,7 @@ Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # addClass
 
-[lib/dom/addClass.js:20-22](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/addClass.js#L20-L22 "Source code on GitHub")
+[lib/dom/addClass.js:20-22](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/addClass.js#L20-L22 "Source code on GitHub")
 
 Iterates over classes and add it on each element of elements or ignore it if already set.
 
@@ -316,7 +316,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # append
 
-[lib/dom/append.js:22-30](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/append.js#L22-L30 "Source code on GitHub")
+[lib/dom/append.js:22-30](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/append.js#L22-L30 "Source code on GitHub")
 
 Appends each node to a parent node.
 
@@ -348,7 +348,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # children
 
-[lib/dom/children.js:18-20](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/children.js#L18-L20 "Source code on GitHub")
+[lib/dom/children.js:18-20](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/children.js#L18-L20 "Source code on GitHub")
 
 Returns an element's children as Array.
 
@@ -377,7 +377,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # clone
 
-[lib/dom/clone.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/clone.js#L21-L23 "Source code on GitHub")
+[lib/dom/clone.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/clone.js#L21-L23 "Source code on GitHub")
 
 Clones element.
 
@@ -410,7 +410,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # closest
 
-[lib/dom/closest.js:27-39](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/closest.js#L27-L39 "Source code on GitHub")
+[lib/dom/closest.js:27-39](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/closest.js#L27-L39 "Source code on GitHub")
 
 Get closest element matching the tested selector or tested element traveling up the DOM tree from element to limit.
 
@@ -449,7 +449,7 @@ Returns **([Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) \
 
 # createElement
 
-[lib/dom/createElement.js:15-58](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/createElement.js#L15-L58 "Source code on GitHub")
+[lib/dom/createElement.js:15-58](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/createElement.js#L15-L58 "Source code on GitHub")
 
 Creates a dom element from an HTML string, tag or css like selector with text between {} if needed.
 
@@ -476,7 +476,7 @@ Returns **[Element](https://developer.mozilla.org/en-US/docs/Web/API/Element)** 
 
 # empty
 
-[lib/dom/empty.js:17-19](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/empty.js#L17-L19 "Source code on GitHub")
+[lib/dom/empty.js:17-19](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/empty.js#L17-L19 "Source code on GitHub")
 
 Remove every child of elements.
 
@@ -505,7 +505,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # filter
 
-[lib/dom/filter.js:28-28](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/filter.js#L28-L28 "Source code on GitHub")
+[lib/dom/filter.js:28-28](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/filter.js#L28-L28 "Source code on GitHub")
 
 Iterates over elements, returning an array of all elements matching tested selector.
 
@@ -545,7 +545,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # find
 
-[lib/dom/find.js:27-27](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/find.js#L27-L27 "Source code on GitHub")
+[lib/dom/find.js:27-27](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/find.js#L27-L27 "Source code on GitHub")
 
 Iterates over each element of elements and returns an array containing all elements' children matching a selector.
 
@@ -583,7 +583,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # findOne
 
-[lib/dom/findOne.js:27-29](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/findOne.js#L27-L29 "Source code on GitHub")
+[lib/dom/findOne.js:27-29](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/findOne.js#L27-L29 "Source code on GitHub")
 
 Find the first element's child matching the selector.
 
@@ -621,7 +621,7 @@ Returns **([Element](https://developer.mozilla.org/en-US/docs/Web/API/Element) |
 
 # getAttr
 
-[lib/dom/getAttr.js:16-16](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/getAttr.js#L16-L16 "Source code on GitHub")
+[lib/dom/getAttr.js:16-16](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/getAttr.js#L16-L16 "Source code on GitHub")
 
 Get value for named attribute of element.
 
@@ -649,7 +649,7 @@ Returns **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # getData
 
-[lib/dom/getData.js:16-16](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/getData.js#L16-L16 "Source code on GitHub")
+[lib/dom/getData.js:16-16](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/getData.js#L16-L16 "Source code on GitHub")
 
 Alias on getAttr prefixing name with 'data-'.
 
@@ -677,7 +677,7 @@ Returns **([Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # getHtml
 
-[lib/dom/getHtml.js:17-19](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/getHtml.js#L17-L19 "Source code on GitHub")
+[lib/dom/getHtml.js:17-19](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/getHtml.js#L17-L19 "Source code on GitHub")
 
 Get the inner html of an element.
 
@@ -706,7 +706,7 @@ Returns **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # getProp
 
-[lib/dom/getProp.js:18-18](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/getProp.js#L18-L18 "Source code on GitHub")
+[lib/dom/getProp.js:18-18](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/getProp.js#L18-L18 "Source code on GitHub")
 
 Get the value for the property name on the element.
 
@@ -736,7 +736,7 @@ Returns **any** value - The value for property on element if only one property, 
 
 # hasClass
 
-[lib/dom/hasClass.js:18-28](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/hasClass.js#L18-L28 "Source code on GitHub")
+[lib/dom/hasClass.js:18-28](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/hasClass.js#L18-L28 "Source code on GitHub")
 
 Iterates over classes and test if element has each.
 
@@ -767,7 +767,7 @@ Returns **[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # indexInParent
 
-[lib/dom/indexInParent.js:19-28](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/indexInParent.js#L19-L28 "Source code on GitHub")
+[lib/dom/indexInParent.js:19-28](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/indexInParent.js#L19-L28 "Source code on GitHub")
 
 Returns index of element in parent's children.
 
@@ -800,7 +800,7 @@ Returns **([number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # insertAfter
 
-[lib/dom/insertAfter.js:21-21](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/insertAfter.js#L21-L21 "Source code on GitHub")
+[lib/dom/insertAfter.js:21-21](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/insertAfter.js#L21-L21 "Source code on GitHub")
 
 Insert nodes after element in his parent.
 
@@ -832,7 +832,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # insertBefore
 
-[lib/dom/insertBefore.js:21-21](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/insertBefore.js#L21-L21 "Source code on GitHub")
+[lib/dom/insertBefore.js:21-21](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/insertBefore.js#L21-L21 "Source code on GitHub")
 
 Insert nodes before element in his parent.
 
@@ -864,7 +864,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # next
 
-[lib/dom/next.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/next.js#L21-L23 "Source code on GitHub")
+[lib/dom/next.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/next.js#L21-L23 "Source code on GitHub")
 
 Get the next sibling of element.
 
@@ -897,7 +897,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # parent
 
-[lib/dom/parent.js:20-22](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/parent.js#L20-L22 "Source code on GitHub")
+[lib/dom/parent.js:20-22](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/parent.js#L20-L22 "Source code on GitHub")
 
 Returns the parent node of the element.
 
@@ -929,7 +929,7 @@ Returns **([document](https://developer.mozilla.org/en-US/docs/Web/JavaScript) \
 
 # parents
 
-[lib/dom/parents.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/parents.js#L21-L23 "Source code on GitHub")
+[lib/dom/parents.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/parents.js#L21-L23 "Source code on GitHub")
 
 Returns an array of every element's ancestors.
 
@@ -961,7 +961,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # prev
 
-[lib/dom/prev.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/prev.js#L21-L23 "Source code on GitHub")
+[lib/dom/prev.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/prev.js#L21-L23 "Source code on GitHub")
 
 Get the previous sibling of element.
 
@@ -994,7 +994,7 @@ Returns **([Node](https://developer.mozilla.org/en-US/docs/Web/API/Node/nextSibl
 
 # remove
 
-[lib/dom/remove.js:23-25](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/remove.js#L23-L25 "Source code on GitHub")
+[lib/dom/remove.js:23-25](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/remove.js#L23-L25 "Source code on GitHub")
 
 Iterates over elements and removes it from DOM.
 
@@ -1029,7 +1029,7 @@ Returns **([Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # removeAttr
 
-[lib/dom/removeAttr.js:20-22](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/removeAttr.js#L20-L22 "Source code on GitHub")
+[lib/dom/removeAttr.js:20-22](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/removeAttr.js#L20-L22 "Source code on GitHub")
 
 Iterates over attributes and removes it from each element of elements.
 
@@ -1061,7 +1061,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # removeClass
 
-[lib/dom/removeClass.js:16-18](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/removeClass.js#L16-L18 "Source code on GitHub")
+[lib/dom/removeClass.js:16-18](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/removeClass.js#L16-L18 "Source code on GitHub")
 
 Iterates over classes and remove it from each element of elements.
 
@@ -1089,7 +1089,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # removeData
 
-[lib/dom/removeData.js:21-25](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/removeData.js#L21-L25 "Source code on GitHub")
+[lib/dom/removeData.js:21-25](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/removeData.js#L21-L25 "Source code on GitHub")
 
 Iterates over attributes and removes it from each element of elements.
 
@@ -1121,7 +1121,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setAttr
 
-[lib/dom/setAttr.js:21-21](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/setAttr.js#L21-L21 "Source code on GitHub")
+[lib/dom/setAttr.js:21-21](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/setAttr.js#L21-L21 "Source code on GitHub")
 
 Iterates over attributes as key value pairs and apply on each element of elements.
 
@@ -1153,7 +1153,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setData
 
-[lib/dom/setData.js:21-27](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/setData.js#L21-L27 "Source code on GitHub")
+[lib/dom/setData.js:21-27](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/setData.js#L21-L27 "Source code on GitHub")
 
 Iterates over data-attributes as key value pairs and apply on each element of elements.
 
@@ -1185,7 +1185,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setHtml
 
-[lib/dom/setHtml.js:18-20](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/setHtml.js#L18-L20 "Source code on GitHub")
+[lib/dom/setHtml.js:18-20](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/setHtml.js#L18-L20 "Source code on GitHub")
 
 Set the inner html of elements.
 
@@ -1215,7 +1215,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setProp
 
-[lib/dom/setProp.js:18-20](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/setProp.js#L18-L20 "Source code on GitHub")
+[lib/dom/setProp.js:18-20](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/setProp.js#L18-L20 "Source code on GitHub")
 
 Apply props as key value pairs on each element of elements.
 
@@ -1245,7 +1245,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # toggleClass
 
-[lib/dom/toggleClass.js:37-43](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/dom/toggleClass.js#L37-L43 "Source code on GitHub")
+[lib/dom/toggleClass.js:37-43](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/dom/toggleClass.js#L37-L43 "Source code on GitHub")
 
 Iterates over classes and toggle it on each element of elements.
 
@@ -1292,7 +1292,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # delegate
 
-[lib/events/delegate.js:50-61](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/delegate.js#L50-L61 "Source code on GitHub")
+[lib/events/delegate.js:50-61](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/delegate.js#L50-L61 "Source code on GitHub")
 
 Delegate events listener on delegate and execute callback when target matches selector (targets doesn't have to be in the DOM).
 
@@ -1349,20 +1349,9 @@ off() //remove all listeners
 
 Returns **[offCallback](#offcallback)** off - The unbind function.
 
-# delegateCallback
-
-[lib/events/delegate.js:74-79](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/delegate.js#L74-L79 "Source code on GitHub")
-
-Callback to execute on event using delegate.
-
-**Parameters**
-
--   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
--   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
-
 # offCallback
 
-[lib/events/delegate.js:74-79](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/delegate.js#L74-L79 "Source code on GitHub")
+[lib/events/delegate.js:74-79](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/delegate.js#L74-L79 "Source code on GitHub")
 
 Called to off one or all events.
 
@@ -1372,7 +1361,7 @@ Called to off one or all events.
 
 # offCallback
 
-[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/on.js#L52-L58 "Source code on GitHub")
+[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/on.js#L52-L58 "Source code on GitHub")
 
 Called to remove one or all events listeners of one or all elements.
 
@@ -1381,9 +1370,20 @@ Called to remove one or all events listeners of one or all elements.
 -   `offElements` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | EventTarget)]** The iterable, selector or elements to unbind.
 -   `events` **\[[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)]** The events to unbind. Must be provided in the same syntax as in input.
 
+# delegateCallback
+
+[lib/events/delegate.js:74-79](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/delegate.js#L74-L79 "Source code on GitHub")
+
+Callback to execute on event using delegate.
+
+**Parameters**
+
+-   `event` **[Event](https://developer.mozilla.org/en-US/docs/Web/API/Event)** Triggered event.
+-   `target` **([HTMLElement](https://developer.mozilla.org/en-US/docs/Web/HTML/Element) \| [SVGElement](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/animate))** Target of the event.
+
 # eventCallback
 
-[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/on.js#L52-L58 "Source code on GitHub")
+[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/on.js#L52-L58 "Source code on GitHub")
 
 Callback to execute on event.
 
@@ -1393,7 +1393,7 @@ Callback to execute on event.
 
 # EventObject
 
-[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/on.js#L52-L58 "Source code on GitHub")
+[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/on.js#L52-L58 "Source code on GitHub")
 
 Options to bind event.
 
@@ -1406,7 +1406,7 @@ Options to bind event.
 
 # on
 
-[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/on.js#L52-L58 "Source code on GitHub")
+[lib/events/on.js:52-58](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/on.js#L52-L58 "Source code on GitHub")
 
 Bind events listener on each element of elements.
 
@@ -1470,7 +1470,7 @@ Returns **[offCallback](#offcallback)** off - The unbinding function.
 
 # once
 
-[lib/events/once.js:71-84](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/once.js#L71-L84 "Source code on GitHub")
+[lib/events/once.js:71-84](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/once.js#L71-L84 "Source code on GitHub")
 
 Bind events listener on each element of elements and unbind after first triggered.
 
@@ -1552,7 +1552,7 @@ Returns **[offCallback](#offcallback)** cancel - cancel function for unbinding.
 
 # ready
 
-[lib/events/ready.js:20-29](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/ready.js#L20-L29 "Source code on GitHub")
+[lib/events/ready.js:20-29](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/ready.js#L20-L29 "Source code on GitHub")
 
 Execute callback when dom is ready.
 
@@ -1583,7 +1583,7 @@ Chirashi.ready(function () {
 
 # trigger
 
-[lib/events/trigger.js:44-54](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/events/trigger.js#L44-L54 "Source code on GitHub")
+[lib/events/trigger.js:44-54](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/events/trigger.js#L44-L54 "Source code on GitHub")
 
 Trigger events on elements with data
 
@@ -1633,7 +1633,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # clearStyle
 
-[lib/styles/clearStyle.js:31-36](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/clearStyle.js#L31-L36 "Source code on GitHub")
+[lib/styles/clearStyle.js:31-36](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/clearStyle.js#L31-L36 "Source code on GitHub")
 
 Clear inline style properties from elements.
 
@@ -1675,7 +1675,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # clientRect
 
-[lib/styles/clientRect.js:56-72](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/clientRect.js#L56-L72 "Source code on GitHub")
+[lib/styles/clientRect.js:56-72](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/clientRect.js#L56-L72 "Source code on GitHub")
 
 Return the screen relative position of an element.
 
@@ -1749,7 +1749,7 @@ Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # getComputedStyle
 
-[lib/styles/getComputedStyle.js:25-27](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/getComputedStyle.js#L25-L27 "Source code on GitHub")
+[lib/styles/getComputedStyle.js:25-27](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/getComputedStyle.js#L25-L27 "Source code on GitHub")
 
 Get computed style of an element.
 
@@ -1786,7 +1786,7 @@ Returns **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # getHeight
 
-[lib/styles/getHeight.js:32-34](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/getHeight.js#L32-L34 "Source code on GitHub")
+[lib/styles/getHeight.js:32-34](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/getHeight.js#L32-L34 "Source code on GitHub")
 
 Get element's height in pixels.
 
@@ -1830,7 +1830,7 @@ Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # getSize
 
-[lib/styles/getSize.js:33-38](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/getSize.js#L33-L38 "Source code on GitHub")
+[lib/styles/getSize.js:33-38](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/getSize.js#L33-L38 "Source code on GitHub")
 
 Get element's size in pixels.
 
@@ -1874,7 +1874,7 @@ Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # getStyleProp
 
-[lib/styles/getStyleProp.js:26-32](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/getStyleProp.js#L26-L32 "Source code on GitHub")
+[lib/styles/getStyleProp.js:26-32](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/getStyleProp.js#L26-L32 "Source code on GitHub")
 
 Get computed style props of an element. While getComputedStyle returns all properties, getStyleProp returns only needed and convert unitless numeric values or pixels values into numbers.
 
@@ -1912,7 +1912,7 @@ Returns **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refe
 
 # getWidth
 
-[lib/styles/getWidth.js:32-34](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/getWidth.js#L32-L34 "Source code on GitHub")
+[lib/styles/getWidth.js:32-34](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/getWidth.js#L32-L34 "Source code on GitHub")
 
 Get element's width in pixels.
 
@@ -1956,7 +1956,7 @@ Returns **[number](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refer
 
 # hide
 
-[lib/styles/hide.js:17-19](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/hide.js#L17-L19 "Source code on GitHub")
+[lib/styles/hide.js:17-19](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/hide.js#L17-L19 "Source code on GitHub")
 
 Hide each element of elements using visibility.
 
@@ -1985,7 +1985,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # offset
 
-[lib/styles/offset.js:45-52](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/offset.js#L45-L52 "Source code on GitHub")
+[lib/styles/offset.js:45-52](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/offset.js#L45-L52 "Source code on GitHub")
 
 Returns the top and left offset of an element. Offset is relative to web page.
 
@@ -2044,7 +2044,7 @@ Returns **Object.left** left - Left offset in pixels.
 
 # position
 
-[lib/styles/position.js:78-83](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/position.js#L78-L83 "Source code on GitHub")
+[lib/styles/position.js:78-83](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/position.js#L78-L83 "Source code on GitHub")
 
 Return the top and left position of an element. Position is relative to parent.
 
@@ -2136,7 +2136,7 @@ Returns **Object.left** left - Left position in pixels.
 
 # screenPosition
 
-[lib/styles/screenPosition.js:52-59](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/screenPosition.js#L52-L59 "Source code on GitHub")
+[lib/styles/screenPosition.js:52-59](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/screenPosition.js#L52-L59 "Source code on GitHub")
 
 Return the screen relative position of an element.
 
@@ -2202,7 +2202,7 @@ Returns **Object.left** left - X-coordinate, relative to the viewport origin, of
 
 # setHeight
 
-[lib/styles/setHeight.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/setHeight.js#L21-L23 "Source code on GitHub")
+[lib/styles/setHeight.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/setHeight.js#L21-L23 "Source code on GitHub")
 
 Set the provided height to elements.
 
@@ -2235,7 +2235,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setSize
 
-[lib/styles/setSize.js:20-22](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/setSize.js#L20-L22 "Source code on GitHub")
+[lib/styles/setSize.js:20-22](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/setSize.js#L20-L22 "Source code on GitHub")
 
 Set the provided size to elements.
 
@@ -2267,7 +2267,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setStyle
 
-[lib/styles/setStyleProp.js:76-76](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/setStyleProp.js#L76-L76 "Source code on GitHub")
+[lib/styles/setStyleProp.js:76-76](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/setStyleProp.js#L76-L76 "Source code on GitHub")
 
 Set the provided style to elements.
 
@@ -2340,7 +2340,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # setWidth
 
-[lib/styles/setWidth.js:21-23](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/setWidth.js#L21-L23 "Source code on GitHub")
+[lib/styles/setWidth.js:21-23](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/setWidth.js#L21-L23 "Source code on GitHub")
 
 Set the provided width to elements.
 
@@ -2373,7 +2373,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # show
 
-[lib/styles/show.js:17-19](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/show.js#L17-L19 "Source code on GitHub")
+[lib/styles/show.js:17-19](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/show.js#L17-L19 "Source code on GitHub")
 
 Show each element of elements using visibility.
 
@@ -2402,7 +2402,7 @@ Returns **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Refere
 
 # transform
 
-[lib/styles/transform.js:36-38](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/transform.js#L36-L38 "Source code on GitHub")
+[lib/styles/transform.js:36-38](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/transform.js#L36-L38 "Source code on GitHub")
 
 Compute and apply 3d transform matrix from provided transformation to each element of elements.
 
@@ -2450,7 +2450,7 @@ Returns **[function](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Ref
 
 # Transformation
 
-[lib/styles/transform.js:75-103](https://github.com/chirashijs/chirashi/blob/f5137e40d7c79a89038c939e1a6e4990c58102c7/lib/styles/transform.js#L75-L103 "Source code on GitHub")
+[lib/styles/transform.js:75-103](https://github.com/chirashijs/chirashi/blob/5cb4bdb6def617c1c09b06288325a06745c5b41c/lib/styles/transform.js#L75-L103 "Source code on GitHub")
 
 **Properties**
 
