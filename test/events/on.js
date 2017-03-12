@@ -30,11 +30,11 @@ describe('chirashi#on', () => {
       }
     }
 
-    const listeners = on([maki, maki2], {
+    const off = on([maki, maki2], {
       'click': callback
     })
 
-    listeners.off(maki2, 'click')
+    off(maki2, 'click')
 
     maki2.dispatchEvent(new window.CustomEvent('click', {
       bubbles: true,
@@ -46,16 +46,16 @@ describe('chirashi#on', () => {
       cancelable: true
     }))
 
-    listeners.off()
+    off()
 
-    const listeners2 = on([maki, maki2], {
+    const off2 = on([maki, maki2], {
       'click': {
         handler: callback,
         capture: false
       }
     })
 
-    listeners2.off(maki2, 'click')
+    off2(maki2, 'click')
 
     maki2.dispatchEvent(new window.CustomEvent('click', {
       bubbles: true,
@@ -67,6 +67,6 @@ describe('chirashi#on', () => {
       cancelable: true
     }))
 
-    listeners2.off()
+    off2()
   })
 })

@@ -7,7 +7,7 @@ describe('chirashi#once', () => {
   })
 
   it('should bind event once on elements', done => {
-    let listener
+    let cancel
 
     let called = 0
 
@@ -32,12 +32,12 @@ describe('chirashi#once', () => {
         assert.equal(event.currentTarget, maki)
         assert.equal(event.type, 'cliclick')
 
-        listener.cancel()
+        cancel()
         done()
       }
     }
 
-    listener = once([maki, maki2], {
+    cancel = once([maki, maki2], {
       'click': callback,
       'cliclick': callback
     }, true, true)

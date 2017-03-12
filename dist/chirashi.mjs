@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.3.0-rc
+ * Chirashi.js v6.4.0-rc
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -1344,14 +1344,13 @@ function _setEvents(elements, method, input) {
  * Bind events listener on each element of elements.
  * @param {(string|Array|NodeList|HTMLCollection|EventTarget)} elements - The iterable, selector or elements.
  * @param {Object.<string, (eventCallback|EventObject)>} input - An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks or EventObjects.
- * @return {Object} object - An object with off method to remove events listeners.
- * @return {offCallback} object.off - The off method.
+ * @return {offCallback} off - The unbinding function.
  * @example //esnext
  * import { createElement, append, on, trigger } from 'chirashi'
  * const maki = createElement('a.cheese.maki')
  * const sushi = createElement('a.wasabi.sushi')
  * append(document.body, [maki, sushi])
- * const listener = on('.cheese, .wasabi', {
+ * const off = on('.cheese, .wasabi', {
  *   click(e, target) {
  *     console.log('clicked', target)
  *   },
@@ -1366,10 +1365,10 @@ function _setEvents(elements, method, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.off(maki, 'click') //remove click event listener on maki
- * listener.off() //remove all listeners from all elements
+ * off(maki, 'click') //remove click event listener on maki
+ * off() //remove all listeners from all elements
  * @example //es5
- * var listener = Chirashi.bind('.cheese, .wasabi', {
+ * var off = Chirashi.bind('.cheese, .wasabi', {
  *   'click': function (e, target) {
  *     console.log('clicked', target)
  *   },
@@ -1387,16 +1386,14 @@ function _setEvents(elements, method, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * Chirashi.trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.off(maki, 'click') //remove click event listener on maki
- * listener.off() //remove all listeners from all elements
+ * off(maki, 'click') //remove click event listener on maki
+ * off() //remove all listeners from all elements
  */
 function on(elements, input) {
   elements = _setEvents(elements, 'add', input);
 
-  return {
-    off: function off(offElements, events) {
-      _setEvents(offElements || elements, 'remove', events ? defineProperty({}, events, input[events]) : input);
-    }
+  return function (offElements, events) {
+    _setEvents(offElements || elements, 'remove', events ? defineProperty({}, events, input[events]) : input);
   };
 }
 
@@ -1427,11 +1424,10 @@ function on(elements, input) {
  * @param {string} selector - The selector to match.
  * @param {Object.<string, delegateCallback>} input - An object in which keys are events to delegate seperated with coma and/or spaces and values are delegateCallbacks.
  * @param {(string|Array|NodeList|HTMLCollection|EventTarget)} [target=document.body] - The event target. Note that it'll be passed to getElement to ensure there's only one.
- * @return {Object} object - An object with off method for offing.
- * @return {offCallback} object.off - The off method.
+ * @return {offCallback} off - The unbind function.
  * @example //esnext
  * import { createElement, append, delegate, trigger } from 'chirashi'
- * const listener = delegate('.cheese, .wasabi', {
+ * const off = delegate('.cheese, .wasabi', {
  *   click(e, target) => {
  *     console.log('clicked', target)
  *   },
@@ -1446,10 +1442,10 @@ function on(elements, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.off('mouseenter mousemove') //remove mouseenter and mousemove listeners
- * listener.off() //remove all listeners
+ * off('mouseenter mousemove') //remove mouseenter and mousemove listeners
+ * off() //remove all listeners
  * @example //es5
- * var listener = Chirashi.delegate('.cheese, .wasabi', {
+ * var off = Chirashi.delegate('.cheese, .wasabi', {
  *   'click': function (e, target) {
  *     console.log('clicked', target)
  *   },
@@ -1464,8 +1460,8 @@ function on(elements, input) {
  * // LOGS: "clicked" <a class="maki cheese"></a>
  * Chirashi.trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
- * listener.off('mouseenter mousemove') //remove mouseenter and mousemove listeners
- * listener.off() //remove all listeners
+ * off('mouseenter mousemove') //remove mouseenter and mousemove listeners
+ * off() //remove all listeners
  */
 function delegate(selector, input) {
   var target = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : document.body;
@@ -1475,12 +1471,10 @@ function delegate(selector, input) {
   var eventsObj = {};
   forIn(input, _wrapOptions.bind(null, selector, target, eventsObj));
 
-  var bound = on(target, eventsObj);
+  var off = on(target, eventsObj);
 
-  return {
-    off: function off(events) {
-      bound.off(target, events);
-    }
+  return function (events) {
+    off(target, events);
   };
 }
 
@@ -1520,14 +1514,13 @@ function _wrapCallback(selector, target, callback) {
  * @param {Object.<string, eventCallback>} input - An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks.
  * @param {boolean} [eachElement=false] - If true only current target's events listeners will be removed after trigger.
  * @param {boolean} [eachEvent=false] - If true only triggered event group of events listeners will be removed.
- * @return {Object} cancelObject - An object with cancel method for unbinding.
- * @return {Object.cancel} cancel - cancel method.
+ * @return {offCallback} cancel - cancel function for unbinding.
  * @example //esnext
  * import { createElement, append, once, trigger } from 'chirashi'
  * const maki = createElement('a.cheese.maki')
  * const sushi = createElement('a.wasabi.sushi')
  * append(document.body, [maki, sushi])
- * const listener = once('.cheese, .wasabi', {
+ * const cancel = once('.cheese, .wasabi', {
  *   click(e, target) => {
  *     console.log('clicked', target)
  *   },
@@ -1541,8 +1534,8 @@ function _wrapCallback(selector, target, callback) {
  * trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
  * // click event listener was auto-removed from sushi
- * listener.cancel() //remove all listeners from all elements
- * const listener2 = once('.cheese, .wasabi', {
+ * cancel() //remove all listeners from all elements
+ * once('.cheese, .wasabi', {
  *   click(e, target) => {
  *     console.log('clicked', target)
  *   }
@@ -1556,7 +1549,7 @@ function _wrapCallback(selector, target, callback) {
  * var maki = Chirashi.createElement('a.cheese.maki')
  * var sushi = Chirashi.createElement('a.wasabi.sushi')
  * Chirashi.append(document.body, [maki, sushi])
- * var listener = Chirashi.once('.cheese, .wasabi', {
+ * var cancel = Chirashi.once('.cheese, .wasabi', {
  *   click: function (e, target) {
  *     console.log('clicked', target)
  *   },
@@ -1570,8 +1563,8 @@ function _wrapCallback(selector, target, callback) {
  * Chirashi.trigger(sushi, 'click') //simulate user's click
  * // LOGS: "clicked" <a class="sushi wasabi"></a>
  * // click event listener was auto-removed from sushi
- * listener.cancel() //remove all listeners from all elements
- * var listener2 = Chirashi.once('.cheese, .wasabi', {
+ * cancel() //remove all listeners from all elements
+ * Chirashi.once('.cheese, .wasabi', {
  *   click: function (e, target) {
  *     console.log('clicked', target)
  *   }
@@ -1586,22 +1579,18 @@ function once(elements, input) {
   var eachElement = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var eachEvent = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
-  var listener = void 0;
+  var off = void 0;
   var eventsObj = {};
 
   forIn(input, function (events, callback) {
     eventsObj[events] = function (event) {
       callback(event);
 
-      listener.off(eachElement && event.currentTarget, eachEvent && events);
+      off(eachElement && event.currentTarget, eachEvent && events);
     };
   });
 
-  listener = on(elements, eventsObj);
-
-  return {
-    cancel: listener.off
-  };
+  return off = on(elements, eventsObj);
 }
 
 /**

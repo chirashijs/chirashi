@@ -16,7 +16,7 @@ describe('chirashi#delegate', () => {
     cheese.classList.add('delegate', 'cheese')
     document.body.appendChild(cheese)
 
-    const listener = delegate('.delegate.cheese', {
+    const off = delegate('.delegate.cheese', {
       click: {
         handler: (event, target) => {
           ++called
@@ -25,7 +25,7 @@ describe('chirashi#delegate', () => {
 
           assert.equal(target, target, 'should delegate event returning target')
           assert.equal(called, 1, 'should trigger only once')
-          listener.off()
+          off()
 
           setTimeout(() => {
             document.body.removeChild(maki)
@@ -38,7 +38,7 @@ describe('chirashi#delegate', () => {
       }
     })
 
-    assert.isFunction(listener.off, 'should return object with off method')
+    assert.isFunction(off, 'should return object with off method')
 
     maki.dispatchEvent(new window.CustomEvent('click', {
       bubbles: true,
