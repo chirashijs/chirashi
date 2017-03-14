@@ -1,6 +1,6 @@
 {
   "name": "chirashi",
-  "version": "6.4.2-rc",
+  "version": "6.4.3-rc",
   "description": "Fast, modular, lightweight and simple DOM and events manipulation.",
   "keywords": [
     "DOM",
