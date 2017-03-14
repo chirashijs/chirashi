@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.4.1-rc
+ * Chirashi.js v6.4.3-rc
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -1709,7 +1709,7 @@ var unitless = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset'
  * @param {Object.<string, (number|string)>} style - The style options as object with keys the css property and values, string values or number. If the value is a number and property doesn't support unitless values, pixels will be used.
  * @return {Array} iterable - The getElements' result for chaining.
  * @example //esnext
- * import { append, setStyle, position } from 'chirashi'
+ * import { append, setStyleProp, position } from 'chirashi'
  *
  * append(document.body, '.maki')
  * append('.maki', '.salmon')
@@ -1761,7 +1761,7 @@ var unitless = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset'
  *   background: 'pink'
  * }) // returns: [<div class="salmon" style="display: block; position: absolute; top: 20px; left: 10px; width: 10px; height: 10px; border-radius: 50%; background: pink;"></div>]
  */
-var setStyle = _parseAndApply.bind(null, _applyUnit, _applyStyle);
+var setStyleProp = _parseAndApply.bind(null, _applyUnit, _applyStyle);
 function _applyUnit(style, prop, value) {
   if (unitless.indexOf(_kebabCase(prop)) === -1 && typeof value === 'number') {
     style[prop] += 'px';
@@ -1810,7 +1810,7 @@ function clearStyle(elements) {
 
   forEach(props, _resetProp.bind(null, style));
 
-  return setStyle(elements, style);
+  return setStyleProp(elements, style);
 }
 
 function _resetProp(style, prop) {
@@ -1828,7 +1828,7 @@ function _resetProp(style, prop) {
  * @return {number} clientRect.top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
  * @return {number} clientRect.width - Width of the rectangle box (This is identical to right minus left).
  * @example esnext
- * import { setStyle, append, clientRect } from 'chirashi'
+ * import { setStyleProp, append, clientRect } from 'chirashi'
  *
  * setStyleProp([document.documentElement, document.body], {
  *   position: 'relative',
@@ -1924,7 +1924,7 @@ function _getLength(element, direction, offset) {
  * @param {boolean} [offset=false] - If true height will include scrollbar and borders to size.
  * @return {number} height - The height in pixels.
  * @example //esnext
- * import { append, setStyle, getHeight } from 'chirashi'
+ * import { append, setStyleProp, getHeight } from 'chirashi'
  * append(document.body, '.maki')
  * const maki = setStyleProp('.maki', {
  *   display: 'block',
@@ -1959,7 +1959,7 @@ function getHeight(element) {
  * @param {boolean} [offset=false] - If true width will include scrollbar and borders to size.
  * @return {number} width - The width in pixels.
  * @example //esnext
- * import { append, setStyle, getWidth } from 'chirashi'
+ * import { append, setStyleProp, getWidth } from 'chirashi'
  * append(document.body, '.maki')
  * const maki = setStyleProp('.maki', {
  *   display: 'block',
@@ -1994,7 +1994,7 @@ function getWidth(element) {
  * @param {boolean} [offset=false] - If true size will include scrollbar and borders.
  * @return {number} size - The size in pixels.
  * @example //esnext
- * import { append, setStyle, getSize } from 'chirashi'
+ * import { append, setStyleProp, getSize } from 'chirashi'
  * append(document.body, '.maki')
  * const maki = setStyleProp('.maki', {
  *   display: 'block',
@@ -2080,7 +2080,7 @@ function _parseProp(input, prop) {
  * Chirashi.getStyleProp(maki, 'visibility') // returns: "hidden"
  */
 function hide(elements) {
-  return setStyle(elements, { visibility: 'hidden' });
+  return setStyleProp(elements, { visibility: 'hidden' });
 }
 
 /**
@@ -2090,7 +2090,7 @@ function hide(elements) {
  * @return {Object.top} top - Y-coordinate, relative to the viewport origin, of the top of the rectangle box.
  * @return {Object.left} left - X-coordinate, relative to the viewport origin, of the left of the rectangle box.
  * @example esnext
- * import { setStyle, append, screenPosition } from 'chirashi'
+ * import { setStyleProp, append, screenPosition } from 'chirashi'
  *
  * setStyleProp([document.documentElement, document.body], {
  *   position: 'relative',
@@ -2148,7 +2148,7 @@ function screenPosition(element) {
  * @return {Object.top} top - Top offset in pixels.
  * @return {Object.left} left - Left offset in pixels.
  * @example //esnext
- * import { setStyle, append, offset }
+ * import { setStyleProp, append, offset }
  * setStyleProp([document.documentElement, document.body], {
  *   position: 'relative',
  *   margin: 0,
@@ -2199,7 +2199,7 @@ function offset(element) {
  * @return {Object.top} top - Top position in pixels.
  * @return {Object.left} left - Left position in pixels.
  * @example //esnext
- * import { append, setStyle, position } from 'chirashi'
+ * import { append, setStyleProp, position } from 'chirashi'
  *
  * setStyleProp([document.documentElement, document.body], {
  *   position: 'relative',
@@ -2293,7 +2293,7 @@ function position(element) {
  * Chirashi.setHeight('.maki', '100%') // returns: [<div class="maki" style="height: 100%;"></div>]
  */
 function setHeight(elements, height) {
-  return setStyle(elements, { height: height });
+  return setStyleProp(elements, { height: height });
 }
 
 /**
@@ -2314,7 +2314,7 @@ function setHeight(elements, height) {
  * Chirashi.setSize('.maki', 20, '100%') // returns: [<div class="maki" style="width: 20px; height: 100%;"></div>]
  */
 function setSize(elements, width, height) {
-  return setStyle(elements, { width: width, height: height });
+  return setStyleProp(elements, { width: width, height: height });
 }
 
 /**
@@ -2336,7 +2336,7 @@ function setSize(elements, width, height) {
  * Chirashi.setWidth('.maki', '100%') // returns: [<div class="maki" style="width: 100%;"></div>]
  */
 function setWidth(elements, width) {
-  return setStyle(elements, { width: width });
+  return setStyleProp(elements, { width: width });
 }
 
 /**
@@ -2354,7 +2354,7 @@ function setWidth(elements, width) {
  * Chirashi.getStyleProp(maki, 'visibility') // returns: "visible"
  */
 function show(elements) {
-  return setStyle(elements, { visibility: 'visible' });
+  return setStyleProp(elements, { visibility: 'visible' });
 }
 
 /**
@@ -2390,7 +2390,7 @@ function show(elements) {
  * Chirashi.transform(wasabiPea, {x: 5, y: 6, z: 7, scale: {x: 2, y: 3}, rotate: {x: 45, y: 20, z: 15}, skew: {x: 25, y: 45}}) // returns: [<p style="transform: "matrix3d(-0.62,2.27,-0.91,0,-0.78,-1.2,0.85,0,0.91,-0.85,0.21,0,5,6,7,1)">Wasabi</p>]
  */
 function transform(elements, transformation) {
-  return setStyle(elements, { transform: 'matrix3d(' + _transformMatrix(transformation).join(',') + ')' });
+  return setStyleProp(elements, { transform: 'matrix3d(' + _transformMatrix(transformation).join(',') + ')' });
 }
 
 function _transformFromObj(values, transformation, name, defaultVal, axe) {
@@ -2536,7 +2536,7 @@ exports.position = position;
 exports.screenPosition = screenPosition;
 exports.setHeight = setHeight;
 exports.setSize = setSize;
-exports.setStyleProp = setStyle;
+exports.setStyleProp = setStyleProp;
 exports.setWidth = setWidth;
 exports.show = show;
 exports.transform = transform;
