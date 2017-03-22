@@ -1,5 +1,5 @@
 /**
- * Chirashi.js v6.4.3-rc
+ * Chirashi.js v6.5.0-rc
  * (c) 2017 Alex Toudic
  * Released under MIT License.
  **/
@@ -1709,7 +1709,7 @@ var unitless = ['z-index', 'zoom', 'font-weight', 'line-height', 'counter-reset'
  * @param {Object.<string, (number|string)>} style - The style options as object with keys the css property and values, string values or number. If the value is a number and property doesn't support unitless values, pixels will be used.
  * @return {Array} iterable - The getElements' result for chaining.
  * @example //esnext
- * import { append, setStyleProp, position } from 'chirashi'
+ * import { append, setStyleProp } from 'chirashi'
  *
  * append(document.body, '.maki')
  * append('.maki', '.salmon')
@@ -2275,6 +2275,43 @@ function position(element) {
 }
 
 /**
+ * Set the provided css variables to elements.
+ * @param {(string|Array|NodeList|HTMLCollection)} elements - The iterable, selector or elements.
+ * @param {Object.<string, (number|string)>} variables - The key-value pairs of variables to set, the variable name shouldn't be prefixed with -- and can be in camelCase.
+ * @return {Array} iterable - The getElements' result for chaining.
+ * @example //esnext
+ * import { append, setCssVariable } from 'chirashi'
+ *
+ * append(document.body, '.maki')
+ *
+ * setCssVariable('.maki', {
+ *   opacity: 0.5,
+ *   textColor: 'blue'
+ * }) // returns: [<div class="maki" style="--opacity: 0.5; --text-color: 'rgb(0,0,255)'"></div>]
+ * @example //es5
+ * Chirashi.append(document.body, '.maki')
+ *
+ * Chirashi.setCssVariable('.maki', {
+ *   opacity: 0.5,
+ *   textColor: 'blue'
+ * }) // returns: [<div class="maki" style="--opacity: 0.5; --text-color: 'rgb(0,0,255)'"></div>]
+ */
+var setCssVariable = _parseAndApply.bind(null, _applyPrefix, _applyVariables);
+function _applyPrefix(variables, prop, value) {
+  variables['--' + _kebabCase(prop)] = value;
+}
+
+function _applyVariables(variables, element) {
+  if (!element.style) return;
+
+  forIn(variables, _applyVariable.bind(null, element));
+}
+
+function _applyVariable(element, key, value) {
+  element.style.setProperty(key, value);
+}
+
+/**
  * Set the provided height to elements.
  * @param {(string|Array|NodeList|HTMLCollection|HTMLElement)} elements - The iterable, selector or elements.
  * @param {(number|string)} height - The height as number or string. For number, unit used will be pixels.
@@ -2534,6 +2571,7 @@ exports.hide = hide;
 exports.offset = offset;
 exports.position = position;
 exports.screenPosition = screenPosition;
+exports.setCssVariable = setCssVariable;
 exports.setHeight = setHeight;
 exports.setSize = setSize;
 exports.setStyleProp = setStyleProp;
