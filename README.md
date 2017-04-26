@@ -7,6 +7,12 @@
 [![Test Coverage](https://codeclimate.com/github/chirashijs/chirashi/badges/coverage.svg)](https://codeclimate.com/github/chirashijs/chirashi/coverage)
 [![Build Status](https://travis-ci.org/chirashijs/chirashi.svg?branch=master)](https://travis-ci.org/chirashijs/chirashi)
 
+## Intro
+
+Chirashi.js is a utils library meant to make DOM manipulation and events management easier and faster to read and write without adding overcomplecated internal logic.
+
+The library designed as modules of single functions allowing to reduce size of your production build to only the needed code (thanks to [esnext modules](https://github.com/dherman/defense-of-dot-js/blob/master/proposal.md)).
+
 ## Get started
 
 Find API documentation, guide and more on [chirashi.js.org](http://chirashi.js.org).
@@ -15,7 +21,7 @@ Find API documentation, guide and more on [chirashi.js.org](http://chirashi.js.o
 
 ### Installation
 
-#### Using npm
+#### Using npm / yarn (recommended)
 
 ```
 yarn add chirashi
@@ -37,7 +43,7 @@ ready(() => {
 
 #### Standalone
 
-You can download [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/5.2.4/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/5.2.4/chirashi.min.js) and load it using a script tag. You can also use CDN version of those files from unpkg using the link [https://unpkg.com/chirashi@5.2.4/dist/chirashi.min.js](https://unpkg.com/chirashi@5.2.4/dist/chirashi.min.js). It'll create an instance of Chirashi on your window. Then use as following example
+You can download [chirashi.js](https://github.com/chirashijs/chirashi/releases/download/6.5.0/chirashi.js) or [chirashi.min.js](https://github.com/chirashijs/chirashi/releases/download/6.5.0/chirashi.min.js) and load it using a script tag. You can also use CDN version of those files from unpkg using the link [https://unpkg.com/chirashi@6.5.0/dist/chirashi.min.js](https://unpkg.com/chirashi@6.5.0/dist/chirashi.min.js). It'll create an instance of Chirashi on your window. Then use as following example
 
 ```js
 Chirashi.ready(function () {
