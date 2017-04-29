@@ -20,7 +20,7 @@ describe('chirashi#trigger', () => {
 
     maki.addEventListener('click', callback, false)
 
-    trigger(maki, 'click')
+    trigger(maki, ['click', 'touchstart'])
 
     assert.isUndefined(trigger(null, 'click'))
   })

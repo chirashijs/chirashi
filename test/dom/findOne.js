@@ -12,6 +12,7 @@ describe('chirashi#findOne', () => {
 
     const salmon = document.createElement('div')
     salmon.classList.add('salmon')
+    salmon.id = 'maki-salmon'
     maki.appendChild(salmon)
 
     const cheese = document.createElement('div')
@@ -20,6 +21,7 @@ describe('chirashi#findOne', () => {
 
     assert.equal(findOne(maki, '.salmon'), salmon)
     assert.equal(findOne(maki, '[class="salmon"]'), salmon)
+    assert.equal(findOne(maki, '#maki-salmon'), salmon)
     assert.isUndefined(findOne(maki, '.avocado'))
     assert.isNull(findOne('.none', '.avocado'))
   })

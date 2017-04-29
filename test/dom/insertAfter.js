@@ -21,5 +21,6 @@ describe('chirashi#insertAfter', () => {
     insertAfter(salmon, '.wasabi')
 
     assert.isTrue(cheese.previousElementSibling.classList.contains('wasabi'), 'should create and insert node')
+    assert.isUndefined(insertAfter(window, salmon), 'should return when insertion isn\'t possible')
   })
 })

@@ -35,6 +35,9 @@ describe('chirashi#delegate', () => {
           }, 200)
         },
         capture: false
+      },
+      mouseenter (event, target) {
+        console.log('mouseenter', target)
       }
     })
 

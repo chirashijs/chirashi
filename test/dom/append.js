@@ -13,5 +13,6 @@ describe('chirashi#append', () => {
 
     assert.equal(maki.firstChild, salmon, 'should append existing node')
     assert.isTrue(maki.children[1].classList.contains('cheese'), 'should create and append node')
+    assert.isFalse(append(window, '.null'), 'shouldn\'t append when not possible')
   })
 })

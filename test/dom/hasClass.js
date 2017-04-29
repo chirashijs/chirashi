@@ -12,5 +12,6 @@ describe('chirashi#hasClass', () => {
 
     assert.isTrue(hasClass(maki, 'cheese', 'avocado'), 'should return true if all classes are on element')
     assert.isFalse(hasClass(maki, 'cheese', 'wasabi'), 'should return false if one of classes isn\'t on element')
+    assert.isUndefined(hasClass('.null', 'cheese'), 'should return when element is not found')
   })
 })

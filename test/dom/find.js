@@ -29,6 +29,7 @@ describe('chirashi#find', () => {
 
     assert.isTrue(contains([], find(maki, '.avocado')))
     assert.isTrue(contains([sushiSalmon], find(maki, '#salmon')))
+    assert.isTrue(contains([], find(maki, '#null')))
     assert.isTrue(contains([makiSalmon, sushiSalmon], find([maki, sushi], '.salmon')))
   })
 })
