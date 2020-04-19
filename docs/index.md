@@ -1252,7 +1252,7 @@ Iterates over classes and toggle it on each element of elements.
 **Parameters**
 
 -   `elements` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | [Element](https://developer.mozilla.org/en-US/docs/Web/API/Element))** The iterable, selector or elements.
--   `classes` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))** Array of classes or string of classes seperated with comma and/or spaces. Or object with keys being the string of classes seperated with comma and/or spaces and values function returning a booleanean.
+-   `classes` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object))** Array of classes or string of classes separated with comma and/or spaces. Or object with keys being the string of classes separated with comma and/or spaces and values function returning a booleanean.
 -   `args` **...any** 
 
 **Examples**
@@ -1299,7 +1299,7 @@ Delegate events listener on delegate and execute callback when target matches se
 **Parameters**
 
 -   `selector` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The selector to match.
--   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [delegateCallback](#delegatecallback)>** An object in which keys are events to delegate seperated with coma and/or spaces and values are delegateCallbacks.
+-   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [delegateCallback](#delegatecallback)>** An object in which keys are events to delegate separated with coma and/or spaces and values are delegateCallbacks.
 -   `target` **\[([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | EventTarget)]** The event target. Note that it'll be passed to getElement to ensure there's only one. (optional, default `document.body`)
 
 **Examples**
@@ -1390,7 +1390,7 @@ Bind events listener on each element of elements.
 **Parameters**
 
 -   `elements` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | EventTarget)** The iterable, selector or elements.
--   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), ([eventCallback](#eventcallback) \| [EventObject](#eventobject))>** An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks or EventObjects.
+-   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), ([eventCallback](#eventcallback) \| [EventObject](#eventobject))>** An object in which keys are events to bind separated with coma and/or spaces and values are eventCallbacks or EventObjects.
 
 **Examples**
 
@@ -1477,7 +1477,7 @@ Bind events listener on each element of elements and unbind after first triggere
 **Parameters**
 
 -   `elements` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | EventTarget)** The iterable, selector or elements.
--   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [eventCallback](#eventcallback)>** An object in which keys are events to bind seperated with coma and/or spaces and values are eventCallbacks.
+-   `input` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)&lt;[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String), [eventCallback](#eventcallback)>** An object in which keys are events to bind separated with coma and/or spaces and values are eventCallbacks.
 -   `eachElement` **\[[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)]** If true only current target's events listeners will be removed after trigger. (optional, default `false`)
 -   `eachEvent` **\[[boolean](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean)]** If true only triggered event group of events listeners will be removed. (optional, default `false`)
 
@@ -1590,7 +1590,7 @@ Trigger events on elements with data
 **Parameters**
 
 -   `elements` **([string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String) \| [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array) \| [NodeList](https://developer.mozilla.org/en-US/docs/Web/API/NodeList) | HTMLCollection | EventTarget)** The iterable, selector or elements.
--   `events` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The events that should be tiggered seperated with spaces
+-   `events` **[string](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String)** The events that should be triggered separated with spaces
 -   `data` **[Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)** The events' data
 -   `options`   (optional, default `{}`)
 
