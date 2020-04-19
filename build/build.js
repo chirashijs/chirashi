@@ -95,16 +95,16 @@ rollup
 function toPascalCase (input) {
   const kebabRegex = /(^|-)([a-z])/g
 
-  let ouput = `${input}`
+  let output = `${input}`
   let match
   while ((match = kebabRegex.exec(input))) {
     const fullMatch = match[0]
     const letter = match[2]
 
-    ouput = ouput.replace(new RegExp(fullMatch, 'g'), letter.toUpperCase())
+    output = output.replace(new RegExp(fullMatch, 'g'), letter.toUpperCase())
   }
 
-  return ouput
+  return output
 }
 
 function getSize (code) {
